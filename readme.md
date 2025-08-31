@@ -1,8 +1,6 @@
-# UI Starter Kit (replace with the title of the Project)
+# Anti Corruption Compass
 
-This is a template to initiate project with preinstalled library for design system and data visualization and tooling for linting and prettier.
-
-Please note there are postCSS configuration in the `vite.config.ts` which remove the base layer from the build css and also adds a parent class of `undp-container` to all the classes, ids and elements in the build css. Please edite the `vite.config.ts` if you would like to remove it.
+This si the git repo fir the UI of Anti Corruption Compass
 
 ## Table of Contents
 
@@ -19,7 +17,7 @@ Please note there are postCSS configuration in the `vite.config.ts` which remove
 
 ## Link for the visualization<a name="section-01"></a>
 
-[{{link to the site here}}]({{link to the site here}})
+[Staging link](https://delightful-rock-05d1e9803.2.azurestaticapps.net)
 
 ## Deployment<a name="deployment"></a>
 
