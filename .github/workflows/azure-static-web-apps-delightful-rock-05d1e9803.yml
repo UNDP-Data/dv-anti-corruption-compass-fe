@@ -31,6 +31,29 @@ jobs:
         run: npm run build
         env:
           NODE_OPTIONS: --max-old-space-size=4096
+
+      - name: Check build output size
+        run: |
+          echo "Build output size:"
+          du -sh dist/
+          echo "Contents of dist folder:"
+          ls -la dist/
+          echo "Large files in dist (>10MB):"
+          find dist/ -size +10M -type f -exec ls -lh {} \; 2>/dev/null || true
+          echo "Total workspace size (might include source files):"
+          du -sh /github/workspace/
+          echo "All files in workspace larger than 50MB:"
+          find /github/workspace/ -size +50M -type f -exec ls -lh {} \; 2>/dev/null || true
+
+      - name: Clean build output
+        run: |
+          # Remove common large unnecessary files
+          find dist/ -name "*.map" -delete 2>/dev/null || true
+          find dist/ -name "*.tsbuildinfo" -delete 2>/dev/null || true
+          find dist/ -name "node_modules" -type d -exec rm -rf {} + 2>/dev/null || true
+          find dist/ -name ".git" -type d -exec rm -rf {} + 2>/dev/null || true
+          echo "Size after cleanup:"
+          du -sh dist/
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
