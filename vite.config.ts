@@ -4,11 +4,16 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import eslint from '@nabla/vite-plugin-eslint';
 import tailwindcss from '@tailwindcss/vite';
-import { AtRule } from 'postcss';
+// import { AtRule } from 'postcss';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { tanstackRouter } from '@tanstack/router-plugin/vite';
 
 export default defineConfig({
   plugins: [
+    tanstackRouter({
+      target: 'react',
+      autoCodeSplitting: true,
+    }),
     react(),
     eslint(),
     tailwindcss(),
@@ -17,6 +22,7 @@ export default defineConfig({
   css: {
     postcss: {
       plugins: [
+        /*
         {
           postcssPlugin: 'remove-layers', // If you want to remove base layer
           AtRule: {
@@ -67,6 +73,7 @@ export default defineConfig({
             });
           },
         },
+        */
       ],
     },
   },
