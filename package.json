@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -15,8 +18,8 @@
   "dependencies": {
     "@tanstack/react-query": "^5.85.5",
     "@tanstack/react-router": "^1.131.28",
-    "@undp/data-viz": "^1.2.7",
-    "@undp/design-system-react": "^1.1.0",
+    "@undp/data-viz": "^1.4.2",
+    "@undp/design-system-react": "^1.2.8",
     "lucide-react": "^0.542.0",
     "motion": "^12.23.12",
     "react": "^19.1.0",
@@ -25,7 +28,7 @@
     "tailwind-animate": "^0.2.10",
     "tailwind-merge": "^3.3.0",
     "tailwindcss-animate": "^1.0.7",
-    "three": "^0.179.1"
+    "three": "^0.180.0"
   },
   "devDependencies": {
     "@eslint/config-array": "^0.20.0",
