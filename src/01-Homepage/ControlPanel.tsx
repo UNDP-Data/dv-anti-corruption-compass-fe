@@ -18,7 +18,9 @@ const ControlPanel = forwardRef<HTMLDivElement, Props>((props, ref) => {
           <H3 className='poppins-bold !text-[24px]' marginBottom='none'>
             {heading}
           </H3>
-          <P className='poppins-regular !text-[18px]'>{description}</P>
+          <P className='poppins-regular !text-[18px]' marginBottom='none'>
+            {description}
+          </P>
         </div>
         <div
           className={`flex gap-4 flex-wrap${buttons.length > 3 ? '' : ' flex-col'}`}
@@ -45,12 +47,21 @@ const ControlPanel = forwardRef<HTMLDivElement, Props>((props, ref) => {
                 }}
                 className='w-4 h-4 rounded-full'
               />
-              <P className='poppins-medium !text-[18px]' marginBottom='none'>
+              <P
+                className='poppins-medium !text-[18px] text-left'
+                marginBottom='none'
+              >
                 {d.label}
               </P>
             </button>
           ))}
         </div>
+        <P
+          className='poppins-medium !text-[16px] text-left'
+          marginBottom='none'
+        >
+          View more →
+        </P>
       </div>
     </div>
   );

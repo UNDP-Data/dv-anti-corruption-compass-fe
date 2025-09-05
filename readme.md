@@ -1,6 +1,6 @@
 # Anti Corruption Compass
 
-This si the git repo fir the UI of Anti Corruption Compass
+This is the git repo fir the UI of Anti Corruption Compass
 
 ## Table of Contents
 

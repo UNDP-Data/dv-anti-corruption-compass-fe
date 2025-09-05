@@ -71,7 +71,7 @@ function Header() {
           <DropdownMenuTrigger>
             <div className='flex items-center gap-2'>
               <P
-                className='text-center poppins-medium !text-[18px] leading-none tracking-[0%]'
+                className='text-center poppins-medium !text-[18px] leading-none tracking-[0%] text-[#fff]'
                 marginBottom='none'
               >
                 Main indicators
@@ -79,14 +79,14 @@ function Header() {
               <ChevronDown strokeWidth={1} color='#fff' />
             </div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className='w-56'>
-            <DropdownMenuItem className='poppins-medium !text-[14px]'>
+          <DropdownMenuContent className='w-70cd ..'>
+            <DropdownMenuItem className='poppins-regular !text-[14px] py-4'>
               Public procurement integrity
             </DropdownMenuItem>
-            <DropdownMenuItem className='poppins-medium !text-[14px]'>
+            <DropdownMenuItem className='poppins-regular !text-[14px] py-4'>
               Business experiences
             </DropdownMenuItem>
-            <DropdownMenuItem className='poppins-medium !text-[14px]'>
+            <DropdownMenuItem className='poppins-regular !text-[14px] py-4'>
               Anti-corruption authorities
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -121,7 +121,7 @@ const rootRoute = createRootRoute({
       <main className='pt-30'>
         <Outlet />
       </main>
-      <footer className='bg-[#2D4858] px-10 py-20'>
+      <footer className='bg-[#2D4858] px-10 py-20 relative z-10'>
         <div className='flex flex-wrap'>
           <div className='w-1/2'>
             <P className='poppins-regular !text-[16px]' size='sm'>

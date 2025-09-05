@@ -4,7 +4,6 @@ import { SegmentedControl } from '@undp/design-system-react/SegmentedControl';
 import {
   Card,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardImage,
   CardTitle,
@@ -14,6 +13,7 @@ import { DataTable } from '@undp/data-viz/DataTable';
 import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import { motion, useInView, useScroll, useTransform } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
 
 import ControlPanel from './ControlPanel';
 
@@ -24,11 +24,15 @@ function Homepage() {
     queryFn: getTodos,
   });
   */
-  const refSlideTwo = useRef(null);
-  const refSlideThree = useRef(null);
-  const refControlPanelOne = useRef(null);
-  const refControlPanelTwo = useRef(null);
-  const refControlPanelThree = useRef(null);
+  const globeDiv = useRef<HTMLDivElement>(null);
+
+  const [globeYOffSet, setGlobeYOffSet] = useState(0);
+  const refSlideOne = useRef<HTMLDivElement>(null);
+  const refSlideTwo = useRef<HTMLDivElement>(null);
+  const refSlideThree = useRef<HTMLDivElement>(null);
+  const refControlPanelOne = useRef<HTMLDivElement>(null);
+  const refControlPanelTwo = useRef<HTMLDivElement>(null);
+  const refControlPanelThree = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: refSlideTwo,
     offset: ['start end', 'start center'],
@@ -55,6 +59,11 @@ function Homepage() {
   const isInViewControlPanelThree = useInView(refControlPanelThree, {
     once: false,
     amount: 0.5,
+  });
+
+  const isInViewSlideThree = useInView(refSlideThree, {
+    once: false,
+    amount: 0,
   });
 
   const [selectedIndicatorPrimaryData, setSelectedIndicatorPrimaryData] =
@@ -94,20 +103,118 @@ function Homepage() {
     [0, 1],
     [1, 0],
   );
+  useEffect(() => {
+    if (globeDiv.current) {
+      setGlobeYOffSet(
+        (100 * (globeDiv.current?.getBoundingClientRect()?.height || 0)) / 228,
+      );
+    }
+  }, []);
+  const handleScroll = (targetRef: React.RefObject<HTMLDivElement | null>) => {
+    if (!targetRef.current) return;
+
+    const y =
+      targetRef.current.getBoundingClientRect().top + window.scrollY - 120;
+
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  };
   return (
     <div className='relative'>
+      <div
+        className={`fixed z-50 ${isInViewControlPanelOne || isInViewControlPanelTwo || isInViewControlPanelThree || isInViewSlideThree ? 'flex' : 'hidden'} flex-col gap-0 justify-center items-center right-8 top-[50%] transform-[translate(0, -50%)`}
+      >
+        <div className='flex gap-2 items-center'>
+          <div className='flex items-center h-4 w-20 text-right'>
+            <P
+              className='poppins-regular !text-[12px] text-right text-[#fff] w-20'
+              marginBottom='none'
+            >
+              Public procurement integrity
+            </P>
+          </div>
+          <div
+            className={`cursor-pointer rounded-full w-4 h-4 border-2 border-[#fff] ${isInViewControlPanelOne ? 'bg-[#fff]' : 'bg-[rgba(255,255,255,0.3)]'} hover:bg-[rgba(255,255,255,0.5)`}
+            onClick={() => {
+              handleScroll(refControlPanelOne);
+            }}
+          />
+        </div>
+        <div className='ml-22 w-[1px] h-10 bg-[#fff]' />
+        <div className='flex gap-2 items-center'>
+          <div className='flex items-center h-4 w-20 text-right'>
+            <P
+              className='poppins-regular !text-[12px] text-right text-[#fff] w-20'
+              marginBottom='none'
+            >
+              Business experience
+            </P>
+          </div>
+          <div
+            className={`cursor-pointer rounded-full w-4 h-4 border-2 border-[#fff] ${isInViewControlPanelTwo ? 'bg-[#fff]' : 'bg-[rgba(255,255,255,0.3)]'} hover:bg-[rgba(255,255,255,0.5)`}
+            onClick={() => {
+              handleScroll(refControlPanelTwo);
+            }}
+          />
+        </div>
+        <div className='ml-22 w-[1px] h-10 bg-[#fff]' />
+        <div className='flex gap-2 items-center'>
+          <div className='flex items-center h-4 w-20 text-right'>
+            <P
+              className='poppins-regular !text-[12px] text-right text-[#fff] w-20'
+              marginBottom='none'
+            >
+              Anti-corruption authorities
+            </P>
+          </div>
+          <div
+            className={`cursor-pointer rounded-full w-4 h-4 border-2 border-[#fff] ${isInViewControlPanelThree ? 'bg-[#fff]' : 'bg-[rgba(255,255,255,0.3)]'} hover:bg-[rgba(255,255,255,0.5)`}
+            onClick={() => {
+              handleScroll(refControlPanelThree);
+            }}
+          />
+        </div>
+        <div className='ml-22 w-[1px] h-10 bg-[#fff]' />
+        <div className='flex gap-2 items-center'>
+          <div className='flex items-center h-4 w-20 text-right'>
+            <P
+              className='poppins-regular !text-[12px] text-right text-[#fff] w-20'
+              marginBottom='none'
+            >
+              Country level insights
+            </P>
+          </div>
+          <div
+            className={`cursor-pointer rounded-full w-4 h-4 border-2 border-[#fff] ${isInViewSlideThree ? 'bg-[#fff]' : 'bg-[rgba(255,255,255,0.3)]'} hover:bg-[rgba(255,255,255,0.5)`}
+            onClick={() => {
+              handleScroll(refSlideThree);
+            }}
+          />
+        </div>
+      </div>
+      <div
+        className='w-screen h-screen fixed top-0'
+        style={{
+          background:
+            'linear-gradient(180deg, #0F0F0F 0%, #437390 52.88%, #93DBFF 100%)',
+        }}
+      />
       <motion.div
+        ref={refSlideOne}
         style={{ opacity: slideOneOpacity }}
         className='sticky top-[120px] h-[calc(100vh-120px)] flex flex-col'
       >
         <div className='flex flex-col min-h-[calc(100vh-120px)]'>
           <div className='flex flex-col gap-8 justify-center items-center max-w-[1272px] m-auto py-16'>
-            <H2 className='poppins-bold !text-[44px] !tracking-[120%]'>
+            <H2
+              className='poppins-bold !text-[44px] !tracking-[120%]'
+              marginBottom='none'
+            >
               Is your nation winning the fight against corruption?
             </H2>
             <P
               className='text-center poppins-regular !tracking-[120%]'
               size='lg'
+              marginBottom='none'
             >
               Explore comprehensive anti-corruption insights using the world's
               most complete database of global corruption measurement. From
@@ -121,25 +228,30 @@ function Homepage() {
             <div className='flex gap-8'>
               <Button
                 variant='primary-without-icon'
-                className='rounded-full bg-[#fff] px-10 text-[var(--gray-700)] hover:bg-[#DEF7FF] poppins-semibold !text-[18px]'
+                className='rounded-full bg-[#fff] px-10 text-[var(--gray-700)] hover:bg-[#DEF7FF] poppins-semibold !text-[16px]'
               >
                 Take a tour →
               </Button>
               <Button
                 variant='primary-without-icon'
-                className='rounded-full bg-[#4B6E91] px-10 text-[#fff] hover:bg-[#2A3F53] poppins-semibold !text-[18px]'
+                className='rounded-full bg-[#4B6E91] px-10 text-[#fff] hover:bg-[#2A3F53] poppins-semibold !text-[16px]'
               >
                 View Country Level Insights →
               </Button>
             </div>
           </div>
-          <div className='m-auto w-full grow flex'>
+          <div className='m-auto w-full grow flex' ref={globeDiv}>
             <ThreeDGlobe
               showColorScale={false}
-              globeOffset={[0, (150 * window.innerHeight) / 750]}
+              globeOffset={[0, globeYOffSet]}
               polygonAltitude={0.005}
-              scale={window.innerHeight < 1000 ? 0.35 : 1}
+              scale={0.75}
               footNote=''
+              lightColor='#000'
+              atmosphereColor='#000'
+              atmosphereAltitude={0.15}
+              globeMaterial={new THREE.MeshBasicMaterial({ color: '#fafafa' })}
+              globeCurvatureResolution={2}
               enableZoom={false}
               data={[
                 {
@@ -175,11 +287,6 @@ function Homepage() {
                   x: 8,
                 },
               ]}
-              globeMaterial={{
-                color: '#fff',
-                opacity: 1,
-                transparent: true,
-              }}
             />
           </div>
         </div>
@@ -189,8 +296,6 @@ function Homepage() {
         className='flex z-10 relative sticky top-[120px] pb-60'
         style={{
           opacity: slideTwoOpacity,
-          background:
-            'linear-gradient(180deg, #0F0F0F 0%, #437390 52.88%, #93DBFF 100%)',
         }}
       >
         <div className='w-1/2 px-10'>
@@ -249,19 +354,18 @@ function Homepage() {
             }}
           />
         </div>
-        <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col items-center justify-center'>
+        <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col items-center justify-center py-20 pl-20 pr-40'>
           <ThreeDGlobe
             showColorScale={false}
             polygonAltitude={0.005}
-            scale={Math.max(2, 3000 / window.innerWidth)}
+            scale={1.5}
             footNote=''
             enableZoom={false}
             atmosphereColor={selectedIndicator.activeColor}
-            globeMaterial={{
-              color: '#fff',
-              opacity: 1,
-              transparent: true,
-            }}
+            lightColor={selectedIndicator.activeColor}
+            atmosphereAltitude={0.1}
+            globeCurvatureResolution={2}
+            globeMaterial={new THREE.MeshBasicMaterial({ color: '#fafafa' })}
             data={[
               {
                 id: 'IND',
@@ -302,11 +406,7 @@ function Homepage() {
 
       <div
         ref={refSlideThree}
-        className='dark flex flex-col relative z-20 sticky p-10'
-        style={{
-          background:
-            'linear-gradient(180deg, #0F0F0F 0%, #437390 52.88%, #93DBFF 100%)',
-        }}
+        className='flex flex-col relative z-20 sticky p-10'
       >
         <div className='flex gap-4 w-full items-center justify-between py-10'>
           <SegmentedControl
@@ -327,6 +427,9 @@ function Homepage() {
             ]}
             size='base'
             variant='normal'
+            className='rounded-full p-0 border-0'
+            activeButtonClassName='rounded-full py-4 px-16 poppins-bold bg-[#4B6E91] text-[#fff]'
+            buttonClassName='px-16 poppins-regular py-4 rounded-full'
           />
         </div>
         <div>
@@ -644,40 +747,44 @@ function Homepage() {
           <H3 className='poppins-semibold !text-[24px]'>
             Recommended projects
           </H3>
-          <div className='flex gap-6 mt-10'>
-            <Card backgroundColor='white' border size='sm' variant='with-image'>
+          <div className='flex gap-6 mt-10 dark'>
+            <Card
+              border
+              size='sm'
+              variant='with-image'
+              className='rounded-[20px] border-0'
+            >
               <CardHeader>
-                <CardImage src='https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' />
-                <CardTitle>Card title</CardTitle>
-                <CardDescription>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-                  blandit augue eu sagittis facilisis. Class aptent taciti
-                  sociosqu ad litora torquent per conubia nostra, per inceptos
-                  himenaeos.
+                <CardImage
+                  className='rounded-[20px]'
+                  src='https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                />
+                <CardTitle className='poppins-medium text-[16px] leading-[26px] text-[#fff]'>
+                  Global Report on Public Procurement
+                </CardTitle>
+                <CardDescription className='poppins-regular text-[12px] leading-[16px] text-[#808191]'>
+                  Published on July 2nd 2025
                 </CardDescription>
               </CardHeader>
-              <CardFooter>
-                <Button padding='none' variant='link'>
-                  Read more
-                </Button>
-              </CardFooter>
             </Card>
-            <Card backgroundColor='white' border size='sm' variant='with-image'>
+            <Card
+              border
+              size='sm'
+              variant='with-image'
+              className='rounded-[20px] border-0'
+            >
               <CardHeader>
-                <CardImage src='https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' />
-                <CardTitle>Card title</CardTitle>
-                <CardDescription>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-                  blandit augue eu sagittis facilisis. Class aptent taciti
-                  sociosqu ad litora torquent per conubia nostra, per inceptos
-                  himenaeos.
+                <CardImage
+                  className='rounded-[20px]'
+                  src='https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                />
+                <CardTitle className='poppins-medium text-[16px] leading-[26px] text-[#fff]'>
+                  Global Report on Public Procurement
+                </CardTitle>
+                <CardDescription className='poppins-regular text-[12px] leading-[16px] text-[#808191]'>
+                  Published on July 2nd 2025
                 </CardDescription>
               </CardHeader>
-              <CardFooter>
-                <Button padding='none' variant='link'>
-                  Read more
-                </Button>
-              </CardFooter>
             </Card>
           </div>
         </div>
