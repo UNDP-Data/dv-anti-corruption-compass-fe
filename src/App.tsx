@@ -49,15 +49,17 @@ function Header() {
         scrolled ? 'bg-[#0F0F0F] shadow-md' : 'bg-transparent'
       }`}
     >
-      <div className='flex items-center gap-4'>
-        <img src='/imgs/Logo.svg' alt='Example' className='w-7.5 h-auto' />
-        <H3
-          className='text-center poppins-bold !text-[20px] leading-[120%] tracking-[0%]'
-          marginBottom='none'
-        >
-          Anti Corruption Compass
-        </H3>
-      </div>
+      <Link to='/'>
+        <div className='flex items-center gap-4'>
+          <img src='/imgs/Logo.svg' alt='Example' className='w-7.5 h-auto' />
+          <H3
+            className='text-center poppins-bold !text-[20px] leading-[120%] tracking-[0%]'
+            marginBottom='none'
+          >
+            Anti Corruption Compass
+          </H3>
+        </div>
+      </Link>
       <div className='flex items-center gap-16'>
         <Link to='/'>
           <P
@@ -79,19 +81,40 @@ function Header() {
               <ChevronDown strokeWidth={1} color='#fff' />
             </div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className='w-70cd ..'>
-            <DropdownMenuItem className='poppins-regular !text-[14px] py-4'>
-              Public procurement integrity
+          <DropdownMenuContent className='w-70 rounded-[12px] mt-2 p-0'>
+            <DropdownMenuItem className='poppins-medium !text-[14px] py-4 hover:!bg-[#4B6E91] hover:!text-[#fff]'>
+              <Link to='/public-procurement-integrity'>
+                <P
+                  className='text-center poppins-medium !text-[18px] leading-none tracking-[0%]'
+                  marginBottom='none'
+                >
+                  Public procurement integrity
+                </P>
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className='poppins-regular !text-[14px] py-4'>
-              Business experiences
+            <DropdownMenuItem className='poppins-medium !text-[14px] py-4 hover:!bg-[#4B6E91] hover:!text-[#fff]'>
+              <Link to='/business-experience'>
+                <P
+                  className='text-center poppins-medium !text-[18px] leading-none tracking-[0%]'
+                  marginBottom='none'
+                >
+                  Business experiences
+                </P>
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className='poppins-regular !text-[14px] py-4'>
-              Anti-corruption authorities
+            <DropdownMenuItem className='poppins-medium !text-[14px] py-4 hover:!bg-[#4B6E91] hover:!text-[#fff]'>
+              <Link to='/anti-corruption-authority'>
+                <P
+                  className='text-center poppins-medium !text-[18px] leading-none tracking-[0%]'
+                  marginBottom='none'
+                >
+                  Anti-corruption authorities
+                </P>
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Link to='/about'>
+        <Link to='/methodology'>
           <P
             className='text-center poppins-medium !text-[18px] leading-none tracking-[0%]'
             marginBottom='none'
@@ -141,17 +164,23 @@ const rootRoute = createRootRoute({
               </P>
             </Link>
             <div className='flex flex-col gap-8'>
-              <P className='poppins-regular !text-[16px]' marginBottom='none'>
-                Public procurement integrity
-              </P>
-              <P className='poppins-regular !text-[16px]' marginBottom='none'>
-                Business experiences
-              </P>
-              <P className='poppins-regular !text-[16px]' marginBottom='none'>
-                Anti-corruption authorities
-              </P>
+              <Link to='/public-procurement-integrity'>
+                <P className='poppins-regular !text-[16px]' marginBottom='none'>
+                  Public procurement integrity
+                </P>
+              </Link>
+              <Link to='/business-experience'>
+                <P className='poppins-regular !text-[16px]' marginBottom='none'>
+                  Business experiences
+                </P>
+              </Link>
+              <Link to='/anti-corruption-authority'>
+                <P className='poppins-regular !text-[16px]' marginBottom='none'>
+                  Anti-corruption authorities
+                </P>
+              </Link>
             </div>
-            <Link to='/about'>
+            <Link to='/methodology'>
               <P className='poppins-regular !text-[16px]' marginBottom='none'>
                 Methodology
               </P>
@@ -180,11 +209,61 @@ const aboutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/about',
   component: function About() {
-    return <div className='p-2'>Hello from About!</div>;
+    return <div className='p-2'>About page here!</div>;
   },
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, aboutRoute]);
+const methodologyRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/methodology',
+  component: function About() {
+    return <div className='p-2'>Methodology page here!</div>;
+  },
+});
+
+const publicProcurementRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/public-procurement-integrity',
+  component: function About() {
+    return <div className='p-2'>Public procurement integrity page here!</div>;
+  },
+});
+
+const businessExperiencesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/business-experience',
+  component: function About() {
+    return <div className='p-2'>Business experience page here!</div>;
+  },
+});
+
+const antiCorruptionAuthorityRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/anti-corruption-authority',
+  component: function About() {
+    return <div className='p-2'>Anti corruption authority page here!</div>;
+  },
+});
+const countryRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/countries/$isocode',
+  component: CountryPage,
+});
+
+function CountryPage() {
+  const { isocode } = countryRoute.useParams();
+  return <h2>Country: {isocode}</h2>;
+}
+
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  aboutRoute,
+  methodologyRoute,
+  publicProcurementRoute,
+  businessExperiencesRoute,
+  antiCorruptionAuthorityRoute,
+  countryRoute,
+]);
 
 const router = createRouter({ routeTree });
 

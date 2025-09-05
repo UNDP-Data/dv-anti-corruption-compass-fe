@@ -133,7 +133,7 @@ function Homepage() {
             </P>
           </div>
           <div
-            className={`cursor-pointer rounded-full w-4 h-4 border-2 border-[#fff] ${isInViewControlPanelOne ? 'bg-[#fff]' : 'bg-[rgba(255,255,255,0.3)]'} hover:bg-[rgba(255,255,255,0.5)`}
+            className={`cursor-pointer rounded-full w-4 h-4 border-2 border-[#fff] ${isInViewControlPanelOne ? 'bg-[#fff]' : 'bg-[rgba(255,255,255,0.3)]'} hover:!bg-[rgba(255,255,255,0.5)`}
             onClick={() => {
               handleScroll(refControlPanelOne);
             }}
@@ -150,7 +150,7 @@ function Homepage() {
             </P>
           </div>
           <div
-            className={`cursor-pointer rounded-full w-4 h-4 border-2 border-[#fff] ${isInViewControlPanelTwo ? 'bg-[#fff]' : 'bg-[rgba(255,255,255,0.3)]'} hover:bg-[rgba(255,255,255,0.5)`}
+            className={`cursor-pointer rounded-full w-4 h-4 border-2 border-[#fff] ${isInViewControlPanelTwo ? 'bg-[#fff]' : 'bg-[rgba(255,255,255,0.3)]'} hover:!bg-[rgba(255,255,255,0.5)`}
             onClick={() => {
               handleScroll(refControlPanelTwo);
             }}
@@ -167,7 +167,7 @@ function Homepage() {
             </P>
           </div>
           <div
-            className={`cursor-pointer rounded-full w-4 h-4 border-2 border-[#fff] ${isInViewControlPanelThree ? 'bg-[#fff]' : 'bg-[rgba(255,255,255,0.3)]'} hover:bg-[rgba(255,255,255,0.5)`}
+            className={`cursor-pointer rounded-full w-4 h-4 border-2 border-[#fff] ${isInViewControlPanelThree ? 'bg-[#fff]' : 'bg-[rgba(255,255,255,0.3)]'} hover:!bg-[rgba(255,255,255,0.5)`}
             onClick={() => {
               handleScroll(refControlPanelThree);
             }}
@@ -184,7 +184,7 @@ function Homepage() {
             </P>
           </div>
           <div
-            className={`cursor-pointer rounded-full w-4 h-4 border-2 border-[#fff] ${isInViewSlideThree ? 'bg-[#fff]' : 'bg-[rgba(255,255,255,0.3)]'} hover:bg-[rgba(255,255,255,0.5)`}
+            className={`cursor-pointer rounded-full w-4 h-4 border-2 border-[#fff] ${isInViewSlideThree ? 'bg-[#fff]' : 'bg-[rgba(255,255,255,0.3)]'} hover:!bg-[rgba(255,255,255,0.5)`}
             onClick={() => {
               handleScroll(refSlideThree);
             }}
@@ -355,52 +355,54 @@ function Homepage() {
           />
         </div>
         <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col items-center justify-center py-20 pl-20 pr-40'>
-          <ThreeDGlobe
-            showColorScale={false}
-            polygonAltitude={0.005}
-            scale={1.5}
-            footNote=''
-            enableZoom={false}
-            atmosphereColor={selectedIndicator.activeColor}
-            lightColor={selectedIndicator.activeColor}
-            atmosphereAltitude={0.1}
-            globeCurvatureResolution={2}
-            globeMaterial={new THREE.MeshBasicMaterial({ color: '#fafafa' })}
-            data={[
-              {
-                id: 'IND',
-                x: 1,
-              },
-              {
-                id: 'FIN',
-                x: 2,
-              },
-              {
-                id: 'IDN',
-                x: 3,
-              },
-              {
-                id: 'ZAF',
-                x: 4,
-              },
-              {
-                id: 'PER',
-                x: 5,
-              },
-              {
-                id: 'PAK',
-                x: 6,
-              },
-              {
-                id: 'USA',
-                x: 7,
-              },
-              {
-                id: 'SWE',
-                x: 8,
-              },
-            ]}
-          />
+          <div className='w-full'>
+            <ThreeDGlobe
+              showColorScale={false}
+              polygonAltitude={0.005}
+              scale={1.5}
+              footNote=''
+              enableZoom={false}
+              atmosphereColor={selectedIndicator.activeColor}
+              lightColor={selectedIndicator.activeColor}
+              atmosphereAltitude={0.1}
+              globeCurvatureResolution={2}
+              globeMaterial={new THREE.MeshBasicMaterial({ color: '#fafafa' })}
+              data={[
+                {
+                  id: 'IND',
+                  x: 1,
+                },
+                {
+                  id: 'FIN',
+                  x: 2,
+                },
+                {
+                  id: 'IDN',
+                  x: 3,
+                },
+                {
+                  id: 'ZAF',
+                  x: 4,
+                },
+                {
+                  id: 'PER',
+                  x: 5,
+                },
+                {
+                  id: 'PAK',
+                  x: 6,
+                },
+                {
+                  id: 'USA',
+                  x: 7,
+                },
+                {
+                  id: 'SWE',
+                  x: 8,
+                },
+              ]}
+            />
+          </div>
         </div>
       </motion.div>
 
@@ -435,6 +437,7 @@ function Homepage() {
         <div>
           {view === 'map' ? (
             <ChoroplethMap
+              footNote=''
               relativeHeight={0.4}
               showColorScale={false}
               centerPoint={[0, 10]}
@@ -743,8 +746,8 @@ function Homepage() {
             />
           )}
         </div>
-        <div className='w-full py-10'>
-          <H3 className='poppins-semibold !text-[24px]'>
+        <div className='w-full mt-14'>
+          <H3 className='poppins-semibold !text-[24px] !mb-10'>
             Recommended projects
           </H3>
           <div className='flex gap-6 mt-10 dark'>
@@ -752,17 +755,17 @@ function Homepage() {
               border
               size='sm'
               variant='with-image'
-              className='rounded-[20px] border-0'
+              className='rounded-[20px] border-0 max-w-65'
             >
               <CardHeader>
                 <CardImage
-                  className='rounded-[20px]'
+                  className='rounded-[20px] h-40'
                   src='https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                 />
-                <CardTitle className='poppins-medium text-[16px] leading-[26px] text-[#fff]'>
+                <CardTitle className='poppins-medium !text-[16px] !leading-[26px] text-[#fff]'>
                   Global Report on Public Procurement
                 </CardTitle>
-                <CardDescription className='poppins-regular text-[12px] leading-[16px] text-[#808191]'>
+                <CardDescription className='poppins-regular !text-[12px] !leading-[16px] text-[#808191]'>
                   Published on July 2nd 2025
                 </CardDescription>
               </CardHeader>
@@ -771,26 +774,26 @@ function Homepage() {
               border
               size='sm'
               variant='with-image'
-              className='rounded-[20px] border-0'
+              className='rounded-[20px] border-0 max-w-65'
             >
               <CardHeader>
                 <CardImage
-                  className='rounded-[20px]'
+                  className='rounded-[20px] h-40'
                   src='https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                 />
-                <CardTitle className='poppins-medium text-[16px] leading-[26px] text-[#fff]'>
+                <CardTitle className='poppins-medium !text-[16px] !leading-[26px] text-[#fff]'>
                   Global Report on Public Procurement
                 </CardTitle>
-                <CardDescription className='poppins-regular text-[12px] leading-[16px] text-[#808191]'>
+                <CardDescription className='poppins-regular !text-[12px] !leading-[16px] text-[#808191]'>
                   Published on July 2nd 2025
                 </CardDescription>
               </CardHeader>
             </Card>
           </div>
         </div>
-        <div className='w-full py-10'>
-          <H3 className='poppins-semibold !text-[24px]'>Partnerships</H3>
-          <P className='poppins-regular !text-[16px]'>
+        <div className='w-full my-11'>
+          <H3 className='poppins-bold !text-[24px] !mb-4'>Partnerships</H3>
+          <P className='poppins-regular !text-[16px] !leading-[140%]'>
             We've curated comprehensive datasets from Transparency
             International, World Bank, UNODC, OECD, and other respected
             institutions. Compare corruption indices, governance indicators, and
