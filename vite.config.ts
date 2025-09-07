@@ -3,7 +3,8 @@ import path from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import eslint from '@nabla/vite-plugin-eslint';
-import tailwindcss from '@tailwindcss/vite';
+import postcssNested from 'postcss-nested';
+import tailwindcss from '@tailwindcss/postcss';
 // import { AtRule } from 'postcss';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
@@ -16,12 +17,13 @@ export default defineConfig({
     }),
     react(),
     eslint(),
-    tailwindcss(),
     visualizer({ filename: 'stats.html', open: true }),
   ],
   css: {
     postcss: {
       plugins: [
+        postcssNested(),
+        tailwindcss(),
         /*
         {
           postcssPlugin: 'remove-layers', // If you want to remove base layer

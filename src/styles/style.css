@@ -1,5 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
+@import '@undp/data-viz/style.css';
+@import '@undp/design-system-react/style.css';
 @import 'tailwindcss';
 
 @config '../../tailwind.config.js';
+
+body {
+    background: linear-gradient(180deg, #0F0F0F 0%, #437390 52.88%, #93DBFF 100%);
+    min-height: 100vh;
+    margin: 0;
+    color: white;
+}
