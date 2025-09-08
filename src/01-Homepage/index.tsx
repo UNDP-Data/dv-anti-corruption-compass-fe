@@ -205,14 +205,11 @@ function Homepage() {
       >
         <div className='flex flex-col min-h-[calc(100vh-120px)]'>
           <div className='flex flex-col gap-8 justify-center items-center max-w-[1272px] m-auto py-16'>
-            <H2
-              className='poppins-bold !text-[44px] !tracking-[120%]'
-              marginBottom='none'
-            >
+            <H2 className='poppins-bold !text-[44px]' marginBottom='none'>
               Is your nation winning the fight against corruption?
             </H2>
             <P
-              className='text-center poppins-regular !tracking-[120%]'
+              className='text-center poppins-regular !leading-[140%]'
               size='lg'
               marginBottom='none'
             >
@@ -253,6 +250,7 @@ function Homepage() {
               globeMaterial={new THREE.MeshBasicMaterial({ color: '#fafafa' })}
               globeCurvatureResolution={2}
               enableZoom={false}
+              autoRotate={scrollYProgress.get() < 1}
               data={[
                 {
                   id: 'IND',
@@ -293,7 +291,7 @@ function Homepage() {
       </motion.div>
       <motion.div
         ref={refSlideTwo}
-        className='flex z-10 relative sticky top-[120px] pb-60'
+        className='flex z-10 relative top-[120px] pb-60'
         style={{
           opacity: slideTwoOpacity,
         }}
@@ -354,8 +352,8 @@ function Homepage() {
             }}
           />
         </div>
-        <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col items-center justify-center py-20 pl-20 pr-40'>
-          <div className='w-full'>
+        <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col py-20 pl-20 pr-40'>
+          <div className='w-full grow flex'>
             <ThreeDGlobe
               showColorScale={false}
               polygonAltitude={0.005}
@@ -366,6 +364,11 @@ function Homepage() {
               lightColor={selectedIndicator.activeColor}
               atmosphereAltitude={0.1}
               globeCurvatureResolution={2}
+              autoRotate={
+                isInViewControlPanelOne ||
+                isInViewControlPanelThree ||
+                isInViewControlPanelTwo
+              }
               globeMaterial={new THREE.MeshBasicMaterial({ color: '#fafafa' })}
               data={[
                 {
@@ -406,10 +409,7 @@ function Homepage() {
         </div>
       </motion.div>
 
-      <div
-        ref={refSlideThree}
-        className='flex flex-col relative z-20 sticky p-10'
-      >
+      <div ref={refSlideThree} className='flex flex-col relative z-20 p-10'>
         <div className='flex gap-4 w-full items-center justify-between py-10'>
           <SegmentedControl
             color='blue'

@@ -15,10 +15,7 @@ const ControlPanel = forwardRef<HTMLDivElement, Props>((props, ref) => {
     <div ref={ref} className='h-[calc(100vh-120px)]'>
       <div className='h-full max-w-[720px] m-auto flex-col gap-10.5 justify-center flex'>
         <div className='flex-col gap-4.5 justify-center flex'>
-          <H3
-            className='poppins-bold !text-[24px] !leading-[120%]'
-            marginBottom='none'
-          >
+          <H3 className='poppins-bold !text-[24px]' marginBottom='none'>
             {heading}
           </H3>
           <P

@@ -1,10 +1,5 @@
 import '@/styles/fonts.css';
 import '@/styles/style.css';
-import '@undp/data-viz/style.css';
-import '@undp/design-system-react/style.css';
-
-import './styles/fonts.css';
-import './styles/style.css';
 import {
   Outlet,
   RouterProvider,
@@ -53,7 +48,7 @@ function Header() {
         <div className='flex items-center gap-4'>
           <img src='/imgs/Logo.svg' alt='Example' className='w-7.5 h-auto' />
           <H3
-            className='text-center poppins-bold !text-[20px] leading-[120%] tracking-[0%]'
+            className='text-center poppins-bold !text-[20px] tracking-[0%]'
             marginBottom='none'
           >
             Anti Corruption Compass
