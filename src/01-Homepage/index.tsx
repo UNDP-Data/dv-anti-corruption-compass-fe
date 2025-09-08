@@ -352,16 +352,56 @@ function Homepage() {
             }}
           />
         </div>
-        <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col py-20 pl-10 pr-30'>
+        <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col py-10 pl-10 pr-30'>
           <div className='w-full grow flex'>
             <ThreeDGlobe
               showColorScale={false}
               polygonAltitude={0.005}
-              scale={window.innerWidth > 3000 ? 1 : 1.5}
+              scale={
+                (window.innerWidth / 2 - 160) / (window.innerHeight - 200) > 0.9
+                  ? 1.5
+                  : (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
+                      0.8
+                    ? 2
+                    : (window.innerWidth / 2 - 160) /
+                          (window.innerHeight - 200) >
+                        0.7
+                      ? 2.5
+                      : 3
+              }
               footNote=''
               enableZoom={false}
               atmosphereColor={selectedIndicator.activeColor}
               lightColor={selectedIndicator.activeColor}
+              fogSettings={{
+                color: selectedIndicator.activeColor,
+                near:
+                  (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
+                  0.9
+                    ? 150
+                    : (window.innerWidth / 2 - 160) /
+                          (window.innerHeight - 200) >
+                        0.8
+                      ? 200
+                      : (window.innerWidth / 2 - 160) /
+                            (window.innerHeight - 200) >
+                          0.7
+                        ? 250
+                        : 300,
+                far:
+                  (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
+                  0.9
+                    ? 300
+                    : (window.innerWidth / 2 - 160) /
+                          (window.innerHeight - 200) >
+                        0.8
+                      ? 350
+                      : (window.innerWidth / 2 - 160) /
+                            (window.innerHeight - 200) >
+                          0.7
+                        ? 400
+                        : 450,
+              }}
               atmosphereAltitude={0.1}
               globeCurvatureResolution={2}
               autoRotate={
