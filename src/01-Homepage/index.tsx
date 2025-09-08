@@ -358,16 +358,21 @@ function Homepage() {
               showColorScale={false}
               polygonAltitude={0.005}
               scale={
-                (window.innerWidth / 2 - 160) / (window.innerHeight - 200) > 0.9
+                (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
+                0.95
                   ? 1.5
                   : (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
-                      0.8
-                    ? 2
+                      0.9
+                    ? 1.75
                     : (window.innerWidth / 2 - 160) /
                           (window.innerHeight - 200) >
-                        0.7
-                      ? 2.5
-                      : 3
+                        0.8
+                      ? 2
+                      : (window.innerWidth / 2 - 160) /
+                            (window.innerHeight - 200) >
+                          0.7
+                        ? 2.5
+                        : 3
               }
               footNote=''
               enableZoom={false}
