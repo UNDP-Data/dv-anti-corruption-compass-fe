@@ -352,12 +352,12 @@ function Homepage() {
             }}
           />
         </div>
-        <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col py-20 pl-20 pr-40'>
+        <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col py-20 pl-10 pr-30'>
           <div className='w-full grow flex'>
             <ThreeDGlobe
               showColorScale={false}
               polygonAltitude={0.005}
-              scale={1.5}
+              scale={window.innerWidth > 3000 ? 1 : 1.5}
               footNote=''
               enableZoom={false}
               atmosphereColor={selectedIndicator.activeColor}

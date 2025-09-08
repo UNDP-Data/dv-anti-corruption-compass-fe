@@ -40,7 +40,7 @@ function Header() {
 
   return (
     <header
-      className={`fixed flex justify-between top-0 w-full px-16 py-9 z-50 transition-colors duration-300 z-1000 ${
+      className={`fixed flex justify-between top-0 w-full px-16 py-9 z-50 transition-colors duration-300 z-500 ${
         scrolled ? 'bg-[#0F0F0F] shadow-md' : 'bg-transparent'
       }`}
     >
@@ -76,11 +76,11 @@ function Header() {
               <ChevronDown strokeWidth={1} color='#fff' />
             </div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className='w-70 rounded-[12px] mt-2 p-0'>
+          <DropdownMenuContent className='w-70 rounded-[12px] mt-2 p-0 z-1000'>
             <DropdownMenuItem className='poppins-medium !text-[14px] py-4 hover:!bg-[#4B6E91] hover:!text-[#fff]'>
               <Link to='/public-procurement-integrity'>
                 <P
-                  className='text-center poppins-medium !text-[18px] leading-none tracking-[0%]'
+                  className='text-center poppins-medium !text-[14px] leading-none tracking-[0%]'
                   marginBottom='none'
                 >
                   Public procurement integrity
@@ -90,7 +90,7 @@ function Header() {
             <DropdownMenuItem className='poppins-medium !text-[14px] py-4 hover:!bg-[#4B6E91] hover:!text-[#fff]'>
               <Link to='/business-experience'>
                 <P
-                  className='text-center poppins-medium !text-[18px] leading-none tracking-[0%]'
+                  className='text-center poppins-medium !text-[14px] leading-none tracking-[0%]'
                   marginBottom='none'
                 >
                   Business experiences
@@ -100,7 +100,7 @@ function Header() {
             <DropdownMenuItem className='poppins-medium !text-[14px] py-4 hover:!bg-[#4B6E91] hover:!text-[#fff]'>
               <Link to='/anti-corruption-authority'>
                 <P
-                  className='text-center poppins-medium !text-[18px] leading-none tracking-[0%]'
+                  className='text-center poppins-medium !text-[14px] leading-none tracking-[0%]'
                   marginBottom='none'
                 >
                   Anti-corruption authorities
