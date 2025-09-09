@@ -6,6 +6,15 @@
   "navigationFallback": {
     "rewrite": "index.html"
   },
+  "routes": [
+    {
+      "route": "/*",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS"
+      }
+    }
+  ],
   "platform": {
     "apiRuntime": "node:20"
   }
