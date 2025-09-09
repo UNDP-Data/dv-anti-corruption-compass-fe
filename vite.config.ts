@@ -83,9 +83,17 @@ export default defineConfig({
     cssCodeSplit: false,
     rollupOptions: {
       output: {
-        manualChunks: undefined,
-        entryFileNames: '[name].js',
+        manualChunks: {
+          react: ['react', 'react-dom'],
+          tanstack: ['@tanstack/react-query', '@tanstack/react-router'],
+          undp: ['@undp/data-viz', '@undp/design-system-react'],
+          three: ['three', 'react-globe.gl'],
+          icons: ['lucide-react'],
+          motion: ['motion'],
+        },
+        chunkFileNames: '[name]-[hash].js',
         assetFileNames: '[name].[ext]',
+        entryFileNames: '[name].js',
       },
       treeshake: true,
     },
