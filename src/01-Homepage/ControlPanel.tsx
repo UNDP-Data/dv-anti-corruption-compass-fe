@@ -12,21 +12,21 @@ const ControlPanel = forwardRef<HTMLDivElement, Props>((props, ref) => {
   const { heading, description, buttons, onClick } = props;
   const [activeButton, setActiveButton] = useState(buttons[0].label);
   return (
-    <div ref={ref} className='h-[calc(100vh-120px)]'>
+    <div ref={ref} className='h-[calc(100vh-120px)] px-4'>
       <div className='h-full max-w-[720px] m-auto flex-col gap-10.5 justify-center flex'>
         <div className='flex-col gap-4.5 justify-center flex'>
           <H3 className='poppins-bold !text-[24px]' marginBottom='none'>
             {heading}
           </H3>
           <P
-            className='poppins-regular !text-[16px] !leading-[140%]'
+            className='poppins-regular !text-[16px] !leading-[140%] hidden md:block'
             marginBottom='none'
           >
             {description}
           </P>
         </div>
         <div
-          className={`flex gap-4 flex-wrap${buttons.length > 3 ? '' : ' flex-col'}`}
+          className={`hidden md:flex gap-4 flex-wrap${buttons.length > 3 ? '' : ' flex-col'}`}
         >
           {buttons.map((d, i) => (
             <button

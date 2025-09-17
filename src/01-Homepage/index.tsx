@@ -14,8 +14,12 @@ import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import { motion, useInView, useScroll, useTransform } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import { fetchAndParseJSON } from '@undp/data-viz/fetchAndParseData';
 
 import ControlPanel from './ControlPanel';
+import Navigation from './Navigation';
+
+import { COLOR_SCALES } from '@/Constants';
 
 function Homepage() {
   /*
@@ -24,6 +28,12 @@ function Homepage() {
     queryFn: getTodos,
   });
   */
+  const [data, setData] = useState(undefined);
+  useEffect(() => {
+    fetchAndParseJSON('./data/data.json').then(d => {
+      setData(d);
+    });
+  });
   const globeDiv = useRef<HTMLDivElement>(null);
 
   const [globeYOffSet, setGlobeYOffSet] = useState(0);
@@ -110,92 +120,23 @@ function Homepage() {
       );
     }
   }, []);
-  const handleScroll = (targetRef: React.RefObject<HTMLDivElement | null>) => {
-    if (!targetRef.current) return;
-
-    const y =
-      targetRef.current.getBoundingClientRect().top + window.scrollY - 120;
-
-    window.scrollTo({ top: y, behavior: 'smooth' });
-  };
   return (
     <div className='relative'>
-      <div
-        className={`fixed z-50 ${isInViewControlPanelOne || isInViewControlPanelTwo || isInViewControlPanelThree || isInViewSlideThree ? 'flex' : 'hidden'} flex-col gap-0 justify-center items-center right-8 top-[50%] transform-[translate(0, -50%)`}
-      >
-        <div className='flex gap-2 items-center'>
-          <div className='flex items-center h-4 w-20 text-right'>
-            <P
-              className='poppins-regular !text-[12px] text-right text-[#fff] w-20'
-              marginBottom='none'
-            >
-              Public procurement integrity
-            </P>
-          </div>
-          <div
-            className={`cursor-pointer rounded-full w-4 h-4 border-2 border-[#fff] ${isInViewControlPanelOne ? 'bg-[#fff]' : 'bg-[rgba(255,255,255,0.3)]'} hover:!bg-[rgba(255,255,255,0.5)`}
-            onClick={() => {
-              handleScroll(refControlPanelOne);
-            }}
-          />
-        </div>
-        <div className='ml-22 w-[1px] h-10 bg-[#fff]' />
-        <div className='flex gap-2 items-center'>
-          <div className='flex items-center h-4 w-20 text-right'>
-            <P
-              className='poppins-regular !text-[12px] text-right text-[#fff] w-20'
-              marginBottom='none'
-            >
-              Business experience
-            </P>
-          </div>
-          <div
-            className={`cursor-pointer rounded-full w-4 h-4 border-2 border-[#fff] ${isInViewControlPanelTwo ? 'bg-[#fff]' : 'bg-[rgba(255,255,255,0.3)]'} hover:!bg-[rgba(255,255,255,0.5)`}
-            onClick={() => {
-              handleScroll(refControlPanelTwo);
-            }}
-          />
-        </div>
-        <div className='ml-22 w-[1px] h-10 bg-[#fff]' />
-        <div className='flex gap-2 items-center'>
-          <div className='flex items-center h-4 w-20 text-right'>
-            <P
-              className='poppins-regular !text-[12px] text-right text-[#fff] w-20'
-              marginBottom='none'
-            >
-              Anti-corruption authorities
-            </P>
-          </div>
-          <div
-            className={`cursor-pointer rounded-full w-4 h-4 border-2 border-[#fff] ${isInViewControlPanelThree ? 'bg-[#fff]' : 'bg-[rgba(255,255,255,0.3)]'} hover:!bg-[rgba(255,255,255,0.5)`}
-            onClick={() => {
-              handleScroll(refControlPanelThree);
-            }}
-          />
-        </div>
-        <div className='ml-22 w-[1px] h-10 bg-[#fff]' />
-        <div className='flex gap-2 items-center'>
-          <div className='flex items-center h-4 w-20 text-right'>
-            <P
-              className='poppins-regular !text-[12px] text-right text-[#fff] w-20'
-              marginBottom='none'
-            >
-              Country level insights
-            </P>
-          </div>
-          <div
-            className={`cursor-pointer rounded-full w-4 h-4 border-2 border-[#fff] ${isInViewSlideThree ? 'bg-[#fff]' : 'bg-[rgba(255,255,255,0.3)]'} hover:!bg-[rgba(255,255,255,0.5)`}
-            onClick={() => {
-              handleScroll(refSlideThree);
-            }}
-          />
-        </div>
-      </div>
+      <Navigation
+        isInViewControlPanelOne={isInViewControlPanelOne}
+        isInViewControlPanelTwo={isInViewControlPanelTwo}
+        isInViewControlPanelThree={isInViewControlPanelThree}
+        isInViewSlideThree={isInViewSlideThree}
+        refControlPanelOne={refControlPanelOne}
+        refControlPanelTwo={refControlPanelTwo}
+        refControlPanelThree={refControlPanelThree}
+        refSlideThree={refSlideThree}
+      />
       <div
         className='w-screen h-screen fixed top-0'
         style={{
           background:
-            'linear-gradient(180deg, #0F0F0F 0%, #437390 52.88%, #93DBFF 100%)',
+            'linear-gradient(141.12deg, #0F0F0F -2.91%, #2D4351 44.74%, #437390 95.34%, #93DBFF 119.46%)',
         }}
       />
       <motion.div
@@ -204,8 +145,11 @@ function Homepage() {
         className='sticky top-[120px] h-[calc(100vh-120px)] flex flex-col'
       >
         <div className='flex flex-col min-h-[calc(100vh-120px)]'>
-          <div className='flex flex-col gap-8 justify-center items-center max-w-[1272px] m-auto py-16'>
-            <H2 className='poppins-bold !text-[44px]' marginBottom='none'>
+          <div className='flex flex-col gap-8 justify-center items-center max-w-[1272px] m-auto py-16 px-4'>
+            <H2
+              className='poppins-bold text-center !text-[44px]'
+              marginBottom='none'
+            >
               Is your nation winning the fight against corruption?
             </H2>
             <P
@@ -222,7 +166,7 @@ function Homepage() {
               drive evidence-based reforms across all dimensions of
               anti-corruption efforts.
             </P>
-            <div className='flex gap-8'>
+            <div className='flex gap-x-8 gap-y-4 flex-wrap'>
               <Button
                 variant='primary-without-icon'
                 className='rounded-full bg-[#fff] px-10 text-[var(--gray-700)] hover:bg-[#DEF7FF] poppins-semibold !text-[16px]'
@@ -237,55 +181,32 @@ function Homepage() {
               </Button>
             </div>
           </div>
-          <div className='m-auto w-full grow flex' ref={globeDiv}>
-            <ThreeDGlobe
-              showColorScale={false}
-              globeOffset={[0, globeYOffSet]}
-              polygonAltitude={0.005}
-              scale={0.75}
-              footNote=''
-              lightColor='#000'
-              atmosphereColor='#000'
-              atmosphereAltitude={0.15}
-              globeMaterial={new THREE.MeshBasicMaterial({ color: '#fafafa' })}
-              globeCurvatureResolution={2}
-              enableZoom={false}
-              autoRotate={scrollYProgress.get() < 1}
-              data={[
-                {
-                  id: 'IND',
-                  x: 1,
-                },
-                {
-                  id: 'FIN',
-                  x: 2,
-                },
-                {
-                  id: 'IDN',
-                  x: 3,
-                },
-                {
-                  id: 'ZAF',
-                  x: 4,
-                },
-                {
-                  id: 'PER',
-                  x: 5,
-                },
-                {
-                  id: 'PAK',
-                  x: 6,
-                },
-                {
-                  id: 'USA',
-                  x: 7,
-                },
-                {
-                  id: 'SWE',
-                  x: 8,
-                },
-              ]}
-            />
+          <div
+            className='m-auto w-full grow flex radialGradientMask'
+            ref={globeDiv}
+          >
+            {data ? (
+              <ThreeDGlobe
+                showColorScale={false}
+                globeOffset={[0, globeYOffSet]}
+                polygonAltitude={0.005}
+                colors={COLOR_SCALES[0]}
+                colorDomain={['Low', 'Medium', 'High']}
+                scale={0.75}
+                footNote=''
+                globeMaterial={
+                  new THREE.MeshBasicMaterial({
+                    color: 0xfafafa,
+                  })
+                }
+                atmosphereColor='#000'
+                atmosphereAltitude={0.15}
+                globeCurvatureResolution={2}
+                enableZoom={false}
+                autoRotate={scrollYProgress.get() < 1}
+                data={data}
+              />
+            ) : null}
           </div>
         </div>
       </motion.div>
@@ -353,103 +274,86 @@ function Homepage() {
           />
         </div>
         <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col py-10 pl-10 pr-30'>
-          <div className='w-full grow flex'>
-            <ThreeDGlobe
-              showColorScale={false}
-              polygonAltitude={0.005}
-              scale={
-                (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
-                0.95
-                  ? 1.5
-                  : (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
-                      0.9
-                    ? 1.75
-                    : (window.innerWidth / 2 - 160) /
-                          (window.innerHeight - 200) >
-                        0.8
-                      ? 2
-                      : (window.innerWidth / 2 - 160) /
-                            (window.innerHeight - 200) >
-                          0.7
-                        ? 2.5
-                        : 3
-              }
-              footNote=''
-              enableZoom={false}
-              atmosphereColor={selectedIndicator.activeColor}
-              lightColor={selectedIndicator.activeColor}
-              fogSettings={{
-                color: selectedIndicator.activeColor,
-                near:
+          <div className='w-full grow flex radialGradientMask'>
+            {data ? (
+              <ThreeDGlobe
+                showColorScale={false}
+                polygonAltitude={0.005}
+                colors={
+                  COLOR_SCALES[
+                    isInViewControlPanelOne
+                      ? 0
+                      : isInViewControlPanelTwo
+                        ? 1
+                        : 2
+                  ]
+                }
+                colorDomain={['Low', 'Medium', 'High']}
+                scale={
                   (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
-                  0.9
-                    ? 150
+                  0.95
+                    ? 1.5
                     : (window.innerWidth / 2 - 160) /
                           (window.innerHeight - 200) >
-                        0.8
-                      ? 200
+                        0.9
+                      ? 1.75
                       : (window.innerWidth / 2 - 160) /
                             (window.innerHeight - 200) >
-                          0.7
-                        ? 250
-                        : 300,
-                far:
-                  (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
-                  0.9
-                    ? 300
-                    : (window.innerWidth / 2 - 160) /
-                          (window.innerHeight - 200) >
-                        0.8
-                      ? 350
+                          0.8
+                        ? 2
+                        : (window.innerWidth / 2 - 160) /
+                              (window.innerHeight - 200) >
+                            0.7
+                          ? 2.5
+                          : 3
+                }
+                footNote=''
+                enableZoom={false}
+                atmosphereColor={selectedIndicator.activeColor}
+                globeMaterial={
+                  new THREE.MeshBasicMaterial({
+                    color: 0xfafafa,
+                  })
+                }
+                fogSettings={{
+                  color: selectedIndicator.activeColor,
+                  near:
+                    (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
+                    0.9
+                      ? 150
                       : (window.innerWidth / 2 - 160) /
                             (window.innerHeight - 200) >
-                          0.7
-                        ? 400
-                        : 450,
-              }}
-              atmosphereAltitude={0.1}
-              globeCurvatureResolution={2}
-              autoRotate={
-                isInViewControlPanelOne ||
-                isInViewControlPanelThree ||
-                isInViewControlPanelTwo
-              }
-              globeMaterial={new THREE.MeshBasicMaterial({ color: '#fafafa' })}
-              data={[
-                {
-                  id: 'IND',
-                  x: 1,
-                },
-                {
-                  id: 'FIN',
-                  x: 2,
-                },
-                {
-                  id: 'IDN',
-                  x: 3,
-                },
-                {
-                  id: 'ZAF',
-                  x: 4,
-                },
-                {
-                  id: 'PER',
-                  x: 5,
-                },
-                {
-                  id: 'PAK',
-                  x: 6,
-                },
-                {
-                  id: 'USA',
-                  x: 7,
-                },
-                {
-                  id: 'SWE',
-                  x: 8,
-                },
-              ]}
-            />
+                          0.8
+                        ? 200
+                        : (window.innerWidth / 2 - 160) /
+                              (window.innerHeight - 200) >
+                            0.7
+                          ? 250
+                          : 300,
+                  far:
+                    (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
+                    0.9
+                      ? 300
+                      : (window.innerWidth / 2 - 160) /
+                            (window.innerHeight - 200) >
+                          0.8
+                        ? 350
+                        : (window.innerWidth / 2 - 160) /
+                              (window.innerHeight - 200) >
+                            0.7
+                          ? 400
+                          : 450,
+                }}
+                atmosphereAltitude={0.1}
+                globeCurvatureResolution={2}
+                autoRotate={
+                  isInViewControlPanelOne ||
+                  isInViewControlPanelThree ||
+                  isInViewControlPanelTwo
+                }
+                data={data}
+              />
+            ) : null}
           </div>
         </div>
       </motion.div>

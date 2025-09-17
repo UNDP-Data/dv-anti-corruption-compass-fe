@@ -7,8 +7,13 @@
 @config '../../tailwind.config.js';
 
 body {
-    background: linear-gradient(180deg, #0F0F0F 0%, #437390 52.88%, #93DBFF 100%);
+    background: linear-gradient(141.12deg, #0F0F0F -2.91%, #2D4351 44.74%, #437390 95.34%, #93DBFF 119.46%);
     min-height: 100vh;
     margin: 0;
     color: white;
+}
+
+.radialGradientMask{
+    mask-image: radial-gradient(circle, #000 0%, transparent 65%);
+    --webkit-mask-image: radial-gradient(circle, #000 0%, transparent 65%);
 }
