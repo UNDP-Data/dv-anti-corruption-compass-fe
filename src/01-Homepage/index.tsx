@@ -53,7 +53,7 @@ function Homepage() {
   });
   const [selectedIndicator, setSelectedIndicator] = useState({
     label: 'Contract Modifications',
-    activeColor: '#93DBFF',
+    id: 'contractModifications',
   });
 
   const [view, setView] = useState('map');
@@ -79,16 +79,19 @@ function Homepage() {
   const [selectedIndicatorPrimaryData, setSelectedIndicatorPrimaryData] =
     useState({
       label: 'Contract Modifications',
-      activeColor: '#93DBFF',
+      id: 'contractModifications',
     });
   const [
     selectedIndicatorBusinessExperience,
     setSelectedIndicatorBusinessExperience,
-  ] = useState({ label: 'Incidence', activeColor: '#F0B292' });
+  ] = useState({ label: 'Incidence', id: 'incidence' });
   const [
     selectedIndicatorAntiCorruptionAuthorities,
     setSelectedIndicatorAntiCorruptionAuthorities,
-  ] = useState({ label: 'Category 1', activeColor: '#93DBFF' });
+  ] = useState({
+    label: 'Anti Corruption Authorities',
+    id: 'antiCorruptionAuthorities',
+  });
   useEffect(() => {
     if (isInViewControlPanelOne) {
       setSelectedIndicator(selectedIndicatorPrimaryData);
@@ -190,7 +193,7 @@ function Homepage() {
                 showColorScale={false}
                 globeOffset={[0, globeYOffSet]}
                 polygonAltitude={0.005}
-                colors={COLOR_SCALES[0]}
+                colors={COLOR_SCALES[0].colors}
                 colorDomain={['Low', 'Medium', 'High']}
                 scale={0.75}
                 footNote=''
@@ -223,15 +226,15 @@ function Homepage() {
             heading='Primary Data - Public Procurement Integrity'
             description='Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers.'
             buttons={[
-              { label: 'Contract Modifications', activeColor: '#93DBFF' },
-              { label: 'Single Bidding', activeColor: '#6466F1' },
+              { label: 'Contract Modifications', id: 'contractModifications' },
+              { label: 'Single Bidding', id: 'singleBinding' },
               {
                 label: 'No Call for tenders Published',
-                activeColor: '#71A612',
+                id: 'noCallForTenders',
               },
-              { label: 'Tax Haven', activeColor: '#A21942' },
-              { label: 'Non-open procedure', activeColor: '#FD6925' },
-              { label: 'Beneficiary Ownership', activeColor: '#666' },
+              { label: 'Tax Haven', id: 'taxHaven' },
+              { label: 'Non-open procedure', id: 'nonOpenProcedure' },
+              { label: 'Beneficiary Ownership', id: 'beneficiaryOwnership' },
             ]}
             onClick={d => {
               setSelectedIndicatorPrimaryData(d);
@@ -243,11 +246,11 @@ function Homepage() {
             heading='Business Experiences'
             description='What do businesses really experience on the ground? Go beyond perception to understand real encounters with corruption. Our indicators capture the incidence of corrupt practices, document specific practices businesses encounter, and reveal counter measures organizations implement. This ground-truth data empowers evidence-based strategies.'
             buttons={[
-              { label: 'Incidence', activeColor: '#F0B292' },
-              { label: 'Practices', activeColor: '#FFDD00' },
+              { label: 'Incidence', id: 'incidence' },
+              { label: 'Practices', id: 'practices' },
               {
                 label: 'Counter Measures',
-                activeColor: '#D001B4',
+                id: 'counterMeasures',
               },
             ]}
             onClick={d => {
@@ -259,14 +262,7 @@ function Homepage() {
             ref={refControlPanelThree}
             heading='Anti-corruption Authorities'
             description='Lorem ipsum dolor sit amet consectetur. In tellus nunc enim vitae aliquet dignissim ac in. Enim ultrices et accumsan enim viverra volutpat. Magnis sapien diam sit ut elementum netus odio commodo fermentum. Nullam diam maecenas consequat eleifend rhoncus est odio. A vehicula non donec faucibus viverra parturient ipsum sit.'
-            buttons={[
-              { label: 'Category 1', activeColor: '#93DBFF' },
-              { label: 'Category 2', activeColor: '#93DBFF' },
-              {
-                label: 'Category 3',
-                activeColor: '#93DBFF',
-              },
-            ]}
+            buttons={[{ label: 'Category 1', id: 'antiCorruptionAuthorities' }]}
             onClick={d => {
               setSelectedIndicatorAntiCorruptionAuthorities(d);
               setSelectedIndicator(d);
@@ -280,13 +276,7 @@ function Homepage() {
                 showColorScale={false}
                 polygonAltitude={0.005}
                 colors={
-                  COLOR_SCALES[
-                    isInViewControlPanelOne
-                      ? 0
-                      : isInViewControlPanelTwo
-                        ? 1
-                        : 2
-                  ]
+                  COLOR_SCALES.find(d => d.id === selectedIndicator.id)?.colors
                 }
                 colorDomain={['Low', 'Medium', 'High']}
                 scale={
@@ -309,14 +299,19 @@ function Homepage() {
                 }
                 footNote=''
                 enableZoom={false}
-                atmosphereColor={selectedIndicator.activeColor}
+                atmosphereColor={
+                  COLOR_SCALES.find(d => d.id === selectedIndicator.id)
+                    ?.colors[2]
+                }
                 globeMaterial={
                   new THREE.MeshBasicMaterial({
                     color: 0xfafafa,
                   })
                 }
                 fogSettings={{
-                  color: selectedIndicator.activeColor,
+                  color:
+                    COLOR_SCALES.find(d => d.id === selectedIndicator.id)
+                      ?.colors[2] || '#fff',
                   near:
                     (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
                     0.9
