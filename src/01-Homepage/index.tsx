@@ -191,6 +191,7 @@ function Homepage() {
             {data ? (
               <ThreeDGlobe
                 showColorScale={false}
+                highlightedAltitude={0.01}
                 globeOffset={[0, globeYOffSet]}
                 polygonAltitude={0.005}
                 colors={COLOR_SCALES[0].colors}
@@ -206,7 +207,7 @@ function Homepage() {
                 atmosphereAltitude={0.15}
                 globeCurvatureResolution={2}
                 enableZoom={false}
-                autoRotate={scrollYProgress.get() < 1}
+                autoRotate={false}
                 data={data}
               />
             ) : null}
@@ -275,6 +276,7 @@ function Homepage() {
               <ThreeDGlobe
                 showColorScale={false}
                 polygonAltitude={0.005}
+                highlightedAltitude={0.01}
                 colors={
                   COLOR_SCALES.find(d => d.id === selectedIndicator.id)?.colors
                 }
@@ -345,6 +347,8 @@ function Homepage() {
                   isInViewControlPanelOne ||
                   isInViewControlPanelThree ||
                   isInViewControlPanelTwo
+                    ? 1
+                    : false
                 }
                 data={data}
               />
