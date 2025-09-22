@@ -15,6 +15,7 @@ import { motion, useInView, useScroll, useTransform } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { fetchAndParseJSON } from '@undp/data-viz/fetchAndParseData';
+import { ArrowDown } from 'lucide-react';
 
 import ControlPanel from './ControlPanel';
 import Navigation from './Navigation';
@@ -28,6 +29,14 @@ function Homepage() {
     queryFn: getTodos,
   });
   */
+  const handleScroll = (targetRef: React.RefObject<HTMLDivElement | null>) => {
+    if (!targetRef.current) return;
+
+    const y =
+      targetRef.current.getBoundingClientRect().top + window.scrollY - 120;
+
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  };
   const [data, setData] = useState(undefined);
   useEffect(() => {
     fetchAndParseJSON('./data/data.json').then(d => {
@@ -172,13 +181,13 @@ function Homepage() {
             <div className='flex gap-x-8 gap-y-4 flex-wrap'>
               <Button
                 variant='primary-without-icon'
-                className='rounded-full bg-[#fff] px-10 text-[var(--gray-700)] hover:bg-[#DEF7FF] poppins-semibold !text-[16px]'
+                className='capitalize rounded-full bg-[#fff] px-10 text-[var(--gray-700)] hover:bg-[#DEF7FF] poppins-semibold !text-[16px]'
               >
                 Take a tour →
               </Button>
               <Button
                 variant='primary-without-icon'
-                className='rounded-full bg-[#4B6E91] px-10 text-[#fff] hover:bg-[#2A3F53] poppins-semibold !text-[16px]'
+                className='capitalize rounded-full bg-[#4B6E91] px-10 text-[#fff] hover:bg-[#2A3F53] poppins-semibold !text-[16px]'
               >
                 View Country Level Insights →
               </Button>
@@ -213,6 +222,14 @@ function Homepage() {
             ) : null}
           </div>
         </div>
+        <button
+          className='cursor-pointer border-0 fixed bottom-6 left-[50%] translate-x-[-50%] rounded-full bg-primary-white p-4'
+          onClick={() => {
+            handleScroll(refControlPanelOne);
+          }}
+        >
+          <ArrowDown color='#437390' strokeWidth={3} />
+        </button>
       </motion.div>
       <motion.div
         ref={refSlideTwo}
