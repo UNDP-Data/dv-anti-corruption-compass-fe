@@ -207,7 +207,7 @@ function Homepage() {
                 atmosphereAltitude={0.15}
                 globeCurvatureResolution={2}
                 enableZoom={false}
-                autoRotate={false}
+                autoRotate={scrollYProgress.get() < 1}
                 data={data}
               />
             ) : null}
@@ -709,7 +709,7 @@ function Homepage() {
             >
               <CardHeader>
                 <CardImage
-                  className='rounded-[20px] h-40'
+                  className='rounded-tl-[20px] rounded-tr-[20px] h-40'
                   src='https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                 />
                 <CardTitle className='poppins-medium !text-[16px] !leading-[26px] text-[#fff]'>
@@ -728,7 +728,7 @@ function Homepage() {
             >
               <CardHeader>
                 <CardImage
-                  className='rounded-[20px] h-40'
+                  className='rounded-tl-[20px] rounded-tr-[20px] h-40'
                   src='https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                 />
                 <CardTitle className='poppins-medium !text-[16px] !leading-[26px] text-[#fff]'>
