@@ -1,5 +1,5 @@
 import { Button } from '@undp/design-system-react/Button';
-import { H2, H3, H5, P } from '@undp/design-system-react/Typography';
+import { H2, H3, P } from '@undp/design-system-react/Typography';
 import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import { motion, useInView, useScroll, useTransform } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
@@ -19,6 +19,7 @@ import Navigation from './Navigation';
 import { CardEl } from './Cards';
 
 import { COLOR_SCALES } from '@/Constants';
+import { TaxonomyType } from '@/Types';
 
 interface DataType {
   id: string;
@@ -43,7 +44,7 @@ function Homepage() {
   };
   const [data, setData] = useState<DataType[]>([]);
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
-  const [countryTaxonomy, setCountryTaxonomy] = useState(undefined);
+  const [countryTaxonomy, setCountryTaxonomy] = useState<TaxonomyType[]>([]);
   useEffect(() => {
     fetchAndParseJSON('./data/data.json').then(d => {
       setData(d as DataType[]);
@@ -445,10 +446,9 @@ function Homepage() {
               Choose a country to reveal its complete anti-corruption profile —
               from key indicators to institutional strategies
             </P>
-            {countryTaxonomy ? (
+            {countryTaxonomy.length > 0 ? (
               <DropdownSelect
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                options={(countryTaxonomy as any).map((d: any) => ({
+                options={countryTaxonomy.map(d => ({
                   label: d['Country or Area'],
                   value: d['Alpha-3 code'],
                 }))}
@@ -491,20 +491,17 @@ function Homepage() {
         </div>
       </div>
       {selectedId && data.length !== 0 && (
-        <div className='fixed bottom-8 right-8 z-15 bg-primary-white p-6 w-[280px]'>
+        <div className='fixed bottom-8 right-16 z-15 bg-[rgba(255,255,255,0.8)] p-6 w-[280px] sm:w-[360px] rounded-[8px]'>
           <div
             style={{
-              backgroundColor: 'rgba(255,255,255, 1)',
-              border: '1px solid var(--gray-400)',
-              borderRadius: '999px',
               width: '32px',
               height: '32px',
               cursor: 'pointer',
               padding: '4px',
               zIndex: 10,
               position: 'absolute',
-              right: '-1rem',
-              top: '-1rem',
+              right: '0.5rem',
+              top: '0.5rem',
             }}
             onClick={() => {
               setSelectedId(undefined);
@@ -512,15 +509,20 @@ function Homepage() {
           >
             <X color='#000' strokeWidth={2} />
           </div>
-          <div className='w-full flex flex-col'>
-            <H5 className='text-primary-gray-700 poppins-bold'>
+          <div className='w-full flex flex-col items-center'>
+            <img
+              alt='Country flag'
+              className='w-9 mb-2'
+              src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${countryTaxonomy.find(d => d['Alpha-3 code'] === selectedId)?.['Alpha-2 code']}.svg`}
+            />
+            <P className='text-primary-gray-700 poppins-bold' size='lg'>
               {data.find(d => d.id === selectedId)?.country}
-            </H5>
+            </P>
             <Button
               variant='primary-without-icon'
               className='capitalize rounded-full bg-[#4B6E91] px-10 text-[#fff] hover:bg-[#2A3F53] poppins-semibold !text-[16px]'
             >
-              View details →
+              View more
             </Button>
           </div>
         </div>

@@ -19,6 +19,7 @@
     "@tanstack/react-router": "^1.131.28",
     "@undp/data-viz": "^1.5.7",
     "@undp/design-system-react": "^1.2.8",
+    "country-flag-icons": "^1.5.21",
     "lucide-react": "^0.542.0",
     "motion": "^12.23.12",
     "react": "^19.1.0",
