@@ -37,6 +37,6 @@ export const COLOR_SCALES = [
   },
   {
     id: 'antiCorruptionAuthorities',
-    colors: ['#FFDFDE', '#FFAF8A', '#FF8954'],
+    colors: ['#DABFE9', '#B772DC', '#9B13E4'],
   },
 ];

@@ -1,26 +1,30 @@
 import { Button } from '@undp/design-system-react/Button';
-import { H2, H3, P } from '@undp/design-system-react/Typography';
-import { SegmentedControl } from '@undp/design-system-react/SegmentedControl';
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardImage,
-  CardTitle,
-} from '@undp/design-system-react/Card';
-import { ChoroplethMap } from '@undp/data-viz/ChoroplethMap';
-import { DataTable } from '@undp/data-viz/DataTable';
+import { H2, H3, H5, P } from '@undp/design-system-react/Typography';
 import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import { motion, useInView, useScroll, useTransform } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { fetchAndParseJSON } from '@undp/data-viz/fetchAndParseData';
-import { ArrowDown } from 'lucide-react';
+import { ArrowDown, InfoIcon, X } from 'lucide-react';
+import { Spinner } from '@undp/design-system-react/Spinner';
+import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@undp/design-system-react/HoverCard';
 
 import ControlPanel from './ControlPanel';
 import Navigation from './Navigation';
+import { CardEl } from './Cards';
 
 import { COLOR_SCALES } from '@/Constants';
+
+interface DataType {
+  id: string;
+  country: string;
+  x: 'High' | 'Medium' | 'Low';
+}
 
 function Homepage() {
   /*
@@ -37,10 +41,17 @@ function Homepage() {
 
     window.scrollTo({ top: y, behavior: 'smooth' });
   };
-  const [data, setData] = useState(undefined);
+  const [data, setData] = useState<DataType[]>([]);
+  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+  const [countryTaxonomy, setCountryTaxonomy] = useState(undefined);
   useEffect(() => {
     fetchAndParseJSON('./data/data.json').then(d => {
-      setData(d);
+      setData(d as DataType[]);
+    });
+    fetchAndParseJSON(
+      'https://raw.githubusercontent.com/UNDP-Data/country-taxonomy-from-azure/refs/heads/main/country_territory_groups.json',
+    ).then(d => {
+      setCountryTaxonomy(d);
     });
   });
   const globeDiv = useRef<HTMLDivElement>(null);
@@ -64,8 +75,6 @@ function Homepage() {
     label: 'Contract Modifications',
     id: 'contractModifications',
   });
-
-  const [view, setView] = useState('map');
 
   const isInViewControlPanelOne = useInView(refControlPanelOne, {
     once: false,
@@ -197,7 +206,7 @@ function Homepage() {
             className='m-auto w-full grow flex radialGradientMask'
             ref={globeDiv}
           >
-            {data ? (
+            {data.length !== 0 ? (
               <ThreeDGlobe
                 showColorScale={false}
                 highlightedAltitude={0.01}
@@ -287,9 +296,49 @@ function Homepage() {
             }}
           />
         </div>
-        <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col py-10 pl-10 pr-30'>
+        <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col py-16 pl-10 pr-30'>
+          <div className='absolute left-1/2 top-0 z-10 transform -translate-x-1/2'>
+            <div className='p-2 flex flex-col gap-4'>
+              <div className='flex gap-2 items-center'>
+                <P
+                  size='base'
+                  marginBottom='none'
+                  className='p-0 leading-normal text-primary-white poppins-bold'
+                >
+                  Indicator Value
+                </P>
+                <HoverCard openDelay={0}>
+                  <HoverCardTrigger>
+                    <InfoIcon color='#fff' />
+                  </HoverCardTrigger>
+                  <HoverCardContent>
+                    Countries in the top third are assigned High, the middle
+                    third Medium, and the bottom third Low. Missing values are
+                    labelled Not Available.
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+              <div className='flex flex gap-7 poppins-regular'>
+                {COLOR_SCALES.find(
+                  d => d.id === selectedIndicator.id,
+                )?.colors.map((d, i) => (
+                  <div key={i} className='flex gap-2 items-center'>
+                    <div
+                      className='w-4 h-4 rounded-full'
+                      style={{
+                        backgroundColor: d,
+                      }}
+                    />
+                    <P size='base' marginBottom='none' leading='none'>
+                      {i === 0 ? 'Low' : i === 1 ? 'Medium' : 'High'}
+                    </P>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
           <div className='w-full grow flex radialGradientMask'>
-            {data ? (
+            {data.length !== 0 ? (
               <ThreeDGlobe
                 showColorScale={false}
                 polygonAltitude={0.005}
@@ -297,6 +346,10 @@ function Homepage() {
                 colors={
                   COLOR_SCALES.find(d => d.id === selectedIndicator.id)?.colors
                 }
+                selectedId={selectedId}
+                onSeriesMouseClick={d => {
+                  setSelectedId(d.id);
+                }}
                 colorDomain={['Low', 'Medium', 'High']}
                 scale={
                   (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
@@ -360,6 +413,7 @@ function Homepage() {
                 }}
                 atmosphereAltitude={0.1}
                 globeCurvatureResolution={2}
+                resetSelectionOnDoubleClick={false}
                 autoRotate={
                   isInViewControlPanelOne ||
                   isInViewControlPanelThree ||
@@ -374,391 +428,58 @@ function Homepage() {
         </div>
       </motion.div>
 
-      <div ref={refSlideThree} className='flex flex-col relative z-20 p-10'>
-        <div className='flex gap-4 w-full items-center justify-between py-10'>
-          <SegmentedControl
-            color='blue'
-            value={view}
-            onValueChange={d => {
-              setView(d);
-            }}
-            options={[
-              {
-                label: 'Map view',
-                value: 'map',
-              },
-              {
-                label: 'Table view',
-                value: 'table',
-              },
-            ]}
-            size='base'
-            variant='normal'
-            className='rounded-full p-0 border-0'
-            activeButtonClassName='rounded-full py-4 px-16 poppins-bold bg-[#4B6E91] text-[#fff]'
-            buttonClassName='px-16 poppins-regular py-4 rounded-full'
-          />
-        </div>
-        <div>
-          {view === 'map' ? (
-            <ChoroplethMap
-              footNote=''
-              relativeHeight={0.4}
-              showColorScale={false}
-              centerPoint={[0, 10]}
-              showAntarctica={false}
-              data={[
-                {
-                  id: 'IND',
-                  x: 1,
-                },
-                {
-                  id: 'FIN',
-                  x: 2,
-                },
-                {
-                  id: 'IDN',
-                  x: 3,
-                },
-                {
-                  id: 'ZAF',
-                  x: 4,
-                },
-                {
-                  id: 'PER',
-                  x: 5,
-                },
-                {
-                  id: 'PAK',
-                  x: 6,
-                },
-                {
-                  id: 'USA',
-                  x: 7,
-                },
-                {
-                  id: 'SWE',
-                  x: 8,
-                },
-              ]}
-            />
-          ) : (
-            <div className='dark'>
-              <DataTable
-                columnData={[
-                  {
-                    columnId: 'label',
-                    columnTitle: 'Label',
-                  },
-                  {
-                    align: 'right',
-                    columnId: 'value1',
-                    columnTitle: 'Value #1',
-                    sortable: true,
-                  },
-                  {
-                    align: 'center',
-                    columnId: 'value2',
-                    columnTitle: 'Value #2',
-                  },
-                  {
-                    columnId: 'value3',
-                    columnTitle: 'Value #3',
-                    prefix: 'US $ ',
-                  },
-                ]}
-                data={[
-                  {
-                    label: '2020 Q1',
-                    value1: 3,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q2',
-                    value1: 8,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q3',
-                    value1: 11,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q4',
-                    value1: 19,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q1',
-                    value1: 3,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q2',
-                    value1: 8,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q3',
-                    value1: 11,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q4',
-                    value1: 19,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q1',
-                    value1: 3,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q2',
-                    value1: 8,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q3',
-                    value1: 11,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q4',
-                    value1: 19,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q1',
-                    value1: 3,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q2',
-                    value1: 8,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q3',
-                    value1: 11,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q4',
-                    value1: 19,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q1',
-                    value1: 3,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q2',
-                    value1: 8,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q3',
-                    value1: 11,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q4',
-                    value1: 19,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q1',
-                    value1: 3,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q2',
-                    value1: 8,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q3',
-                    value1: 11,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q4',
-                    value1: 19,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q1',
-                    value1: 3,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q2',
-                    value1: 8,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q3',
-                    value1: 11,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q4',
-                    value1: 19,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q1',
-                    value1: 3,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q2',
-                    value1: 8,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q3',
-                    value1: 11,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q4',
-                    value1: 19,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q1',
-                    value1: 3,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q2',
-                    value1: 8,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q3',
-                    value1: 11,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q4',
-                    value1: 19,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q1',
-                    value1: 3,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q2',
-                    value1: 8,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q3',
-                    value1: 11,
-                    value2: 3,
-                    value3: 3,
-                  },
-                  {
-                    label: '2020 Q4',
-                    value1: 19,
-                    value2: 3,
-                    value3: 3,
-                  },
-                ]}
+      <div ref={refSlideThree} className='flex flex-col relative z-20 py-10'>
+        <div className="flex items-center justify-center w-full bg-cover bg-center bg-no-repeat bg-[url('/imgs/sphere.webp')] px-8 py-[40px] md:py-[260px] lg:py-[320px]">
+          <div className='gap-4.5 flex flex-col w-full max-w-[920px] text-primary-gray-700'>
+            <H2
+              className='!text-[24px] poppins-bold text-center text-primary-white'
+              marginBottom='none'
+            >
+              Uncover detailed anti-corruption data for your country.
+            </H2>
+            <P
+              className='poppins-regular leading-[120%] text-center text-primary-white'
+              size='base'
+              marginBottom='none'
+            >
+              Choose a country to reveal its complete anti-corruption profile —
+              from key indicators to institutional strategies
+            </P>
+            {countryTaxonomy ? (
+              <DropdownSelect
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                options={(countryTaxonomy as any).map((d: any) => ({
+                  label: d['Country or Area'],
+                  value: d['Alpha-3 code'],
+                }))}
+                className='rounded-full! px-4!'
+                variant='light'
+                placeholder='Select a country'
+                isSearchable
               />
-            </div>
-          )}
+            ) : (
+              <Spinner />
+            )}
+          </div>
         </div>
-        <div className='w-full mt-14'>
+        <div className='w-full mt-14 px-10'>
           <H3 className='poppins-semibold !text-[24px] !mb-10'>
             Recommended projects
           </H3>
-          <div className='flex gap-6 mt-10 dark'>
-            <Card
-              border
-              size='sm'
-              variant='with-image'
-              className='rounded-[20px] border-0 max-w-65'
-            >
-              <CardHeader>
-                <CardImage
-                  className='rounded-tl-[20px] rounded-tr-[20px] h-40'
-                  src='https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                />
-                <CardTitle className='poppins-medium !text-[16px] !leading-[26px] text-[#fff]'>
-                  Global Report on Public Procurement
-                </CardTitle>
-                <CardDescription className='poppins-regular !text-[12px] !leading-[16px] text-[#808191]'>
-                  Published on July 2nd 2025
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            <Card
-              border
-              size='sm'
-              variant='with-image'
-              className='rounded-[20px] border-0 max-w-65'
-            >
-              <CardHeader>
-                <CardImage
-                  className='rounded-tl-[20px] rounded-tr-[20px] h-40'
-                  src='https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                />
-                <CardTitle className='poppins-medium !text-[16px] !leading-[26px] text-[#fff]'>
-                  Global Report on Public Procurement
-                </CardTitle>
-                <CardDescription className='poppins-regular !text-[12px] !leading-[16px] text-[#808191]'>
-                  Published on July 2nd 2025
-                </CardDescription>
-              </CardHeader>
-            </Card>
+          <div className='flex gap-6 mt-10'>
+            <CardEl
+              img='https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              title='Global Report on Public Procurement'
+              date='July 2nd 2025'
+            />
+            <CardEl
+              img='https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              title='Global Report on Public Procurement'
+              date='July 2nd 2025'
+            />
           </div>
         </div>
-        <div className='w-full my-11'>
+        <div className='w-full my-11 px-10'>
           <H3 className='poppins-bold !text-[24px] !mb-4'>Partnerships</H3>
           <P className='poppins-regular !text-[16px] !leading-[140%]'>
             We've curated comprehensive datasets from Transparency
@@ -769,6 +490,41 @@ function Homepage() {
           </P>
         </div>
       </div>
+      {selectedId && data.length !== 0 && (
+        <div className='fixed bottom-8 right-8 z-15 bg-primary-white p-6 w-[280px]'>
+          <div
+            style={{
+              backgroundColor: 'rgba(255,255,255, 1)',
+              border: '1px solid var(--gray-400)',
+              borderRadius: '999px',
+              width: '32px',
+              height: '32px',
+              cursor: 'pointer',
+              padding: '4px',
+              zIndex: 10,
+              position: 'absolute',
+              right: '-1rem',
+              top: '-1rem',
+            }}
+            onClick={() => {
+              setSelectedId(undefined);
+            }}
+          >
+            <X color='#000' strokeWidth={2} />
+          </div>
+          <div className='w-full flex flex-col'>
+            <H5 className='text-primary-gray-700 poppins-bold'>
+              {data.find(d => d.id === selectedId)?.country}
+            </H5>
+            <Button
+              variant='primary-without-icon'
+              className='capitalize rounded-full bg-[#4B6E91] px-10 text-[#fff] hover:bg-[#2A3F53] poppins-semibold !text-[16px]'
+            >
+              View details →
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

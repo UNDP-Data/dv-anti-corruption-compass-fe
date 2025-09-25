@@ -37,7 +37,7 @@ const Navigation = (props: Props) => {
       <div className='flex gap-2 items-center'>
         <div className='flex items-center h-4 w-20 text-right'>
           <P
-            className='poppins-regular !text-[12px] text-right text-[#fff] w-20'
+            className='poppins-regular !text-[12px] text-right text-[#fff] w-20 opacity-0 md:opacity-100'
             marginBottom='none'
           >
             Public procurement integrity
@@ -54,7 +54,7 @@ const Navigation = (props: Props) => {
       <div className='flex gap-2 items-center'>
         <div className='flex items-center h-4 w-20 text-right'>
           <P
-            className='poppins-regular !text-[12px] text-right text-[#fff] w-20'
+            className='poppins-regular !text-[12px] text-right text-[#fff] w-20 opacity-0 md:opacity-100'
             marginBottom='none'
           >
             Business experience
@@ -71,7 +71,7 @@ const Navigation = (props: Props) => {
       <div className='flex gap-2 items-center'>
         <div className='flex items-center h-4 w-20 text-right'>
           <P
-            className='poppins-regular !text-[12px] text-right text-[#fff] w-20'
+            className='poppins-regular !text-[12px] text-right text-[#fff] w-20 opacity-0 md:opacity-100'
             marginBottom='none'
           >
             Anti-corruption authorities
@@ -88,7 +88,7 @@ const Navigation = (props: Props) => {
       <div className='flex gap-2 items-center'>
         <div className='flex items-center h-4 w-20 text-right'>
           <P
-            className='poppins-regular !text-[12px] text-right text-[#fff] w-20'
+            className='poppins-regular !text-[12px] text-right text-[#fff] w-20 opacity-0 md:opacity-100'
             marginBottom='none'
           >
             Country level insights
