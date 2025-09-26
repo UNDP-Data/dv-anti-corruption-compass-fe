@@ -213,7 +213,7 @@ function Homepage() {
                 highlightedAltitude={0.01}
                 globeOffset={[0, globeYOffSet]}
                 polygonAltitude={0.005}
-                colors={COLOR_SCALES[0].colors}
+                colors={['#A5B3C5', '#7B9EB4', '#4A7591']}
                 colorDomain={['Low', 'Medium', 'High']}
                 scale={0.75}
                 footNote=''
