@@ -1,13 +1,11 @@
 import { H3, P } from '@undp/design-system-react';
 import { forwardRef, useState } from 'react';
 
-import { COLOR_SCALES } from '@/Constants';
-
 interface Props {
   heading: string;
   description: string;
-  buttons: { label: string; id: string }[];
-  onClick: (_d: { label: string; id: string }) => void;
+  buttons: { label: string; value: string; color: string }[];
+  onClick: (_d: { label: string; value: string; color: string }) => void;
 }
 
 const ControlPanel = forwardRef<HTMLDivElement, Props>((props, ref) => {
@@ -47,10 +45,7 @@ const ControlPanel = forwardRef<HTMLDivElement, Props>((props, ref) => {
             >
               <div
                 style={{
-                  backgroundColor:
-                    activeButton !== d.label
-                      ? '#fff'
-                      : COLOR_SCALES.find(el => el.id === d.id)?.colors[2],
+                  backgroundColor: activeButton !== d.label ? '#fff' : d.color,
                 }}
                 className='w-4 h-4 rounded-full'
               />

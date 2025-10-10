@@ -1,0 +1,44 @@
+[
+  {
+    "year": 2017,
+    "worldValue": 20,
+    "countryValue": 20,
+    "worldDataAvailability": 20,
+    "countryDataAvailability": 20
+  },
+  {
+    "year": 2018,
+    "worldValue": 25,
+    "countryValue": 22,
+    "worldDataAvailability": 23,
+    "countryDataAvailability": 21
+  },
+  {
+    "year": 2019,
+    "worldValue": 28,
+    "countryValue": 25,
+    "worldDataAvailability": 26,
+    "countryDataAvailability": 24
+  },
+  {
+    "year": 2020,
+    "worldValue": 30,
+    "countryValue": 27,
+    "worldDataAvailability": 28,
+    "countryDataAvailability": 26
+  },
+  {
+    "year": 2021,
+    "worldValue": 33,
+    "countryValue": 29,
+    "worldDataAvailability": 31,
+    "countryDataAvailability": 28
+  },
+  {
+    "year": 2022,
+    "worldValue": 35,
+    "countryValue": 31,
+    "worldDataAvailability": 33,
+    "countryDataAvailability": 30
+  }
+]

@@ -13,6 +13,7 @@ import MethodologyPage from './03-Methodology';
 import AboutUsPage from './04-AboutUs';
 import { Header } from './Components/Header';
 import { Footer } from './Components/Footer';
+import CountryPageEl from './02-CountryPage';
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -75,13 +76,15 @@ const antiCorruptionAuthorityRoute = createRoute({
 });
 const countryRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/countries/$isocode',
-  component: CountryPage,
+  path: '/countries/$isoCode',
+  component: function Country() {
+    return <CountryPage />;
+  },
 });
 
 function CountryPage() {
-  const { isocode } = countryRoute.useParams();
-  return <h2>Country: {isocode}</h2>;
+  const { isoCode } = countryRoute.useParams();
+  return <CountryPageEl isoCode={isoCode} />;
 }
 
 const routeTree = rootRoute.addChildren([

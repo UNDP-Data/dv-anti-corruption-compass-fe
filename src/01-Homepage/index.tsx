@@ -18,7 +18,7 @@ import ControlPanel from './ControlPanel';
 import Navigation from './Navigation';
 import { CardEl } from './Cards';
 
-import { COLOR_SCALES } from '@/Constants';
+import { SUB_PILLARS } from '@/Constants';
 import { TaxonomyType } from '@/Types';
 
 interface DataType {
@@ -74,7 +74,8 @@ function Homepage() {
   });
   const [selectedIndicator, setSelectedIndicator] = useState({
     label: 'Contract Modifications',
-    id: 'contractModifications',
+    value: 'Contract Modifications',
+    color: '#03682B',
   });
 
   const isInViewControlPanelOne = useInView(refControlPanelOne, {
@@ -98,18 +99,16 @@ function Homepage() {
   const [selectedIndicatorPrimaryData, setSelectedIndicatorPrimaryData] =
     useState({
       label: 'Contract Modifications',
-      id: 'contractModifications',
+      value: 'Contract Modifications',
+      color: '#03682B',
     });
   const [
     selectedIndicatorBusinessExperience,
     setSelectedIndicatorBusinessExperience,
-  ] = useState({ label: 'Incidence', id: 'incidence' });
-  const [
-    selectedIndicatorAntiCorruptionAuthorities,
-    setSelectedIndicatorAntiCorruptionAuthorities,
   ] = useState({
-    label: 'Anti Corruption Authorities',
-    id: 'antiCorruptionAuthorities',
+    label: 'Incidence',
+    value: 'Incidence',
+    color: '#F49764',
   });
   useEffect(() => {
     if (isInViewControlPanelOne) {
@@ -118,16 +117,12 @@ function Homepage() {
     if (isInViewControlPanelTwo) {
       setSelectedIndicator(selectedIndicatorBusinessExperience);
     }
-    if (isInViewControlPanelThree) {
-      setSelectedIndicator(selectedIndicatorAntiCorruptionAuthorities);
-    }
   }, [
     isInViewControlPanelOne,
     isInViewControlPanelTwo,
     isInViewControlPanelThree,
     selectedIndicatorPrimaryData,
     selectedIndicatorBusinessExperience,
-    selectedIndicatorAntiCorruptionAuthorities,
   ]);
   const slideOneOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
   const slideTwoOpacity = useTransform(
@@ -253,17 +248,13 @@ function Homepage() {
             ref={refControlPanelOne}
             heading='Primary Data - Public Procurement Integrity'
             description='Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers.'
-            buttons={[
-              { label: 'Contract Modifications', id: 'contractModifications' },
-              { label: 'Single Bidding', id: 'singleBinding' },
-              {
-                label: 'No Call for tenders Published',
-                id: 'noCallForTenders',
-              },
-              { label: 'Tax Haven', id: 'taxHaven' },
-              { label: 'Non-open procedure', id: 'nonOpenProcedure' },
-              { label: 'Beneficiary Ownership', id: 'beneficiaryOwnership' },
-            ]}
+            buttons={SUB_PILLARS.filter(
+              d => d.mainIndicator === 'Public Procurement',
+            ).map(d => ({
+              label: d.label,
+              value: d.value,
+              color: d.indicatorColor,
+            }))}
             onClick={d => {
               setSelectedIndicatorPrimaryData(d);
               setSelectedIndicator(d);
@@ -273,26 +264,15 @@ function Homepage() {
             ref={refControlPanelTwo}
             heading='Business Experiences'
             description='What do businesses really experience on the ground? Go beyond perception to understand real encounters with corruption. Our indicators capture the incidence of corrupt practices, document specific practices businesses encounter, and reveal counter measures organizations implement. This ground-truth data empowers evidence-based strategies.'
-            buttons={[
-              { label: 'Incidence', id: 'incidence' },
-              { label: 'Practices', id: 'practices' },
-              {
-                label: 'Counter Measures',
-                id: 'counterMeasures',
-              },
-            ]}
+            buttons={SUB_PILLARS.filter(
+              d => d.mainIndicator === 'Business Experiences',
+            ).map(d => ({
+              label: d.label,
+              value: d.value,
+              color: d.indicatorColor,
+            }))}
             onClick={d => {
               setSelectedIndicatorBusinessExperience(d);
-              setSelectedIndicator(d);
-            }}
-          />
-          <ControlPanel
-            ref={refControlPanelThree}
-            heading='Anti-corruption Authorities'
-            description='Lorem ipsum dolor sit amet consectetur. In tellus nunc enim vitae aliquet dignissim ac in. Enim ultrices et accumsan enim viverra volutpat. Magnis sapien diam sit ut elementum netus odio commodo fermentum. Nullam diam maecenas consequat eleifend rhoncus est odio. A vehicula non donec faucibus viverra parturient ipsum sit.'
-            buttons={[{ label: 'Category 1', id: 'antiCorruptionAuthorities' }]}
-            onClick={d => {
-              setSelectedIndicatorAntiCorruptionAuthorities(d);
               setSelectedIndicator(d);
             }}
           />
@@ -320,8 +300,8 @@ function Homepage() {
                 </HoverCard>
               </div>
               <div className='flex flex gap-7 poppins-regular'>
-                {COLOR_SCALES.find(
-                  d => d.id === selectedIndicator.id,
+                {SUB_PILLARS.find(
+                  d => d.value === selectedIndicator.value,
                 )?.colors.map((d, i) => (
                   <div key={i} className='flex gap-2 items-center'>
                     <div
@@ -345,7 +325,8 @@ function Homepage() {
                 polygonAltitude={0.005}
                 highlightedAltitude={0.01}
                 colors={
-                  COLOR_SCALES.find(d => d.id === selectedIndicator.id)?.colors
+                  SUB_PILLARS.find(d => d.value === selectedIndicator.value)
+                    ?.colors
                 }
                 selectedId={selectedId}
                 onSeriesMouseClick={d => {
@@ -373,8 +354,8 @@ function Homepage() {
                 footNote=''
                 enableZoom={false}
                 atmosphereColor={
-                  COLOR_SCALES.find(d => d.id === selectedIndicator.id)
-                    ?.colors[2]
+                  SUB_PILLARS.find(d => d.value === selectedIndicator.value)
+                    ?.indicatorColor
                 }
                 globeMaterial={
                   new THREE.MeshBasicMaterial({
@@ -383,8 +364,8 @@ function Homepage() {
                 }
                 fogSettings={{
                   color:
-                    COLOR_SCALES.find(d => d.id === selectedIndicator.id)
-                      ?.colors[2] || '#fff',
+                    SUB_PILLARS.find(d => d.value === selectedIndicator.value)
+                      ?.indicatorColor || '#fff',
                   near:
                     (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
                     0.9
