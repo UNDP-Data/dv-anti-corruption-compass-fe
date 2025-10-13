@@ -8,6 +8,7 @@ import tailwindcss from '@tailwindcss/postcss';
 // import { AtRule } from 'postcss';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig({
   plugins: [
@@ -18,6 +19,9 @@ export default defineConfig({
     react(),
     eslint(),
     visualizer({ filename: 'stats.html', open: true }),
+    viteStaticCopy({
+      targets: [{ src: 'staticwebapp.config.json', dest: '' }],
+    }),
   ],
   css: {
     postcss: {
