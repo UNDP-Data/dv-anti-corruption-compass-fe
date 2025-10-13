@@ -13,12 +13,27 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@undp/design-system-react/HoverCard';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@undp/design-system-react/Tabs';
+import { Label } from '@undp/design-system-react/Label';
+import { Badge } from '@undp/design-system-react/Badge';
+import { Link, useNavigate } from '@tanstack/react-router';
+import { Spacer } from '@undp/design-system-react/Spacer';
 
 import ControlPanel from './ControlPanel';
 import Navigation from './Navigation';
 import { CardEl } from './Cards';
 
-import { SUB_PILLARS } from '@/Constants';
+import {
+  DROPDOWN_CLASSNAMES_MULTI_SELECT,
+  DROPDOWN_CLASSNAMES_WHITE,
+  SUB_PILLARS,
+  YEARS,
+} from '@/Constants';
 import { TaxonomyType } from '@/Types';
 
 interface DataType {
@@ -43,6 +58,7 @@ function Homepage() {
     window.scrollTo({ top: y, behavior: 'smooth' });
   };
   const [data, setData] = useState<DataType[]>([]);
+  const [selectedTab, setSelectedTab] = useState('tab 1');
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [countryTaxonomy, setCountryTaxonomy] = useState<TaxonomyType[]>([]);
   useEffect(() => {
@@ -60,6 +76,11 @@ function Homepage() {
   const [globeYOffSet, setGlobeYOffSet] = useState(0);
   const refSlideOne = useRef<HTMLDivElement>(null);
   const refSlideTwo = useRef<HTMLDivElement>(null);
+  const [selectedYear, setSelectedYear] = useState(2022);
+  const navigate = useNavigate();
+  const [selectedPillar, setSelectedPillar] = useState([
+    'Contract Modifications',
+  ]);
   const refSlideThree = useRef<HTMLDivElement>(null);
   const refControlPanelOne = useRef<HTMLDivElement>(null);
   const refControlPanelTwo = useRef<HTMLDivElement>(null);
@@ -411,36 +432,194 @@ function Homepage() {
       </motion.div>
 
       <div ref={refSlideThree} className='flex flex-col relative z-20 py-10'>
-        <div className="flex items-center justify-center w-full bg-cover bg-center bg-no-repeat bg-[url('/imgs/sphere.webp')] px-8 py-[40px] md:py-[260px] lg:py-[320px]">
-          <div className='gap-4.5 flex flex-col w-full max-w-[920px] text-primary-gray-700'>
-            <H2
-              className='!text-[24px] poppins-bold text-center text-primary-white'
-              marginBottom='none'
+        <div
+          className={`flex items-center w-full px-4 bg-cover bg-center bg-no-repeat ${selectedTab === 'tab 2' ? 'bg-transparent' : "bg-[url('/imgs/sphere.webp')]"} px-8 py-[40px] md:py-[260px] lg:py-[320px]`}
+        >
+          <div className='gap-4.5 flex flex-col w-full text-primary-gray-700 max-w-[1272px] mx-auto'>
+            <Tabs
+              color='blue'
+              defaultValue='tab 1'
+              onValueChange={d => {
+                setSelectedTab(d);
+              }}
             >
-              Uncover detailed anti-corruption data for your country.
-            </H2>
-            <P
-              className='poppins-regular leading-[120%] text-center text-primary-white'
-              size='base'
-              marginBottom='none'
-            >
-              Choose a country to reveal its complete anti-corruption profile —
-              from key indicators to institutional strategies
-            </P>
-            {countryTaxonomy.length > 0 ? (
-              <DropdownSelect
-                options={countryTaxonomy.map(d => ({
-                  label: d['Country or Area'],
-                  value: d['Alpha-3 code'],
-                }))}
-                className='rounded-full! px-4!'
-                variant='light'
-                placeholder='Select a country'
-                isSearchable
-              />
-            ) : (
-              <Spinner />
-            )}
+              <TabsList className='mx-0 pl-0'>
+                <TabsTrigger value='tab 1' className='text-primary-white!'>
+                  Find a country
+                </TabsTrigger>
+                <TabsTrigger value='tab 2' className='text-primary-white!'>
+                  See full list
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value='tab 1'>
+                <div className='gap-4.5 flex flex-col w-full text-primary-gray-700 pt-8'>
+                  <H2
+                    className='!text-[24px] poppins-bold text-primary-white'
+                    marginBottom='none'
+                  >
+                    Uncover detailed anti-corruption data for your country.
+                  </H2>
+                  <P
+                    className='poppins-regular leading-[120%] text-primary-white'
+                    size='base'
+                    marginBottom='none'
+                  >
+                    Choose a country to reveal its complete anti-corruption
+                    profile — from key indicators to institutional strategies
+                  </P>
+                  {countryTaxonomy.length > 0 ? (
+                    <DropdownSelect
+                      placeholder='Select country'
+                      options={countryTaxonomy.map(d => ({
+                        label: d['Country or Area'],
+                        value: d['Alpha-3 code'],
+                      }))}
+                      onChange={d => {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        navigate({ to: `/countries/${(d as any).value}` });
+                      }}
+                      size='base'
+                      variant='normal'
+                      className='bg-primary-white! border-0! rounded-full! px-4!'
+                      classNames={DROPDOWN_CLASSNAMES_WHITE}
+                    />
+                  ) : (
+                    <Spinner />
+                  )}
+                </div>
+              </TabsContent>
+              <TabsContent value='tab 2'>
+                <div className='gap-4.5 flex flex-col w-full text-primary-gray-700'>
+                  <div className='gap-4 flex'>
+                    <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px] max-w-[480px] flex-wrap'>
+                      <Label className='text-primary-white'>
+                        Filter by year
+                      </Label>
+                      <DropdownSelect
+                        value={{
+                          value: selectedYear,
+                          label: selectedYear,
+                        }}
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        onChange={(d: any) => {
+                          setSelectedYear(d.value);
+                        }}
+                        placeholder='Select contract value'
+                        options={YEARS.map(d => ({
+                          value: d,
+                          label: d,
+                        }))}
+                        size='base'
+                        variant='normal'
+                        className='bg-primary-white! border-0! rounded-[8px]!'
+                        classNames={DROPDOWN_CLASSNAMES_WHITE}
+                        isClearable={false}
+                      />
+                    </div>
+                    <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px] max-w-[480px] flex-wrap'>
+                      <Label className='text-primary-white'>
+                        Filter by pillar
+                      </Label>
+                      <DropdownSelect
+                        placeholder='Select Pillar'
+                        value={selectedPillar.map(d => ({
+                          value: d,
+                          label: d,
+                        }))}
+                        isMulti
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        onChange={(d: any) => {
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                          setSelectedPillar(d.map((el: any) => el.value));
+                        }}
+                        options={[
+                          ...new Set(SUB_PILLARS.map(d => d.mainIndicator)),
+                        ].map(d => ({
+                          label: d,
+                          options: SUB_PILLARS.filter(
+                            el => el.mainIndicator === d,
+                          ).map(el => ({
+                            value: el.label,
+                            label: el.value,
+                          })),
+                        }))}
+                        size='base'
+                        variant='normal'
+                        className='bg-primary-white! border-0! rounded-[8px]!'
+                        classNames={DROPDOWN_CLASSNAMES_MULTI_SELECT}
+                        isClearable={false}
+                      />
+                    </div>
+                  </div>
+                  <Spacer size='lg' />
+                  <div className='dark'>
+                    <div className='flex w-full pb-2 border-b border-b-primary-white'>
+                      <div className='poppins-bold text-[16px]! text-primary-white! w-[35%] pr-4!'>
+                        Country name
+                      </div>
+                      <div className='poppins-bold text-[16px]! text-primary-white! w-[25%] pr-4!'>
+                        Pillar
+                      </div>
+                      <div className='poppins-bold text-[16px]! text-primary-white! w-[20%] pr-4!'>
+                        Indicator value
+                      </div>
+                      <div className='poppins-bold text-[16px]! text-primary-white! w-[10%] pr-4!'>
+                        Value
+                      </div>
+                      <div className='poppins-bold text-[16px]! text-primary-white! w-[10%] pr-4!' />
+                    </div>
+                    <div className='max-h-[600px] undp-scrollbar'>
+                      {data.length > 0 ? (
+                        data.map((el, i) => (
+                          <div key={i}>
+                            {selectedPillar.map((p, j) => (
+                              <div
+                                className='flex w-full py-4 border-b border-b-primary-white items-center'
+                                key={j}
+                              >
+                                <div className='poppins-regular text-[16px]! text-primary-white! w-[35%] pr-4!'>
+                                  {el.country}
+                                </div>
+                                <div className='poppins-regular text-[16px]! text-primary-white! w-[25%] pr-4!'>
+                                  {p}
+                                </div>
+                                <div className='poppins-regular text-[16px]! text-primary-white! w-[20%] pr-4!'>
+                                  <Badge
+                                    rounded='full'
+                                    className='poppins-regular'
+                                    style={{
+                                      backgroundColor: SUB_PILLARS.find(
+                                        d => d.value === p,
+                                      )?.colors[
+                                        ['Low', 'Medium', 'High'].indexOf(el.x)
+                                      ],
+                                    }}
+                                  >
+                                    {el.x}
+                                  </Badge>
+                                </div>
+                                <div className='poppins-regular text-[16px]! text-primary-white! w-[10%] pr-4!'>
+                                  0.25
+                                </div>
+                                <Link
+                                  to='/countries/$isoCode'
+                                  className='poppins-regular text-[16px]! text-primary-white! w-[10%] pr-4!'
+                                  params={{ isoCode: el.id }}
+                                >
+                                  View country
+                                </Link>
+                              </div>
+                            ))}
+                          </div>
+                        ))
+                      ) : (
+                        <Spinner />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
         <div className='w-full mt-14 px-10'>

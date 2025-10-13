@@ -14,12 +14,14 @@ import AboutUsPage from './04-AboutUs';
 import { Header } from './Components/Header';
 import { Footer } from './Components/Footer';
 import CountryPageEl from './02-CountryPage';
+import { ScrollToTop } from './Utils/ScrollToTop';
 
 const rootRoute = createRootRoute({
   component: () => (
     <>
       <Header />
       <main className='pt-30'>
+        <ScrollToTop />
         <Outlet />
       </main>
       <Footer />

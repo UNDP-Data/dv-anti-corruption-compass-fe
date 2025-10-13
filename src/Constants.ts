@@ -142,7 +142,7 @@ export const DROPDOWN_CLASSNAMES: any = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   singleValue: (state: any) =>
     cn(
-      'text-base1',
+      'text-base',
       state.isDisabled ? 'text-primary-gray-500!' : 'text-primary-white!',
     ),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -156,7 +156,8 @@ export const DROPDOWN_CLASSNAMES: any = {
         ? 'bg-primary-gray-700! text-primary-white'
         : 'bg-primary-gray-400',
     ),
-  placeholder: () => 'text-primary-gray-550! dark:text-primary-400! text-base',
+  placeholder: () =>
+    'text-primary-gray-550! dark:text-primary-gray-400! text-base',
   group: () => 'py-0!',
   groupHeading: () =>
     'font-bold! text-base! normal-case! py-[12px]! m-0! bg-primary-gray-600 text-primary-gray-700! text-primary-white!',
@@ -164,4 +165,60 @@ export const DROPDOWN_CLASSNAMES: any = {
   valueContainer: () => 'px-2 py-[2px]',
   menu: () =>
     'rounded-none! mt-1! border-0! shadow-lg! p-0! bg-primary-gray-650!',
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const DROPDOWN_CLASSNAMES_WHITE: any = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  singleValue: (state: any) =>
+    cn(
+      'text-base text-primary-gray-700!',
+      state.isDisabled ? 'text-primary-gray-500!' : 'text-primary-gray-700!',
+    ),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  option: (state: any) =>
+    cn(
+      'bg-transparent text-base hover:bg-primary-gray-300!',
+      state.isSelected
+        ? 'bg-primary-gray-100! text-primary-gray-700 font-bold'
+        : 'bg-primary-white',
+      state.isFocused
+        ? 'bg-primary-gray-100! text-primary-gray-700'
+        : 'bg-primary-white',
+    ),
+  placeholder: () =>
+    'text-primary-gray-550! dark:text-primary-gray-400! text-base',
+  group: () => 'py-0!',
+  groupHeading: () =>
+    'font-bold! text-base! normal-case! py-[12px]! m-0! bg-primary-gray-600 text-primary-gray-700! text-primary-white!',
+  input: () => 'text-base undp-select-input',
+  valueContainer: () => 'px-2 py-[2px]',
+  menu: () => 'rounded-none! mt-1! border-0! shadow-lg! p-0! bg-primary-white!',
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const DROPDOWN_CLASSNAMES_MULTI_SELECT: any = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  singleValue: (state: any) =>
+    cn(
+      'text-base text-primary-gray-700!',
+      state.isDisabled ? 'text-primary-gray-500!' : 'text-primary-gray-700!',
+    ),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  option: (state: any) =>
+    cn(
+      'bg-transparent text-base hover:bg-primary-gray-300! text-primary-gray-700!',
+      state.isSelected ? 'bg-primary-gray-100! font-bold' : '',
+      state.isFocused
+        ? 'bg-primary-gray-100! text-primary-gray-700'
+        : 'bg-primary-white',
+    ),
+  placeholder: () =>
+    'text-primary-gray-550! dark:text-primary-gray-400! text-base',
+  group: () => 'py-0!',
+  groupHeading: () =>
+    'font-bold! text-base! normal-case! py-[12px]! m-0! bg-primary-gray-600 text-primary-gray-700! text-primary-white!',
+  input: () => 'text-base undp-select-input',
+  valueContainer: () => 'px-2 py-[2px]',
+  menu: () => 'rounded-none! mt-1! border-0! shadow-lg! p-0! bg-primary-white!',
 };
