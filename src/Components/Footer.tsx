@@ -9,7 +9,7 @@ import {
 
 export const Footer = () => {
   return (
-    <footer className='bg-[#537286] px-10 py-20 relative z-10'>
+    <footer className='bg-[#537286] px-20 py-24 relative z-10'>
       <div className='flex flex-wrap flex-col lg:flex-row gap-4 md:gap-12 lg:gap-0'>
         <div className='w-full lg:w-1/2'>
           <P className='poppins-regular !text-[16px]' size='sm'>
