@@ -167,7 +167,6 @@ function Homepage() {
         isInViewSlideThree={isInViewSlideThree}
         refControlPanelOne={refControlPanelOne}
         refControlPanelTwo={refControlPanelTwo}
-        refControlPanelThree={refControlPanelThree}
         refSlideThree={refSlideThree}
       />
       <div
@@ -180,10 +179,10 @@ function Homepage() {
       <motion.div
         ref={refSlideOne}
         style={{ opacity: slideOneOpacity }}
-        className='sticky top-[120px] h-[calc(100vh-120px)] flex flex-col'
+        className='sticky top-[184px] h-[calc(100vh-184px)] flex flex-col'
       >
         <div className='flex flex-col min-h-[calc(100vh-120px)]'>
-          <div className='flex flex-col gap-8 justify-center items-center max-w-[1272px] m-auto py-16 px-4'>
+          <div className='flex flex-col gap-8 justify-center items-center max-w-[1272px] m-auto px-4'>
             <H2
               className='poppins-bold text-center !text-[44px]'
               marginBottom='none'
@@ -204,16 +203,17 @@ function Homepage() {
               drive evidence-based reforms across all dimensions of
               anti-corruption efforts.
             </P>
-            <div className='flex gap-x-8 gap-y-4 flex-wrap'>
+            <div className='flex gap-x-10 gap-y-4 flex-wrap'>
               <Button
                 variant='primary-without-icon'
-                className='capitalize rounded-full bg-[#fff] px-10 text-[var(--gray-700)] hover:bg-[#DEF7FF] poppins-semibold !text-[16px]'
+                className='normal-case rounded-full bg-[#fff] px-7 text-[#124E6F] hover:bg-[#DEF7FF] poppins-semibold !text-[16px] shadow-[0_4px_4px_rgba(0,0,0,0.25)]'
               >
-                Take a tour →
+                Take a Tour →
               </Button>
+
               <Button
                 variant='primary-without-icon'
-                className='capitalize rounded-full bg-[#4B6E91] px-10 text-[#fff] hover:bg-[#2A3F53] poppins-semibold !text-[16px]'
+                className='normal-case rounded-full bg-[#4B6E91] px-7 text-[#fff] hover:bg-[#2A3F53] poppins-semibold !text-[16px] shadow-[0_4px_4px_rgba(0,0,0,0.25)]'
               >
                 View Country Level Insights →
               </Button>
@@ -231,14 +231,14 @@ function Homepage() {
                 polygonAltitude={0.005}
                 colors={['#A5B3C5', '#7B9EB4', '#4A7591']}
                 colorDomain={['Low', 'Medium', 'High']}
-                scale={0.75}
+                scale={0.7}
                 footNote=''
                 globeMaterial={
                   new THREE.MeshBasicMaterial({
                     color: 0xfafafa,
                   })
                 }
-                atmosphereColor='#000'
+                atmosphereColor='#117df8'
                 atmosphereAltitude={0.15}
                 globeCurvatureResolution={2}
                 enableZoom={false}
@@ -249,12 +249,12 @@ function Homepage() {
           </div>
         </div>
         <button
-          className='cursor-pointer border-0 fixed bottom-6 left-[50%] translate-x-[-50%] rounded-full bg-primary-white p-4'
+          className='cursor-pointer border-0 fixed bottom-6 left-[50%] translate-x-[-50%] rounded-full bg-primary-white w-[40px] h-[40px] flex justify-center items-center'
           onClick={() => {
             handleScroll(refControlPanelOne);
           }}
         >
-          <ArrowDown color='#437390' strokeWidth={3} />
+          <ArrowDown color='#437390' size={18} strokeWidth={3} />
         </button>
       </motion.div>
       <motion.div
