@@ -84,7 +84,6 @@ function Homepage() {
   const refSlideThree = useRef<HTMLDivElement>(null);
   const refControlPanelOne = useRef<HTMLDivElement>(null);
   const refControlPanelTwo = useRef<HTMLDivElement>(null);
-  const refControlPanelThree = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: refSlideTwo,
     offset: ['start end', 'start center'],
@@ -104,10 +103,6 @@ function Homepage() {
     amount: 0.5,
   });
   const isInViewControlPanelTwo = useInView(refControlPanelTwo, {
-    once: false,
-    amount: 0.5,
-  });
-  const isInViewControlPanelThree = useInView(refControlPanelThree, {
     once: false,
     amount: 0.5,
   });
@@ -141,7 +136,7 @@ function Homepage() {
   }, [
     isInViewControlPanelOne,
     isInViewControlPanelTwo,
-    isInViewControlPanelThree,
+    isInViewSlideThree,
     selectedIndicatorPrimaryData,
     selectedIndicatorBusinessExperience,
   ]);
@@ -163,7 +158,6 @@ function Homepage() {
       <Navigation
         isInViewControlPanelOne={isInViewControlPanelOne}
         isInViewControlPanelTwo={isInViewControlPanelTwo}
-        isInViewControlPanelThree={isInViewControlPanelThree}
         isInViewSlideThree={isInViewSlideThree}
         refControlPanelOne={refControlPanelOne}
         refControlPanelTwo={refControlPanelTwo}
@@ -179,7 +173,7 @@ function Homepage() {
       <motion.div
         ref={refSlideOne}
         style={{ opacity: slideOneOpacity }}
-        className='sticky top-[184px] h-[calc(100vh-184px)] flex flex-col'
+        className='sticky top-[184px] h-[calc(100vh-120px)] flex flex-col'
       >
         <div className='flex flex-col min-h-[calc(100vh-120px)]'>
           <div className='flex flex-col gap-8 justify-center items-center max-w-[1272px] m-auto px-4'>
@@ -206,14 +200,14 @@ function Homepage() {
             <div className='flex gap-x-10 gap-y-4 flex-wrap'>
               <Button
                 variant='primary-without-icon'
-                className='normal-case rounded-full bg-[#fff] px-7 text-[#124E6F] hover:bg-[#DEF7FF] poppins-semibold !text-[16px] shadow-[0_4px_4px_rgba(0,0,0,0.25)]'
+                className='normal-case rounded-full bg-[#fff] px-7 py-3 text-[#124E6F] hover:bg-[#DEF7FF] poppins-semibold !text-[16px] shadow-[0_4px_4px_rgba(0,0,0,0.25)]'
               >
                 Take a Tour →
               </Button>
 
               <Button
                 variant='primary-without-icon'
-                className='normal-case rounded-full bg-[#4B6E91] px-7 text-[#fff] hover:bg-[#2A3F53] poppins-semibold !text-[16px] shadow-[0_4px_4px_rgba(0,0,0,0.25)]'
+                className='normal-case rounded-full bg-[#4B6E91] px-7 py-3 text-[#fff] hover:bg-[#2A3F53] poppins-semibold !text-[16px] shadow-[0_4px_4px_rgba(0,0,0,0.25)]'
               >
                 View Country Level Insights →
               </Button>
@@ -231,7 +225,7 @@ function Homepage() {
                 polygonAltitude={0.005}
                 colors={['#A5B3C5', '#7B9EB4', '#4A7591']}
                 colorDomain={['Low', 'Medium', 'High']}
-                scale={0.7}
+                scale={0.72}
                 footNote=''
                 globeMaterial={
                   new THREE.MeshBasicMaterial({
@@ -267,7 +261,7 @@ function Homepage() {
         <div className='w-1/2 px-10'>
           <ControlPanel
             ref={refControlPanelOne}
-            heading='Primary Data - Public Procurement Integrity'
+            heading='Public Procurement Integrity'
             description='Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers.'
             buttons={SUB_PILLARS.filter(
               d => d.mainIndicator === 'Public Procurement',
@@ -283,6 +277,7 @@ function Homepage() {
           />
           <ControlPanel
             ref={refControlPanelTwo}
+            isLastSection={true}
             heading='Business Experiences'
             description='What do businesses really experience on the ground? Go beyond perception to understand real encounters with corruption. Our indicators capture the incidence of corrupt practices, document specific practices businesses encounter, and reveal counter measures organizations implement. This ground-truth data empowers evidence-based strategies.'
             buttons={SUB_PILLARS.filter(
@@ -298,22 +293,22 @@ function Homepage() {
             }}
           />
         </div>
-        <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col py-16 pl-10 pr-30'>
+        <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col py-8 pl-10 pr-30'>
           <div className='absolute left-1/2 top-0 z-10 transform -translate-x-1/2'>
-            <div className='p-2 flex flex-col gap-4'>
-              <div className='flex gap-2 items-center'>
+            <div className='flex flex-col gap-4'>
+              <div className='flex gap-2 items-center mt-6'>
                 <P
                   size='base'
                   marginBottom='none'
-                  className='p-0 leading-normal text-primary-white poppins-bold'
+                  className='p-0 leading-normal text-primary-white poppins-medium'
                 >
                   Indicator Value
                 </P>
                 <HoverCard openDelay={0}>
                   <HoverCardTrigger>
-                    <InfoIcon color='#fff' />
+                    <InfoIcon color='#fff' size={16} />
                   </HoverCardTrigger>
-                  <HoverCardContent>
+                  <HoverCardContent className='rounded text-[12px] poppins-regular !leading-[150%] p-3 rounded-[8px] text-[#4D4D4D] w-60'>
                     Countries in the top third are assigned High, the middle
                     third Medium, and the bottom third Low. Missing values are
                     labelled Not Available.
@@ -418,11 +413,7 @@ function Homepage() {
                 globeCurvatureResolution={2}
                 resetSelectionOnDoubleClick={false}
                 autoRotate={
-                  isInViewControlPanelOne ||
-                  isInViewControlPanelThree ||
-                  isInViewControlPanelTwo
-                    ? 1
-                    : false
+                  isInViewControlPanelOne || isInViewControlPanelTwo ? 1 : false
                 }
                 data={data}
               />
@@ -431,11 +422,14 @@ function Homepage() {
         </div>
       </motion.div>
 
-      <div ref={refSlideThree} className='flex flex-col relative z-20 py-10'>
+      <div className='flex flex-col relative z-20'>
         <div
-          className={`flex items-center w-full px-4 bg-cover bg-center bg-no-repeat ${selectedTab === 'tab 2' ? 'bg-transparent' : "bg-[url('/imgs/sphere.webp')]"} px-8 py-[40px] md:py-[260px] lg:py-[320px]`}
+          className={`flex items-start pt-40 w-full px-4 bg-cover bg-center bg-no-repeat ${selectedTab === 'tab 2' ? 'bg-transparent' : "bg-[url('/imgs/sphere.webp')]"} px-34 min-h-[calc(100vh-120px)]`}
         >
-          <div className='gap-4.5 flex flex-col w-full text-primary-gray-700 max-w-[1272px] mx-auto'>
+          <div
+            ref={refSlideThree}
+            className='gap-4.5 flex flex-col w-full text-white mx-auto'
+          >
             <Tabs
               color='blue'
               defaultValue='tab 1'
@@ -444,29 +438,37 @@ function Homepage() {
               }}
             >
               <TabsList className='mx-0 pl-0'>
-                <TabsTrigger value='tab 1' className='text-primary-white!'>
-                  Find a country
+                <TabsTrigger
+                  value='tab 1'
+                  className='text-primary-white! normal-case poppins-medium text-[18px] data-[state=active]:border-[#61D4F8] min-w-[200px]'
+                >
+                  <div className='min-w-[150px]'>Find a Country</div>
                 </TabsTrigger>
-                <TabsTrigger value='tab 2' className='text-primary-white!'>
-                  See full list
+                <TabsTrigger
+                  value='tab 2'
+                  className='text-primary-white! normal-case poppins-medium text-[18px] data-[state=active]:border-[#61D4F8]'
+                >
+                  See Full List
                 </TabsTrigger>
               </TabsList>
               <TabsContent value='tab 1'>
-                <div className='gap-4.5 flex flex-col w-full text-primary-gray-700 pt-8'>
-                  <H2
-                    className='!text-[24px] poppins-bold text-primary-white'
-                    marginBottom='none'
-                  >
-                    Uncover detailed anti-corruption data for your country.
-                  </H2>
-                  <P
-                    className='poppins-regular leading-[120%] text-primary-white'
-                    size='base'
-                    marginBottom='none'
-                  >
-                    Choose a country to reveal its complete anti-corruption
-                    profile — from key indicators to institutional strategies
-                  </P>
+                <div className='gap-8 flex flex-col w-full text-primary-gray-700 pt-7'>
+                  <div className='flex flex-col gap-3'>
+                    <H2
+                      className='!text-[24px] poppins-bold text-primary-white'
+                      marginBottom='none'
+                    >
+                      Uncover detailed anti-corruption data for your country
+                    </H2>
+                    <P
+                      className='poppins-regular leading-[120%] text-primary-white'
+                      size='base'
+                      marginBottom='none'
+                    >
+                      Choose a country to reveal its complete anti-corruption
+                      profile — from key indicators to institutional strategies
+                    </P>
+                  </div>
                   {countryTaxonomy.length > 0 ? (
                     <DropdownSelect
                       placeholder='Select country'
@@ -622,11 +624,11 @@ function Homepage() {
             </Tabs>
           </div>
         </div>
-        <div className='w-full mt-14 px-10'>
-          <H3 className='poppins-semibold !text-[24px] !mb-10'>
+        <div className='w-full mt-20 px-20'>
+          <H3 className='poppins-semibold !text-[24px] !mb-8'>
             Recommended projects
           </H3>
-          <div className='flex gap-6 mt-10'>
+          <div className='flex gap-6'>
             <CardEl
               img='https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
               title='Global Report on Public Procurement'
@@ -639,7 +641,7 @@ function Homepage() {
             />
           </div>
         </div>
-        <div className='w-full my-11 px-10'>
+        <div className='w-full my-20 px-20'>
           <H3 className='poppins-bold !text-[24px] !mb-4'>Partnerships</H3>
           <P className='poppins-regular !text-[16px] !leading-[140%]'>
             We've curated comprehensive datasets from Transparency
@@ -651,13 +653,10 @@ function Homepage() {
         </div>
       </div>
       {selectedId && data.length !== 0 && (
-        <div className='fixed bottom-8 right-16 z-15 bg-[rgba(255,255,255,0.8)] p-6 w-[280px] sm:w-[360px] rounded-[8px]'>
+        <div className='fixed bottom-8 right-20 z-15 bg-[#fff] p-6 lg:w-[300px] sm:w-[360px] rounded-[8px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] z-999'>
           <div
             style={{
-              width: '32px',
-              height: '32px',
               cursor: 'pointer',
-              padding: '4px',
               zIndex: 10,
               position: 'absolute',
               right: '0.5rem',
@@ -667,22 +666,28 @@ function Homepage() {
               setSelectedId(undefined);
             }}
           >
-            <X color='#000' strokeWidth={2} />
+            <X color='#2D4858' size={32} strokeWidth={1} />
           </div>
           <div className='w-full flex flex-col items-center'>
             <img
               alt='Country flag'
-              className='w-9 mb-2'
+              className='w-9 mb-3'
               src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${countryTaxonomy.find(d => d['Alpha-3 code'] === selectedId)?.['Alpha-2 code']}.svg`}
             />
-            <P className='text-primary-gray-700 poppins-bold' size='lg'>
+            <P
+              className='text-[#2D4858] text-[20px] text-center poppins-semibold leading-[140%]'
+              size='lg'
+            >
               {data.find(d => d.id === selectedId)?.country}
             </P>
+            <div className='bg-primary-gray-200 w-full h-[200px] mb-4 flex items-center text-primary-gray-500 justify-center'>
+              Placeholder
+            </div>
             <Button
               variant='primary-without-icon'
-              className='capitalize rounded-full bg-[#4B6E91] px-10 text-[#fff] hover:bg-[#2A3F53] poppins-semibold !text-[16px]'
+              className='normal-case rounded-full text-[#fff] px-7 py-3 bg-[#2D4858] hover:bg-[#4B6E91] cursor-pointer poppins-semibold !text-[16px] shadow-[0_4px_4px_rgba(0,0,0,0.25)]'
             >
-              View more
+              View more →
             </Button>
           </div>
         </div>

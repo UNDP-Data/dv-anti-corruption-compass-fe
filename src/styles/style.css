@@ -25,8 +25,8 @@ body {
 }
 
 .radialGradientMask {
-  mask-image: radial-gradient(circle, #000 0%, transparent 65%);
-  --webkit-mask-image: radial-gradient(circle, #000 0%, transparent 65%);
+  mask-image: radial-gradient(circle, #2d4858 15%, transparent 65%);
+  --webkit-mask-image: radial-gradient(circle, #2d4858 15%, transparent 65%);
 }
 
 .donut-main-text {
