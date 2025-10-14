@@ -5,27 +5,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@undp/design-system-react/DropdownMenu';
+import { Search } from '@undp/design-system-react/Search';
 import { H3, P } from '@undp/design-system-react/Typography';
-import { ChevronDown, Globe, Menu, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ChevronDown, Menu, X } from 'lucide-react';
+import { useState } from 'react';
 
 export const Header = () => {
-  const [scrolled, setScrolled] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 50); // adjust threshold
-    };
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
 
   return (
     <header
-      className={`fixed flex justify-between top-0 w-full px-16 py-9 z-50 transition-colors duration-300 z-500 ${
-        scrolled ? 'bg-[#0F0F0F] shadow-md' : 'bg-transparent'
-      }`}
+      className='fixed flex justify-between top-0 w-full px-16 py-9 z-50'
+      style={{ background: 'inherit' }}
     >
       <Link to='/'>
         <div className='flex items-center gap-4'>
@@ -56,37 +47,27 @@ export const Header = () => {
               >
                 Main indicators
               </P>
-              <ChevronDown strokeWidth={1} color='#fff' />
+              <ChevronDown strokeWidth={3} size={16} color='#fff' />
             </div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className='w-70 rounded-[12px] mt-2 p-0 z-1000'>
-            <DropdownMenuItem className='poppins-medium !text-[14px] py-4 hover:!bg-[#4B6E91] hover:!text-[#fff]'>
+          <DropdownMenuContent className='w-60 rounded-[8px] mt-2 p-0 z-1000 border-none shadow-[0_2px_4px_0_rgba(0,0,0,0.25)]'>
+            <DropdownMenuItem className='poppins-medium !text-[14px] py-4 px-3 hover:!bg-[#4B6E91] hover:!text-[#fff]'>
               <Link to='/public-procurement-integrity'>
                 <P
-                  className='text-center poppins-medium !text-[14px] leading-none tracking-[0%]'
+                  className='text-center poppins-medium !text-[14px] !leading-[1.37] tracking-[0%]'
                   marginBottom='none'
                 >
                   Public procurement integrity
                 </P>
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className='poppins-medium !text-[14px] py-4 hover:!bg-[#4B6E91] hover:!text-[#fff]'>
+            <DropdownMenuItem className='poppins-medium !text-[14px] py-4 px-3 hover:!bg-[#4B6E91] hover:!text-[#fff]'>
               <Link to='/business-experience'>
                 <P
-                  className='text-center poppins-medium !text-[14px] leading-none tracking-[0%]'
+                  className='text-center poppins-medium !text-[14px] !leading-[1.37] tracking-[0%]'
                   marginBottom='none'
                 >
                   Business experiences
-                </P>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem className='poppins-medium !text-[14px] py-4 hover:!bg-[#4B6E91] hover:!text-[#fff]'>
-              <Link to='/anti-corruption-authority'>
-                <P
-                  className='text-center poppins-medium !text-[14px] leading-none tracking-[0%]'
-                  marginBottom='none'
-                >
-                  Anti-corruption authorities
                 </P>
               </Link>
             </DropdownMenuItem>
@@ -109,8 +90,15 @@ export const Header = () => {
           </P>
         </Link>
       </div>
-      <div className='hidden lg:block'>
-        <Globe strokeWidth={2} color='#fff' size={32} />
+      <div className='search-component hidden lg:block'>
+        <Search
+          buttonVariant='icon'
+          className='flex-row-reverse'
+          inputSize='sm'
+          inputVariant='light'
+          inputClassName='bg-transparent rounded-full py-3 px-3 border-1 border-[#fff] text-[#fff] w-50 poppins-regular !text-[12px]'
+          showSearchButton={false}
+        />
       </div>
       <div className='grow justify-end gap-8 flex lg:hidden'>
         <button
@@ -149,14 +137,6 @@ export const Header = () => {
                     marginBottom='none'
                   >
                     Business experiences
-                  </P>
-                </Link>
-                <Link to='/anti-corruption-authority'>
-                  <P
-                    className='poppins-regular !text-[14px] leading-none tracking-[0%]'
-                    marginBottom='none'
-                  >
-                    Anti-corruption authorities
                   </P>
                 </Link>
                 <Link to='/anti-corruption-authority'>
