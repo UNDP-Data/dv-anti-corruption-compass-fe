@@ -47,10 +47,12 @@ export const MAIN_INDICATORS_COLORS = [
   {
     id: 'Public Procurement',
     colors: '#00904A',
+    gradient: ['#00904A', '#789D24'],
   },
   {
-    id: 'Anti Corruption Authorities',
+    id: 'Business Experiences',
     colors: '#E3512C',
+    gradient: ['#E3512C', '#F66428'],
   },
 ];
 
@@ -59,15 +61,15 @@ export const SUB_PILLARS = [
     label: 'Contract Modifications',
     value: 'Contract Modifications',
     mainIndicator: 'Public Procurement',
-    mainIndicatorColor: '#00904A',
-    indicatorColor: '#4CA462',
+    mainIndicatorColor: '#89C124',
+    indicatorColor: '#89C124',
     colors: ['#8BE49D', '#4CA462', '#03682B'],
   },
   {
     label: 'No Call for tenders Published',
     value: 'No Call for tenders Published',
     mainIndicator: 'Public Procurement',
-    mainIndicatorColor: '#00904A',
+    mainIndicatorColor: '#89C124',
     indicatorColor: '#DFB707',
     colors: ['#FFF3BD', '#EEDB88', '#DFB707'],
   },
@@ -75,7 +77,7 @@ export const SUB_PILLARS = [
     label: 'Tax Haven',
     value: 'Tax Haven',
     mainIndicator: 'Public Procurement',
-    mainIndicatorColor: '#00904A',
+    mainIndicatorColor: '#89C124',
     indicatorColor: '#A21942',
     colors: ['#F297B2', '#E9346A', '#A21942'],
   },
@@ -83,7 +85,7 @@ export const SUB_PILLARS = [
     label: 'Non-open procedure',
     value: 'Non-open procedure',
     mainIndicator: 'Public Procurement',
-    mainIndicatorColor: '#00904A',
+    mainIndicatorColor: '#89C124',
     indicatorColor: '#FD6925',
     colors: ['#FFBFA2', '#FF9B6D', '#FD6925'],
   },
@@ -91,7 +93,7 @@ export const SUB_PILLARS = [
     label: 'Beneficiary ownership',
     value: 'Beneficiary ownership',
     mainIndicator: 'Public Procurement',
-    mainIndicatorColor: '#00904A',
+    mainIndicatorColor: '#89C124',
     indicatorColor: '#666666',
     colors: ['#E0DEDF', '#B2AFB0', '#666666'],
   },
@@ -165,6 +167,8 @@ export const DROPDOWN_CLASSNAMES: any = {
   valueContainer: () => 'px-2 py-[2px]',
   menu: () =>
     'rounded-none! mt-1! border-0! shadow-lg! p-0! bg-primary-gray-650!',
+  indicatorSeparator: () => '!hidden',
+  dropdownIndicator: () => '[&>svg]:stroke-[#fff]',
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

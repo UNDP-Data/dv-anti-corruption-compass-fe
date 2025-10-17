@@ -33,10 +33,10 @@ function CountryPageEl({ isoCode }: Props) {
   }, [isoCode]);
   return (
     <div className='w-full'>
-      <div className='flex items-center justify-center gap-1 flex-col mb-[104px]'>
+      <div className='flex items-center justify-center gap-1 flex-col mt-16 mb-26'>
         <img
           alt='Country flag'
-          className='w-9 mb-2'
+          className='w-11 mb-2'
           src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${countryData?.['Alpha-2 code']}.svg`}
         />
         <H2
@@ -45,7 +45,7 @@ function CountryPageEl({ isoCode }: Props) {
         >
           {countryData?.['Country or Area']}
         </H2>
-        <P className='poppins-regular !text-[14px] !leading-[140%] text-primary-white'>
+        <P className='poppins-regular !text-[14px] !leading-[140%] text-primary-white mb-10'>
           {countryData?.['Group 1']} | {countryData?.['Group 2']}
         </P>
         <PolarBarChart
@@ -55,7 +55,7 @@ function CountryPageEl({ isoCode }: Props) {
               subIndicator: 'Contract Modifications',
               mainIndicator: 'Public Procurement',
               level: 'Low',
-              value: 10,
+              value: 90,
               year: 2024,
             },
             {
@@ -69,7 +69,7 @@ function CountryPageEl({ isoCode }: Props) {
               subIndicator: 'Tax Haven',
               mainIndicator: 'Public Procurement',
               level: 'Low',
-              value: 30,
+              value: 60,
               year: 2024,
             },
             {
@@ -83,7 +83,7 @@ function CountryPageEl({ isoCode }: Props) {
               subIndicator: 'Beneficiary ownership',
               mainIndicator: 'Public Procurement',
               level: 'Low',
-              value: 50,
+              value: 80,
               year: 2024,
             },
             {
@@ -104,20 +104,20 @@ function CountryPageEl({ isoCode }: Props) {
               subIndicator: 'Counter Measures',
               mainIndicator: 'Business Experiences',
               level: 'Low',
-              value: 30,
+              value: 70,
               year: 2024,
             },
           ]}
         />
       </div>
-      <div className='flex flex-col gap-6 max-w-[1248px] mx-auto'>
+      <div className='flex flex-col gap-6 max-w-[1660px] mx-auto px-16'>
         <H2
           className='poppins-bold !text-[24px] text-primary-white'
           marginBottom='none'
         >
-          Explore the data
+          Explore data
         </H2>
-        <div className='flex gap-4 w-full items-center flex-col justify-between py-10'>
+        <div className='flex gap-4 w-full items-center flex-col justify-between'>
           <SegmentedControl
             color='blue'
             value={view}
@@ -131,8 +131,10 @@ function CountryPageEl({ isoCode }: Props) {
             variant='normal'
             className='rounded-full p-0 border-0 w-full'
             activeButtonClassName={cn(
-              'rounded-full py-4 px-16 poppins-bold text-[#fff]',
-              view === 'Public Procurement' ? 'bg-[#89C124]' : 'bg-[#E3512C]',
+              'rounded-full py-4 px-16 poppins-bold text-white transition-all duration-200',
+              view === 'Public Procurement'
+                ? 'bg-gradient-to-r from-[#00904A] to-[#789D24]'
+                : 'bg-gradient-to-r from-[#E3512C] to-[#F66428]',
             )}
             buttonClassName='px-16 poppins-regular py-4 rounded-full w-1/2'
           />
@@ -144,8 +146,8 @@ function CountryPageEl({ isoCode }: Props) {
           ) : null}
         </div>
       </div>
-      <div className='max-w-[1248px] mx-auto'>
-        <Spacer size='7xl' />
+      <div className='max-w-[1660px] mx-auto px-16'>
+        <Spacer size='6xl' />
         <CountryProfile
           country={countryData?.['Country or Area'] || ''}
           isoCode={isoCode}

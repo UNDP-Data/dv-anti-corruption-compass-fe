@@ -20,7 +20,7 @@ function GraphCard({
     <div
       {...props}
       className={cn(
-        'bg-[#3A5261] rounded-[8px] basis-[calc(50%-0.75rem)] p-6 min-w-[320px] flex flex-col gap-0',
+        'bg-[#FFFFFF12] shadow-[0_5px_60px_0_rgba(0,0,0,0.20)] rounded-[8px] basis-[calc(50%-0.75rem)] p-6 pr-8 min-w-[320px] flex flex-col gap-0',
         className,
       )}
     >
@@ -35,7 +35,7 @@ function GraphCard({
           <Badge
             key={i}
             rounded='xs'
-            className='poppins-regular !text-[10px] bg-[#475258] text-primary-white'
+            className='poppins-medium !text-[12px] bg-[#FFFFFF1F] rounded-[4px] text-primary-white py-1 px-2'
           >
             {d}
           </Badge>

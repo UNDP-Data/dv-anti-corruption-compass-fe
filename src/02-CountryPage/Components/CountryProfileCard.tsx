@@ -20,12 +20,12 @@ function CountryProfileCard({
     <div
       {...props}
       className={cn(
-        'bg-[#3A5261] rounded-[8px] basis-[calc(50%-0.75rem)] p-6 min-w-[320px] flex flex-col gap-0 cursor-pointer',
+        'bg-[#FFFFFF12] shadow-[0_5px_60px_0_rgba(0,0,0,0.20)] rounded-[8px] basis-[calc(50%-0.75rem)] pr-16 pl-6 py-8 min-w-[320px] flex flex-col gap-0 cursor-pointer',
         className,
       )}
     >
       <img src={imgSrc} className='w-[80px] h-[80px]' alt='icons' />
-      <Spacer size='xl' />
+      <Spacer size='2xl' />
       <H3
         className='poppins-semibold !text-[20px] text-primary-white'
         marginBottom='none'
@@ -33,7 +33,7 @@ function CountryProfileCard({
         {title}
       </H3>
       <Spacer size='xl' />
-      <P className='poppins-regular text-[16px]! text-primary-white'>
+      <P className='poppins-light text-[16px]! !leading-[140%] text-primary-white mb-0'>
         {description}
       </P>
       <Spacer size='2xl' />

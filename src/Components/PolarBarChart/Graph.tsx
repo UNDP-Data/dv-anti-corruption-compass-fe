@@ -3,7 +3,7 @@ import { arc } from 'd3-shape';
 import { P } from '@undp/design-system-react/Typography';
 
 import { CountryDataType } from '@/Types';
-import { SUB_PILLARS } from '@/Constants';
+import { MAIN_INDICATORS_COLORS } from '@/Constants';
 
 interface Props {
   data: CountryDataType[];
@@ -22,8 +22,7 @@ export const Graph = ({
 }: Props) => {
   const x = scaleBand()
     .domain(data.map(d => d.subIndicator))
-    .range([-Math.PI / 2, Math.PI / 2])
-    .paddingInner(0.1);
+    .range([-Math.PI / 2, Math.PI / 2]);
   const r = scaleLinear()
     .domain([0, 100])
     .range([0, radius * (1 - innerRadiusRatio)]);
@@ -42,9 +41,82 @@ export const Graph = ({
           fill='#fff'
         />
         {data.map((d, i) => {
-          const angle = x(d.subIndicator)! + (x.bandwidth() as number) / 2;
+          const startAngle = x(d.subIndicator)!;
+          const endAngle = startAngle + (x.bandwidth() as number);
+          const angle = (startAngle + endAngle) / 2;
+
+          const innerR = radius * innerRadiusRatio;
+          const outerR = radius;
+          const gradId = `grad-seg-${i}`;
+
+          // get main indicator gradient colors
+          const main = MAIN_INDICATORS_COLORS.find(
+            m => m.id === d.mainIndicator,
+          );
+
+          // helper: polar → cartesian
+          const polar = (r: number, a: number) => ({
+            x: r * Math.sin(a),
+            y: -r * Math.cos(a),
+          });
+
+          const pInner = polar(innerR, angle);
+          const pOuter = polar(outerR, angle);
+
           return (
             <g key={i}>
+              {/* radial gradient */}
+              <defs>
+                <linearGradient
+                  id={gradId}
+                  gradientUnits='userSpaceOnUse'
+                  x1={pInner.x}
+                  y1={pInner.y}
+                  x2={pOuter.x}
+                  y2={pOuter.y}
+                >
+                  <stop
+                    offset='0%'
+                    stopColor={main?.gradient?.[0] || main?.colors || '#ccc'}
+                  />
+                  <stop
+                    offset='100%'
+                    stopColor={main?.gradient?.[1] || main?.colors || '#ccc'}
+                  />
+                </linearGradient>
+              </defs>
+
+              {/* background segment */}
+              <path
+                d={
+                  arc()({
+                    innerRadius: innerR,
+                    outerRadius: outerR,
+                    startAngle,
+                    endAngle,
+                  }) as string
+                }
+                fill='#F3F4F6'
+                strokeWidth={2}
+                stroke='#fff'
+              />
+
+              {/* data segment with radial gradient */}
+              <path
+                d={
+                  arc()({
+                    innerRadius: innerR,
+                    outerRadius: innerR + r(d.value),
+                    startAngle,
+                    endAngle,
+                  }) as string
+                }
+                fill={`url(#${gradId})`}
+                strokeWidth={2}
+                stroke='#fff'
+              />
+
+              {/* tick */}
               <line
                 x1={(radius + 5) * Math.sin(angle)}
                 y1={(radius + 5) * Math.cos(angle) * -1}
@@ -52,10 +124,12 @@ export const Graph = ({
                 y2={(radius + 15) * Math.cos(angle) * -1}
                 strokeWidth={1}
                 fill='none'
-                stroke='#fff'
+                stroke='#F7F7F7'
               />
+
+              {/* label */}
               <foreignObject
-                y={(radius + 15) * Math.cos(angle) * -1 - 60}
+                y={(radius + 15) * Math.cos(angle) * -1 - 70}
                 x={
                   (radius + 15) * Math.sin(angle) -
                   (Math.abs(angle) > Math.PI / 6
@@ -70,33 +144,19 @@ export const Graph = ({
               >
                 <div className='w-full h-full flex items-center flex-col justify-end'>
                   <P
-                    className='poppins-bold !text-[14px] !leading-[140%] text-primary-white text-center'
+                    className='poppins-bold !text-[14px] !leading-[130%] text-primary-white text-center'
                     marginBottom='none'
                   >
                     {d.subIndicator}
                   </P>
                   <P
-                    className='poppins-regular !text-[14px] !leading-[140%] text-primary-white'
+                    className='poppins-light !text-[12px] !leading-[160%] text-primary-white'
                     marginBottom='none'
                   >
                     {d.level}
                   </P>
                 </div>
               </foreignObject>
-              <path
-                d={
-                  arc()({
-                    innerRadius: radius * innerRadiusRatio,
-                    outerRadius: radius * innerRadiusRatio + r(d.value),
-                    startAngle: x(d.subIndicator) as number,
-                    endAngle: x(d.subIndicator)! + (x.bandwidth() as number),
-                  }) as string
-                }
-                fill={
-                  SUB_PILLARS.find(el => el.mainIndicator === d.mainIndicator)
-                    ?.mainIndicatorColor
-                }
-              />
             </g>
           );
         })}

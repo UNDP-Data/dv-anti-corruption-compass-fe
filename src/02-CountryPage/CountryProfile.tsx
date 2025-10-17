@@ -18,7 +18,7 @@ function CountryProfile({ country, isoCode }: Props) {
       >
         Country profile
       </H2>
-      <Spacer size='xl' />
+      <Spacer size='2xl' />
       <div className='flex items-stretch gap-6 w-full flex-wrap'>
         <CountryProfileCard
           title='Anti-corruption laws'

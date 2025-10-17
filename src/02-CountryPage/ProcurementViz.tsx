@@ -85,7 +85,7 @@ function ProcurementViz({ country, isoCode }: Props) {
             ).map(d => ({ value: d.value, label: d.label }))}
             size='base'
             variant='normal'
-            className='bg-[#3A5261]! border-0! rounded-[8px]!'
+            className='bg-[#FFFFFF12]! poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
           />
         </div>
@@ -100,7 +100,7 @@ function ProcurementViz({ country, isoCode }: Props) {
             options={YEARS.map(d => ({ value: d, label: d }))}
             size='base'
             variant='normal'
-            className='bg-[#3A5261]! border-0! rounded-[8px]!'
+            className='bg-[#FFFFFF12]! poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
           />
         </div>
@@ -120,7 +120,7 @@ function ProcurementViz({ country, isoCode }: Props) {
             options={MARKET.map(d => ({ value: d, label: d }))}
             size='base'
             variant='normal'
-            className='bg-[#3A5261]! border-0! rounded-[8px]!'
+            className='bg-[#FFFFFF12]! poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
           />
         </div>
@@ -140,7 +140,7 @@ function ProcurementViz({ country, isoCode }: Props) {
             options={CONTRACT_VALUE.map(d => ({ value: d, label: d }))}
             size='base'
             variant='normal'
-            className='bg-[#3A5261]! border-0! rounded-[8px]!'
+            className='bg-[#FFFFFF12]! poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
           />
         </div>
@@ -150,14 +150,17 @@ function ProcurementViz({ country, isoCode }: Props) {
         <div className='flex gap-6 flex-wrap'>
           <GraphCard title='Overview' chips={[selectedPillar, selectedYear]}>
             <P
-              className='poppins-regular !text-[16px] !leading-[140%] text-primary-white'
+              className='poppins-regular !text-[14px] !leading-[140%] text-primary-white'
               marginBottom='none'
             >
               Contract Modification ipsum dolor sit amet consectetur. Nisi
               potenti id tellus bibendum sed acc semper malesuada. Nulla aenean.
             </P>
-            <Spacer size='xl' />
-            <div className='flex grow'>
+            <Spacer size='3xl' />
+            <div className='flex grow relative'>
+              <P className='text-[40px] poppins-light absolute flex justify-center items-center w-full h-full m-0 p-0'>
+                86%
+              </P>
               <DonutChart
                 data={[
                   {
@@ -169,12 +172,11 @@ function ProcurementViz({ country, isoCode }: Props) {
                     size: 14,
                   },
                 ]}
-                mainText='86%'
-                strokeWidth={10}
+                strokeWidth={14}
                 showColorScale={false}
                 colors={[
                   SUB_PILLARS.find(d => d.value === selectedPillar)
-                    ?.indicatorColor || '#fff',
+                    ?.mainIndicatorColor || '#fff',
                   '#fff',
                 ]}
               />
@@ -188,8 +190,8 @@ function ProcurementViz({ country, isoCode }: Props) {
               {MARKET.map((d, i) => (
                 <div key={i}>
                   <P
-                    className='poppins-medium text-primary-white'
-                    marginBottom='3xs'
+                    className='poppins-medium text-[14px] text-primary-white'
+                    marginBottom='2xs'
                   >
                     {d}
                   </P>
@@ -200,7 +202,7 @@ function ProcurementViz({ country, isoCode }: Props) {
                       width: `${Math.random() * 100}%`,
                       backgroundColor:
                         SUB_PILLARS.find(d => d.value === selectedPillar)
-                          ?.indicatorColor || '#fff',
+                          ?.mainIndicatorColor || '#fff',
                     }}
                   />
                 </div>
@@ -227,10 +229,7 @@ function ProcurementViz({ country, isoCode }: Props) {
                       ])}
                       scaleType='categorical'
                       colorDomain={['Low', 'Medium', 'High']}
-                      colors={
-                        SUB_PILLARS.find(d => d.value === selectedPillar)
-                          ?.colors
-                      }
+                      colors={['#DCE7C1', '#ADD06A', '#89C124']}
                     />
                   </div>
                   <div className='basis-[calc(50%-0.5rem)] flex flex-col min-w-[320px]'>
@@ -270,7 +269,7 @@ function ProcurementViz({ country, isoCode }: Props) {
                                       backgroundColor:
                                         SUB_PILLARS.find(
                                           el => el.value === selectedPillar,
-                                        )?.indicatorColor || '#fff',
+                                        )?.mainIndicatorColor || '#fff',
                                     }}
                                   />
                                 </div>
@@ -313,7 +312,7 @@ function ProcurementViz({ country, isoCode }: Props) {
                   labels={[country, 'World']}
                   lineColors={[
                     SUB_PILLARS.find(d => d.value === selectedPillar)
-                      ?.indicatorColor || '#fff',
+                      ?.mainIndicatorColor || '#fff',
                     '#fff',
                   ]}
                   showColorLegendAtTop={false}
@@ -342,7 +341,7 @@ function ProcurementViz({ country, isoCode }: Props) {
                   colorDomain={[country, 'World']}
                   colors={[
                     SUB_PILLARS.find(d => d.value === selectedPillar)
-                      ?.indicatorColor || '#fff',
+                      ?.mainIndicatorColor || '#fff',
                     '#fff',
                   ]}
                   animate

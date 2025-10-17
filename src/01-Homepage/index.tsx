@@ -293,7 +293,7 @@ function Homepage() {
             }}
           />
         </div>
-        <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col py-8 pl-10 pr-30'>
+        <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col py-24 pl-10 pr-30'>
           <div className='absolute left-1/2 top-0 z-10 transform -translate-x-1/2'>
             <div className='flex flex-col gap-4'>
               <div className='flex gap-2 items-center mt-6'>
@@ -424,7 +424,7 @@ function Homepage() {
 
       <div className='flex flex-col relative z-20'>
         <div
-          className={`flex items-start pt-40 w-full px-4 bg-cover bg-center bg-no-repeat ${selectedTab === 'tab 2' ? 'bg-transparent' : "bg-[url('/imgs/sphere.webp')]"} px-34 min-h-[calc(100vh-120px)]`}
+          className={`flex items-start pt-50 w-full px-4 bg-cover bg-center bg-no-repeat ${selectedTab === 'tab 2' ? 'bg-transparent' : "bg-[url('/imgs/sphere.webp')]"} px-34 min-h-[calc(100vh-120px)]`}
         >
           <div
             ref={refSlideThree}
