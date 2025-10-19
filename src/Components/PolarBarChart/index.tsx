@@ -2,14 +2,19 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Graph } from './Graph';
 
-import { CountryDataType } from '@/Types';
+import { CountryDataType, PillarsMetaDataType } from '@/Types';
 
 interface Props {
   data: CountryDataType[];
   innerRadiusRatio?: number;
+  pillarsMetaData: PillarsMetaDataType[];
 }
 
-export const PolarBarChart = ({ data, innerRadiusRatio = 0.6 }: Props) => {
+export const PolarBarChart = ({
+  data,
+  innerRadiusRatio = 0.6,
+  pillarsMetaData,
+}: Props) => {
   const [radius, setRadius] = useState(0);
   const marginSide = 100;
   const marginTop = 100;
@@ -36,6 +41,7 @@ export const PolarBarChart = ({ data, innerRadiusRatio = 0.6 }: Props) => {
           innerRadiusRatio={innerRadiusRatio}
           marginSide={marginSide}
           marginTop={marginTop}
+          pillarsMetaData={pillarsMetaData}
         />
       )}
     </div>

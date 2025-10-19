@@ -1,7 +1,7 @@
 import { H2, P } from '@undp/design-system-react/Typography';
 function MethodologyPage() {
   return (
-    <div className='relative max-w-[1248px] mx-auto mt-[60px] min-h-[100vh]'>
+    <div className='relative max-w-[1248px] mx-auto mt-[60px]'>
       <H2 className='poppins-bold !text-[24px]'>Methodology</H2>
       <P
         className='poppins-regular !text-[16px] !leading-[140%]'

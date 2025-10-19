@@ -18,9 +18,15 @@ body {
   min-height: 100vh;
   margin: 0;
   color: white;
+  display: flex;
+  flex-direction: column;
 }
 
-#root {
+main {
+  flex: 1;
+}
+
+.background-inherit,#root {
   background: inherit;
 }
 
@@ -31,7 +37,7 @@ body {
 
 .donut-main-text {
   font-family: 'Poppins', sans-serif !important;
-  font-weight: 700 !important;
+  font-weight: 300 !important;
   color: #fff;
 }
 

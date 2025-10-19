@@ -7,7 +7,13 @@ import {
   YoutubeIcon,
 } from 'lucide-react';
 
-export const Footer = () => {
+import { PillarsMetaDataType } from '@/Types';
+
+export const Footer = ({
+  pillarsMetaData,
+}: {
+  pillarsMetaData: PillarsMetaDataType[];
+}) => {
   return (
     <footer className='bg-[#537286] px-20 py-24 relative z-10'>
       <div className='flex flex-wrap flex-col lg:flex-row gap-4 md:gap-12 lg:gap-0'>
@@ -29,21 +35,19 @@ export const Footer = () => {
             </P>
           </Link>
           <div className='flex flex-col gap-4 md:gap-8'>
-            <Link to='/public-procurement-integrity'>
-              <P className='poppins-regular !text-[16px]' marginBottom='none'>
-                Public procurement integrity
-              </P>
-            </Link>
-            <Link to='/business-experience'>
-              <P className='poppins-regular !text-[16px]' marginBottom='none'>
-                Business experiences
-              </P>
-            </Link>
-            <Link to='/anti-corruption-authority'>
-              <P className='poppins-regular !text-[16px]' marginBottom='none'>
-                Anti-corruption authorities
-              </P>
-            </Link>
+            {pillarsMetaData.map((d, i) => (
+              <Link
+                to='/main-indicators/$indicator'
+                params={{
+                  indicator: d.value.replaceAll(' ', '-').toLowerCase(),
+                }}
+                key={i}
+              >
+                <P className='poppins-regular !text-[16px]' marginBottom='none'>
+                  {d.value}
+                </P>
+              </Link>
+            ))}
           </div>
           <Link to='/methodology'>
             <P className='poppins-regular !text-[16px]' marginBottom='none'>

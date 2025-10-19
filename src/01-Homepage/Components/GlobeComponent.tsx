@@ -1,0 +1,194 @@
+import { useState } from 'react';
+import * as THREE from 'three';
+import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
+import { X } from 'lucide-react';
+import { P } from '@undp/design-system-react/Typography';
+import { Link } from '@tanstack/react-router';
+
+import { DataType, PillarsMetaDataType, TaxonomyType } from '@/Types';
+import { ColorLegend } from '@/Components/ColorLegend';
+import { ArcChart } from '@/Components/ArcChart';
+
+interface Props {
+  data: DataType[];
+  selectedSubPillar: string;
+  selectedMainIndicator: string;
+  countryTaxonomy: TaxonomyType[];
+  rotate: boolean;
+  pillarsMetaData: PillarsMetaDataType[];
+}
+
+function GlobeComponent({
+  data,
+  selectedSubPillar,
+  countryTaxonomy,
+  rotate,
+  pillarsMetaData,
+  selectedMainIndicator,
+}: Props) {
+  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+  return (
+    <>
+      <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col py-24 pl-10 pr-30'>
+        <div className='absolute left-1/2 top-0 z-10 transform -translate-x-1/2'>
+          <ColorLegend
+            colors={
+              pillarsMetaData
+                .map(d => d.subPillars)
+                .flat()
+                .find(d => d.value === selectedSubPillar)?.colors || []
+            }
+          />
+        </div>
+        <div className='w-full grow flex radialGradientMask'>
+          {data.length !== 0 ? (
+            <ThreeDGlobe
+              showColorScale={false}
+              polygonAltitude={0.005}
+              highlightedAltitude={0.01}
+              colors={
+                pillarsMetaData
+                  .map(d => d.subPillars)
+                  .flat()
+                  .find(d => d.value === selectedSubPillar)?.colors
+              }
+              selectedId={selectedId}
+              onSeriesMouseClick={d => {
+                setSelectedId(d.id);
+              }}
+              colorDomain={['Low', 'Medium', 'High']}
+              scale={
+                (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
+                0.95
+                  ? 1.5
+                  : (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
+                      0.9
+                    ? 1.75
+                    : (window.innerWidth / 2 - 160) /
+                          (window.innerHeight - 200) >
+                        0.8
+                      ? 2
+                      : (window.innerWidth / 2 - 160) /
+                            (window.innerHeight - 200) >
+                          0.7
+                        ? 2.5
+                        : 3
+              }
+              footNote=''
+              enableZoom={false}
+              atmosphereColor={
+                pillarsMetaData
+                  .map(d => d.subPillars)
+                  .flat()
+                  .find(d => d.value === selectedSubPillar)?.color
+              }
+              globeMaterial={
+                new THREE.MeshBasicMaterial({
+                  color: 0xfafafa,
+                })
+              }
+              fogSettings={{
+                color:
+                  pillarsMetaData
+                    .map(d => d.subPillars)
+                    .flat()
+                    .find(d => d.value === selectedSubPillar)?.color || '#fff',
+                near:
+                  (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
+                  0.9
+                    ? 150
+                    : (window.innerWidth / 2 - 160) /
+                          (window.innerHeight - 200) >
+                        0.8
+                      ? 200
+                      : (window.innerWidth / 2 - 160) /
+                            (window.innerHeight - 200) >
+                          0.7
+                        ? 250
+                        : 300,
+                far:
+                  (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
+                  0.9
+                    ? 300
+                    : (window.innerWidth / 2 - 160) /
+                          (window.innerHeight - 200) >
+                        0.8
+                      ? 350
+                      : (window.innerWidth / 2 - 160) /
+                            (window.innerHeight - 200) >
+                          0.7
+                        ? 400
+                        : 450,
+              }}
+              atmosphereAltitude={0.1}
+              globeCurvatureResolution={2}
+              resetSelectionOnDoubleClick={false}
+              autoRotate={rotate ? 1 : false}
+              data={data}
+            />
+          ) : null}
+        </div>
+      </div>
+      {selectedId && data.length !== 0 && (
+        <div className='fixed bottom-8 right-20 z-15 bg-[#fff] p-6 lg:w-[300px] sm:w-[360px] rounded-[8px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] z-999'>
+          <div
+            style={{
+              cursor: 'pointer',
+              zIndex: 10,
+              position: 'absolute',
+              right: '0.5rem',
+              top: '0.5rem',
+            }}
+            onClick={() => {
+              setSelectedId(undefined);
+            }}
+          >
+            <X color='#2D4858' size={32} strokeWidth={1} />
+          </div>
+          <div className='w-full flex flex-col items-center'>
+            <img
+              alt='Country flag'
+              className='w-9 mb-3'
+              src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${countryTaxonomy.find(d => d['Alpha-3 code'] === selectedId)?.['Alpha-2 code']}.svg`}
+            />
+            <P
+              className='text-[#2D4858] text-[20px] text-center poppins-semibold leading-[140%]'
+              size='lg'
+            >
+              {data.find(d => d.id === selectedId)?.country}
+            </P>
+            <div className='w-full mb-4 flex items-center text-primary-gray-500 justify-center'>
+              <ArcChart
+                data={
+                  pillarsMetaData
+                    .find(d => d.value === selectedMainIndicator)
+                    ?.subPillars.map(_d => Math.ceil(Math.random() * 100)) || []
+                }
+                colors={
+                  pillarsMetaData
+                    .find(d => d.value === selectedMainIndicator)
+                    ?.subPillars.map(d => d.color) || []
+                }
+                subPillars={
+                  pillarsMetaData
+                    .map(d => d.subPillars)
+                    .flat()
+                    .map(d => d.value) || []
+                }
+              />
+            </div>
+            <Link
+              to='/countries/$isoCode'
+              className='normal-case rounded-full text-[#fff] px-7 py-3 bg-[#2D4858] hover:bg-[#4B6E91] cursor-pointer poppins-semibold !text-[16px] shadow-[0_4px_4px_rgba(0,0,0,0.25)]'
+              params={{ isoCode: selectedId }}
+            >
+              View more →
+            </Link>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+export default GlobeComponent;

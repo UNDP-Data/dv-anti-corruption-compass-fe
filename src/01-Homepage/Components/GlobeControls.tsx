@@ -1,17 +1,36 @@
+import { Link } from '@tanstack/react-router';
 import { H3, P } from '@undp/design-system-react';
-import { forwardRef, useState } from 'react';
+import { useInView } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Props {
   heading: string;
   description: string;
   isLastSection?: boolean;
-  buttons: { label: string; value: string; color: string }[];
-  onClick: (_d: { label: string; value: string; color: string }) => void;
+  buttons?: { label: string; value: string; color: string }[];
+  onClick: (_d: string) => void;
+  onViewChange: (_d: number) => void;
+  index: number;
 }
 
-const ControlPanel = forwardRef<HTMLDivElement, Props>((props, ref) => {
-  const { heading, description, buttons, onClick, isLastSection } = props;
+const GlobeControls = (props: Props) => {
+  const {
+    heading,
+    description,
+    buttons = [],
+    onClick,
+    isLastSection,
+    onViewChange,
+    index,
+  } = props;
   const [activeButton, setActiveButton] = useState(buttons[0].label);
+  const ref = useRef<HTMLDivElement | null>(null);
+  const isInView = useInView(ref, { once: false, amount: 0.6 });
+  useEffect(() => {
+    if (isInView) {
+      onViewChange(index);
+    }
+  }, [index, isInView, onViewChange]);
   return (
     <div
       ref={ref}
@@ -38,7 +57,7 @@ const ControlPanel = forwardRef<HTMLDivElement, Props>((props, ref) => {
               key={i}
               onClick={() => {
                 setActiveButton(d.label);
-                onClick(d);
+                onClick(d.label);
               }}
               style={{
                 backgroundColor:
@@ -62,15 +81,16 @@ const ControlPanel = forwardRef<HTMLDivElement, Props>((props, ref) => {
             </button>
           ))}
         </div>
-        <P
-          className='poppins-medium !text-[16px] text-left'
-          marginBottom='none'
+        <Link
+          className='poppins-medium !text-[16px] text-left mb-0'
+          to='/main-indicators/$indicator'
+          params={{ indicator: heading.replaceAll(' ', '-').toLowerCase() }}
         >
           View more →
-        </P>
+        </Link>
       </div>
     </div>
   );
-});
+};
 
-export default ControlPanel;
+export default GlobeControls;
