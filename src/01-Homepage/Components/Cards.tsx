@@ -25,10 +25,10 @@ export const CardEl = ({ img, title, date }: Props) => (
           className='rounded-tl-[20px] rounded-tr-[20px] h-40'
           src={img}
         />
-        <CardTitle className='poppins-medium !text-[16px] !leading-[26px]'>
+        <CardTitle className='pt-9 pb-4 poppins-medium !text-[16px] !leading-[26px]'>
           {title}
         </CardTitle>
-        <CardDescription className='poppins-regular !text-[12px] !leading-[16px] text-[#808191]'>
+        <CardDescription className='pb-9 poppins-regular !text-[12px] !leading-[16px] text-[#808191]'>
           Published on {date}
         </CardDescription>
       </CardHeader>

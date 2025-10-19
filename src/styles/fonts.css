@@ -1,26 +1,32 @@
+.poppins-light {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 300 !important;
+  font-style: normal;
+  line-height: 120%;
+}
 .poppins-regular {
-  font-family: "Poppins", sans-serif !important;
+  font-family: 'Poppins', sans-serif !important;
   font-weight: 400 !important;
   font-style: normal;
   line-height: 120%;
 }
 
 .poppins-medium {
-  font-family: "Poppins", sans-serif !important;
+  font-family: 'Poppins', sans-serif !important;
   font-weight: 500 !important;
   font-style: normal;
   line-height: 120%;
 }
 
 .poppins-semibold {
-  font-family: "Poppins", sans-serif !important;
+  font-family: 'Poppins', sans-serif !important;
   font-weight: 600 !important;
   font-style: normal;
   line-height: 120%;
 }
 
 .poppins-bold {
-  font-family: "Poppins", sans-serif !important;
+  font-family: 'Poppins', sans-serif !important;
   font-weight: 700 !important;
   font-style: normal;
   line-height: 120%;

@@ -40,3 +40,23 @@ export interface CountryTaxonomyDataType {
   'Development classification': string;
   'Income group': string;
 }
+
+export interface DataType {
+  id: string;
+  country: string;
+  x: 'High' | 'Medium' | 'Low';
+}
+
+export interface SubPillarsMetaDataType {
+  value: string;
+  color: string;
+  colors: string[];
+}
+
+export interface PillarsMetaDataType {
+  value: string;
+  description: string;
+  color: string;
+  colors: string[];
+  subPillars: SubPillarsMetaDataType[];
+}

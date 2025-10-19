@@ -1,0 +1,96 @@
+[
+    {
+        "value": "Public Procurement",
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers.",
+        "color": "#00904A",
+        "colors": [
+            "#00904A",
+            "#789D24"
+        ],
+        "subPillars": [
+            {
+                "value": "Contract Modifications",
+                "color": "#89C124",
+                "colors": [
+                    "#8BE49D",
+                    "#4CA462",
+                    "#03682B"
+                ]
+            },
+            {
+                "value": "No Call for tenders Published",
+                "color": "#DFB707",
+                "colors": [
+                    "#FFF3BD",
+                    "#EEDB88",
+                    "#DFB707"
+                ]
+            },
+            {
+                "value": "Tax Haven",
+                "color": "#A21942",
+                "colors": [
+                    "#F297B2",
+                    "#E9346A",
+                    "#A21942"
+                ]
+            },
+            {
+                "value": "Non-open procedure",
+                "color": "#FD6925",
+                "colors": [
+                    "#FFBFA2",
+                    "#FF9B6D",
+                    "#FD6925"
+                ]
+            },
+            {
+                "value": "Beneficiary ownership",
+                "color": "#666666",
+                "colors": [
+                    "#E0DEDF",
+                    "#B2AFB0",
+                    "#666666"
+                ]
+            }
+        ]
+    },
+    {
+        "value": "Business Experiences",
+        "description": "What do businesses really experience on the ground? Go beyond perception to understand real encounters with corruption. Our indicators capture the incidence of corrupt practices, document specific practices businesses encounter, and reveal counter measures organizations implement. This ground-truth data empowers evidence-based strategies.",
+        "color": "#E3512C",
+        "colors": [
+            "#E3512C",
+            "#F66428"
+        ],
+        "subPillars": [
+            {
+                "value": "Incidence",
+                "color": "#F49764",
+                "colors": [
+                    "#E6CCC0",
+                    "#F0B292",
+                    "#F49764"
+                ]
+            },
+            {
+                "value": "Practices",
+                "color": "#FFDD00",
+                "colors": [
+                    "#FEF8D0",
+                    "#FFEF84",
+                    "#FFDD00"
+                ]
+            },
+            {
+                "value": "Counter Measures",
+                "color": "#D001B4",
+                "colors": [
+                    "#FFD5E6",
+                    "#F884E9",
+                    "#D001B4"
+                ]
+            }
+        ]
+    }
+]

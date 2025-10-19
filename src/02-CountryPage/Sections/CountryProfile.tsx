@@ -1,15 +1,9 @@
 import { H2 } from '@undp/design-system-react/Typography';
 import { Spacer } from '@undp/design-system-react/Spacer';
 
-import { CountryProfileCard } from './Components/CountryProfileCard';
+import { CountryProfileCard } from '../Components/CountryProfileCard';
 
-interface Props {
-  country: string;
-  isoCode: string;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function CountryProfile({ country, isoCode }: Props) {
+function CountryProfile() {
   return (
     <div className='w-full'>
       <H2
@@ -18,7 +12,7 @@ function CountryProfile({ country, isoCode }: Props) {
       >
         Country profile
       </H2>
-      <Spacer size='xl' />
+      <Spacer size='2xl' />
       <div className='flex items-stretch gap-6 w-full flex-wrap'>
         <CountryProfileCard
           title='Anti-corruption laws'
