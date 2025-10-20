@@ -3,6 +3,7 @@ import { useInView } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 
 import { HeadingText, ParagraphText } from '@/Components/Typography';
+import { Button } from '@/Components/Button';
 
 interface Props {
   heading: string;
@@ -81,11 +82,10 @@ const GlobeControls = (props: Props) => {
           ))}
         </div>
         <Link
-          className='poppins-medium !text-[16px] text-left mb-0'
           to='/main-indicators/$indicator'
           params={{ indicator: heading.replaceAll(' ', '-').toLowerCase() }}
         >
-          View more →
+          <Button variant='tertiary'>View more →</Button>
         </Link>
       </div>
     </div>

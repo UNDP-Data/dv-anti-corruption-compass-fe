@@ -3,11 +3,13 @@ import * as THREE from 'three';
 import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import { X } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
+import { Spacer } from '@undp/design-system-react/Spacer';
 
 import { DataType, PillarsMetaDataType, TaxonomyType } from '@/Types';
 import { ColorLegend } from '@/Components/ColorLegend';
 import { ArcChart } from '@/Components/ArcChart';
 import { ParagraphText } from '@/Components/Typography';
+import { Button } from '@/Components/Button';
 
 interface Props {
   data: DataType[];
@@ -152,13 +154,14 @@ function GlobeComponent({
               src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${countryTaxonomy.find(d => d['Alpha-3 code'] === selectedId)?.['Alpha-2 code']}.svg`}
             />
             <ParagraphText
-              className='text-[#2D4858]'
+              className='text-[var(--color-text-black)]'
               alignment='center'
               weight='semibold'
               size='xl'
             >
               {data.find(d => d.id === selectedId)?.country}
             </ParagraphText>
+            <Spacer size='2xl' />
             <div className='w-full mb-4 flex items-center text-primary-gray-500 justify-center'>
               <ArcChart
                 data={
@@ -179,12 +182,8 @@ function GlobeComponent({
                 }
               />
             </div>
-            <Link
-              to='/countries/$isoCode'
-              className='normal-case rounded-full text-[#fff] px-7 py-3 bg-[#2D4858] hover:bg-[#4B6E91] cursor-pointer poppins-semibold !text-[16px] shadow-[0_4px_4px_rgba(0,0,0,0.25)]'
-              params={{ isoCode: selectedId }}
-            >
-              View more →
+            <Link to='/countries/$isoCode' params={{ isoCode: selectedId }}>
+              <Button variant='primary'>View more →</Button>
             </Link>
           </div>
         </div>

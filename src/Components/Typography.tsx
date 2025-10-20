@@ -23,7 +23,7 @@ export const ParagraphText = ({
     <P
       {...props}
       className={cn(
-        `poppins-${weight} text-${alignment} text-[#fff]`,
+        `poppins-${weight} text-${alignment} text-[var(--color-text-white)]`,
         leading === 'none'
           ? '!leading-none'
           : leading === 'snug'
@@ -62,7 +62,7 @@ export const HeadingText = ({
       <H1
         {...props}
         className={cn(
-          `poppins-${weight || 'bold'} text-${alignment || 'center'} !text-[44px] text-[#fff]`,
+          `poppins-${weight || 'bold'} text-${alignment || 'center'} !text-[44px] text-[var(--color-text-white)]`,
           className,
         )}
         marginBottom={marginBottom}
@@ -75,7 +75,7 @@ export const HeadingText = ({
       <H2
         {...props}
         className={cn(
-          `poppins-${weight || 'bold'} text-${alignment || 'left'} !text-[24px] text-[#fff]`,
+          `poppins-${weight || 'bold'} text-${alignment || 'left'} !text-[24px] text-[var(--color-text-white)]`,
           className,
         )}
         marginBottom={marginBottom}
@@ -87,7 +87,7 @@ export const HeadingText = ({
     <H3
       {...props}
       className={cn(
-        `poppins-${weight || 'semibold'} text-${alignment || 'left'} !text-[20px] text-[#fff]`,
+        `poppins-${weight || 'semibold'} text-${alignment || 'left'} !text-[20px] text-[var(--color-text-white)]`,
         className,
       )}
       marginBottom={marginBottom}

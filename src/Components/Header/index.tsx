@@ -68,7 +68,7 @@ export const Header = ({
               {pillarsMetaData.map((d, i) => (
                 <DropdownMenuItem
                   key={i}
-                  className='poppins-medium !text-[14px] py-4 px-3 hover:!bg-[#4B6E91] text-[var(--color-black-bg)] hover:!text-[#fff]'
+                  className='poppins-medium !text-[14px] py-4 px-3 hover:!bg-[#4B6E91] text-[var(--color-black-bg)] hover:!text-[var(--color-text-white)]'
                 >
                   <Link
                     to='/main-indicators/$indicator'

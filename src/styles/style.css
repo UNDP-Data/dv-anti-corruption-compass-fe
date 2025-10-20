@@ -10,6 +10,8 @@
 :root {
   --color-black-bg: #537286;
   --color-white-bg: #FFFFFF12;
+  --color-text-black: #2d4858;
+  --color-text-white: #fff;
 }
 
 body {

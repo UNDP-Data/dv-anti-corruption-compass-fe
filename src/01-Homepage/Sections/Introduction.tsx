@@ -1,12 +1,12 @@
 import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import * as THREE from 'three';
 import { ArrowDown } from 'lucide-react';
-import { Button } from '@undp/design-system-react/Button';
 import { useEffect, useRef, useState } from 'react';
 
 import { DataType } from '@/Types';
 import { ScrollToObj } from '@/Utils/ScrollToObj';
 import { HeadingText, ParagraphText } from '@/Components/Typography';
+import { Button } from '@/Components/Button';
 
 interface Props {
   data: DataType[];
@@ -42,19 +42,9 @@ const Introduction = (props: Props) => {
             efforts.
           </ParagraphText>
           <div className='flex gap-x-10 gap-y-4 flex-wrap'>
-            <Button
-              variant='primary-without-icon'
-              className='normal-case rounded-full bg-[#fff] px-7 py-3 text-[#124E6F] hover:bg-[#DEF7FF] poppins-semibold !text-[16px] shadow-[0_4px_4px_rgba(0,0,0,0.25)]'
-            >
-              Take a Tour →
-            </Button>
+            <Button variant='secondary'>Take a Tour →</Button>
 
-            <Button
-              variant='primary-without-icon'
-              className='normal-case rounded-full bg-[#4B6E91] px-7 py-3 text-[#fff] hover:bg-[#2A3F53] poppins-semibold !text-[16px] shadow-[0_4px_4px_rgba(0,0,0,0.25)]'
-            >
-              View Country Level Insights →
-            </Button>
+            <Button variant='primary'>View Country Level Insights →</Button>
           </div>
         </div>
         <div

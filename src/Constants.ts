@@ -59,7 +59,7 @@ export const DROPDOWN_CLASSNAMES_WHITE: any = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   option: (state: any) =>
     cn(
-      'bg-[#fff]! poppins-regular text-[#2D4858]! py-4! text-base hover:bg-[#4B6E91]! hover:text-[#fff]!',
+      'bg-[#fff]! poppins-regular text-[#2D4858]! py-4! text-base hover:bg-[#4B6E91]! hover:text-[var(--color-text-white)]!',
       state.isSelected
         ? 'bg-primary-gray-100! text-primary-gray-700 font-bold'
         : 'bg-primary-white',
