@@ -5,12 +5,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@undp/design-system-react/DropdownMenu';
-import { H3, P } from '@undp/design-system-react/Typography';
 import { ChevronDown, Globe, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { Modal } from '@undp/design-system-react/Modal';
 
-import { CountryList } from './ContryList';
+import { HeadingText, ParagraphText } from '../Typography';
+
+import { CountryList } from './CountryList';
 
 import { PillarsMetaDataType } from '@/Types';
 
@@ -28,32 +29,38 @@ export const Header = ({
         <Link to='/'>
           <div className='flex items-center gap-4'>
             <img src='/imgs/Logo.svg' alt='Example' className='w-7.5 h-auto' />
-            <H3
-              className='text-center poppins-bold !text-[20px] tracking-[0%]'
+            <HeadingText
+              type='h3'
+              weight='bold'
+              alignment='center'
               marginBottom='none'
             >
               Anti Corruption Compass
-            </H3>
+            </HeadingText>
           </div>
         </Link>
         <div className='items-center gap-16 hidden lg:flex'>
           <Link to='/'>
-            <P
-              className='text-center poppins-medium !text-[18px] leading-none tracking-[0%]'
-              marginBottom='none'
+            <ParagraphText
+              alignment='center'
+              size='lg'
+              weight='medium'
+              leading='none'
             >
               Home
-            </P>
+            </ParagraphText>
           </Link>
           <DropdownMenu>
             <DropdownMenuTrigger>
               <div className='flex items-center gap-2'>
-                <P
-                  className='text-center poppins-medium !text-[18px] leading-none tracking-[0%] text-[#fff]'
-                  marginBottom='none'
+                <ParagraphText
+                  alignment='center'
+                  size='lg'
+                  weight='medium'
+                  leading='none'
                 >
                   Main indicators
-                </P>
+                </ParagraphText>
                 <ChevronDown strokeWidth={3} size={16} color='#fff' />
               </div>
             </DropdownMenuTrigger>
@@ -69,32 +76,33 @@ export const Header = ({
                       indicator: d.value.replaceAll(' ', '-').toLowerCase(),
                     }}
                   >
-                    <P
-                      className='text-center poppins-medium !text-[14px] !leading-[1.37] tracking-[0%]'
-                      marginBottom='none'
-                    >
+                    <ParagraphText alignment='center' size='sm' weight='medium'>
                       {d.value}
-                    </P>
+                    </ParagraphText>
                   </Link>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
           <Link to='/methodology'>
-            <P
-              className='text-center poppins-medium !text-[18px] leading-none tracking-[0%]'
-              marginBottom='none'
+            <ParagraphText
+              alignment='center'
+              size='lg'
+              weight='medium'
+              leading='none'
             >
               Methodology
-            </P>
+            </ParagraphText>
           </Link>
           <Link to='/about'>
-            <P
-              className='text-center poppins-medium !text-[18px] leading-none tracking-[0%]'
-              marginBottom='none'
+            <ParagraphText
+              alignment='center'
+              size='lg'
+              weight='medium'
+              leading='none'
             >
               About Us
-            </P>
+            </ParagraphText>
           </Link>
         </div>
         <div className='search-component hidden lg:block'>
@@ -124,12 +132,9 @@ export const Header = ({
           {showMenu ? (
             <div className='box-border h-[calc(100vh-120px)] left-0 m-0 overflow-y-auto p-5 absolute top-full w-full backdrop-blur-[18px] bg-[#2D4858]'>
               <div className='flex flex-col justify-start items-start gap-8'>
-                <P
-                  className='poppins-medium !text-[14px] leading-none tracking-[0%]'
-                  marginBottom='none'
-                >
+                <ParagraphText size='sm' weight='medium' leading='none'>
                   Main indicators
-                </P>
+                </ParagraphText>
                 <div className='flex flex-col justify-start items-start gap-8 pl-5'>
                   {pillarsMetaData.map((d, i) => (
                     <Link
@@ -139,30 +144,21 @@ export const Header = ({
                         indicator: d.value.replaceAll(' ', '-').toLowerCase(),
                       }}
                     >
-                      <P
-                        className='poppins-regular !text-[14px] leading-none tracking-[0%]'
-                        marginBottom='none'
-                      >
+                      <ParagraphText size='sm' weight='medium' leading='none'>
                         {d.value}
-                      </P>
+                      </ParagraphText>
                     </Link>
                   ))}
                 </div>
                 <Link to='/methodology'>
-                  <P
-                    className='poppins-medium !text-[14px] leading-none tracking-[0%]'
-                    marginBottom='none'
-                  >
+                  <ParagraphText size='sm' weight='medium' leading='none'>
                     Methodology
-                  </P>
+                  </ParagraphText>
                 </Link>
                 <Link to='/about'>
-                  <P
-                    className='poppins-medium !text-[14px] leading-none tracking-[0%]'
-                    marginBottom='none'
-                  >
+                  <ParagraphText size='sm' weight='medium' leading='none'>
                     About Us
-                  </P>
+                  </ParagraphText>
                 </Link>
               </div>
             </div>
@@ -176,7 +172,7 @@ export const Header = ({
             onClose={() => {
               setShowCountrySelection(false);
             }}
-            className='bg-[#537286]! border-0!'
+            className='bg-[var(--color-black-bg)]! border-0!'
           >
             <CountryList setShowCountrySelection={setShowCountrySelection} />
           </Modal>

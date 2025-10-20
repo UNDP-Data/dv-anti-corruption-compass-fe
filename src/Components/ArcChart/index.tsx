@@ -1,4 +1,4 @@
-import { P } from '@undp/design-system-react/Typography';
+import { ParagraphText } from '../Typography';
 
 import { Graph } from './Graph';
 
@@ -22,9 +22,7 @@ export const ArcChart = ({ data, colors, subPillars }: Props) => {
                   backgroundColor: d,
                 }}
               />
-              <P size='base' marginBottom='none' leading='none'>
-                {subPillars[i]}
-              </P>
+              <ParagraphText leading='none'>{subPillars[i]}</ParagraphText>
             </div>
           ))}
         </div>

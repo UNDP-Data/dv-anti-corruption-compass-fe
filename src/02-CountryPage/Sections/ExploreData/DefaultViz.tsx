@@ -2,7 +2,6 @@ import { Spacer } from '@undp/design-system-react/Spacer';
 import { Label } from '@undp/design-system-react/Label';
 import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
 import { useEffect, useState } from 'react';
-import { P } from '@undp/design-system-react/Typography';
 import { DonutChart } from '@undp/data-viz/DonutChart';
 import { fetchAndParseJSON } from '@undp/data-viz/fetchAndParseData';
 import { Spinner } from '@undp/design-system-react';
@@ -12,6 +11,7 @@ import { transformDataForGraph } from '@undp/data-viz/transformData';
 import { DROPDOWN_CLASSNAMES, YEARS } from '@/Constants';
 import { GraphCard } from '@/Components/GraphCard';
 import { PillarsMetaDataType } from '@/Types';
+import { ParagraphText } from '@/Components/Typography';
 
 interface Props {
   country: string;
@@ -52,7 +52,7 @@ function DefaultViz({
             options={subPillars.map(d => ({ value: d, label: d }))}
             size='base'
             variant='normal'
-            className='bg-[#FFFFFF12]! poppins-regular border-0! rounded-[8px]!'
+            className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
           />
         </div>
@@ -67,7 +67,7 @@ function DefaultViz({
             options={YEARS.map(d => ({ value: d, label: d }))}
             size='base'
             variant='normal'
-            className='bg-[#FFFFFF12]! poppins-regular border-0! rounded-[8px]!'
+            className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
           />
         </div>
@@ -76,13 +76,10 @@ function DefaultViz({
       <div className='flex flex-col gap-6'>
         <div className='flex gap-6 flex-wrap'>
           <GraphCard title='Overview' chips={[selectedPillar, selectedYear]}>
-            <P
-              className='poppins-regular !text-[14px] !leading-[140%] text-primary-white'
-              marginBottom='none'
-            >
+            <ParagraphText size='sm'>
               Contract Modification ipsum dolor sit amet consectetur. Nisi
               potenti id tellus bibendum sed acc semper malesuada. Nulla aenean.
-            </P>
+            </ParagraphText>
             <Spacer size='3xl' />
             <div className='flex grow relative'>
               <DonutChart

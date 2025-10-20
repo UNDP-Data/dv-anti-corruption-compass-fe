@@ -1,11 +1,13 @@
 import { Link } from '@tanstack/react-router';
-import { P } from '@undp/design-system-react/Typography';
 import {
   FacebookIcon,
   InstagramIcon,
   TwitterIcon,
   YoutubeIcon,
 } from 'lucide-react';
+import { Spacer } from '@undp/design-system-react/Spacer';
+
+import { ParagraphText } from './Typography';
 
 import { PillarsMetaDataType } from '@/Types';
 
@@ -15,12 +17,13 @@ export const Footer = ({
   pillarsMetaData: PillarsMetaDataType[];
 }) => {
   return (
-    <footer className='bg-[#537286] px-20 py-24 relative z-10'>
+    <footer className='bg-[var(--color-black-bg)] px-20 py-24 relative z-10'>
       <div className='flex flex-wrap flex-col lg:flex-row gap-4 md:gap-12 lg:gap-0'>
         <div className='w-full lg:w-1/2'>
-          <P className='poppins-regular !text-[16px]' size='sm'>
+          <ParagraphText size='sm'>
             Copyright © 2025 Anti Corruption Compass
-          </P>
+          </ParagraphText>
+          <Spacer size='5xl' />
           <div className='flex gap-8'>
             <FacebookIcon />
             <TwitterIcon />
@@ -30,9 +33,7 @@ export const Footer = ({
         </div>
         <div className='w-full flex gap-4 justify-start flex-col md:flex-row md:justify-between lg:w-1/2 lg:justify-end md:gap-4 lg:gap-16'>
           <Link to='/'>
-            <P className='poppins-regular !text-[16px]' marginBottom='none'>
-              Home
-            </P>
+            <ParagraphText>Home</ParagraphText>
           </Link>
           <div className='flex flex-col gap-4 md:gap-8'>
             {pillarsMetaData.map((d, i) => (
@@ -43,21 +44,15 @@ export const Footer = ({
                 }}
                 key={i}
               >
-                <P className='poppins-regular !text-[16px]' marginBottom='none'>
-                  {d.value}
-                </P>
+                <ParagraphText>{d.value}</ParagraphText>
               </Link>
             ))}
           </div>
           <Link to='/methodology'>
-            <P className='poppins-regular !text-[16px]' marginBottom='none'>
-              Methodology
-            </P>
+            <ParagraphText>Methodology</ParagraphText>
           </Link>
           <Link to='/about'>
-            <P className='poppins-regular !text-[16px]' marginBottom='none'>
-              About Us
-            </P>
+            <ParagraphText>About Us</ParagraphText>
           </Link>
         </div>
       </div>

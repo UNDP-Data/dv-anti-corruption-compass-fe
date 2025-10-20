@@ -30,10 +30,7 @@ export const PolarBarChart = ({
     return () => resizeObserver.disconnect();
   }, []);
   return (
-    <div
-      className='bg-transparent w-full max-w-[1024px] mx-auto'
-      ref={graphDiv}
-    >
+    <div className='bg-transparent container-sm' ref={graphDiv}>
       {radius > 0 && (
         <Graph
           data={data}

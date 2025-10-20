@@ -6,6 +6,12 @@
 
 @config '../../tailwind.config.js';
 
+
+:root {
+  --color-black-bg: #537286;
+  --color-white-bg: #FFFFFF12;
+}
+
 body {
   background: linear-gradient(
     141.12deg,
@@ -58,4 +64,25 @@ main {
 .search-component svg {
   color: #fff;
   margin: 0;
+}
+
+.container-sm {
+  width: 100%;
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.container-md {
+  width: 100%;
+  max-width: 1272px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.container-lg {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }

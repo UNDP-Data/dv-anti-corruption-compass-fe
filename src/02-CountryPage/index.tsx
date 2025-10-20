@@ -37,7 +37,7 @@ function CountryPageEl({ isoCode, pillarsMetaData }: Props) {
   }, [isoCode]);
   if (invalidCountry) {
     return (
-      <div className='px-4 max-w-[1272px] mx-auto'>
+      <div className='px-4 container-md mx-auto'>
         <CountrySelect
           countryTaxonomy={countryTaxonomy}
           heading="We don't have the data for the selected country"
@@ -52,7 +52,7 @@ function CountryPageEl({ isoCode, pillarsMetaData }: Props) {
         countryData={countryData}
         pillarsMetaData={pillarsMetaData}
       />
-      <div className='max-w-[1660px] mx-auto px-16'>
+      <div className='container-lg mx-auto'>
         <Spacer size='6xl' />
         <CountryProfile />
       </div>

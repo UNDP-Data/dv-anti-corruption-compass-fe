@@ -1,7 +1,7 @@
-import { H3, P } from '@undp/design-system-react/Typography';
 import { motion, useInView, useScroll, useTransform } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { fetchAndParseJSON } from '@undp/data-viz/fetchAndParseData';
+import { Spacer } from '@undp/design-system-react/Spacer';
 
 import GlobeControls from './Components/GlobeControls';
 import Navigation from './Components/Navigation';
@@ -11,6 +11,7 @@ import CountryLevelInsight from './Sections/CountryLevelInsight';
 import Introduction from './Sections/Introduction';
 
 import { DataType, PillarsMetaDataType, TaxonomyType } from '@/Types';
+import { HeadingText, ParagraphText } from '@/Components/Typography';
 
 function Homepage({
   pillarsMetaData,
@@ -160,9 +161,8 @@ function Homepage({
           pillarsMetaData={pillarsMetaData}
         />
         <div className='w-full mt-20 px-20'>
-          <H3 className='poppins-semibold !text-[24px] !mb-8'>
-            Recommended projects
-          </H3>
+          <HeadingText type='h2'>Recommended projects</HeadingText>
+          <Spacer size='3xl' />
           <div className='flex gap-6'>
             <CardEl
               img='https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
@@ -177,14 +177,15 @@ function Homepage({
           </div>
         </div>
         <div className='w-full my-20 px-20'>
-          <H3 className='poppins-bold !text-[24px] !mb-4'>Partnerships</H3>
-          <P className='poppins-regular !text-[16px] !leading-[140%]'>
+          <HeadingText type='h2'>Partnerships</HeadingText>
+          <Spacer size='xl' />
+          <ParagraphText>
             We've curated comprehensive datasets from Transparency
             International, World Bank, UNODC, OECD, and other respected
             institutions. Compare corruption indices, governance indicators, and
             specialized measurements - all accessible with one click in one
             comprehensive dashboard.
-          </P>
+          </ParagraphText>
         </div>
       </div>
     </div>

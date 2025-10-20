@@ -1,7 +1,8 @@
 import { Link } from '@tanstack/react-router';
-import { H3, P } from '@undp/design-system-react';
 import { useInView } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
+
+import { HeadingText, ParagraphText } from '@/Components/Typography';
 
 interface Props {
   heading: string;
@@ -38,15 +39,10 @@ const GlobeControls = (props: Props) => {
     >
       <div className='h-full max-w-[720px] m-auto flex-col gap-10 justify-center flex'>
         <div className='flex-col gap-4.5 justify-center flex'>
-          <H3 className='poppins-bold !text-[24px]' marginBottom='none'>
-            {heading}
-          </H3>
-          <P
-            className='poppins-regular !text-[16px] !leading-[140%] hidden md:block'
-            marginBottom='none'
-          >
+          <HeadingText type='h2'>{heading}</HeadingText>
+          <ParagraphText className='hidden md:block'>
             {description}
-          </P>
+          </ParagraphText>
         </div>
         <div
           className={`hidden md:flex gap-y-5 gap-x-4 flex-wrap${buttons.length > 3 ? '' : ' flex-col'}`}
@@ -72,12 +68,15 @@ const GlobeControls = (props: Props) => {
                 }}
                 className='w-4 h-4 rounded-full'
               />
-              <P
-                className='poppins-medium !text-[18px] text-left'
-                marginBottom='none'
+              <ParagraphText
+                weight='medium'
+                size='lg'
+                className={
+                  activeButton !== d.label ? '' : 'text-[var(--color-black-bg)]'
+                }
               >
                 {d.label}
-              </P>
+              </ParagraphText>
             </button>
           ))}
         </div>

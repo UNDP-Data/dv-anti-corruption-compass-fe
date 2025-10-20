@@ -1,17 +1,13 @@
-import { H2 } from '@undp/design-system-react/Typography';
 import { Spacer } from '@undp/design-system-react/Spacer';
 
 import { CountryProfileCard } from '../Components/CountryProfileCard';
 
+import { HeadingText } from '@/Components/Typography';
+
 function CountryProfile() {
   return (
     <div className='w-full'>
-      <H2
-        className='poppins-bold !text-[24px] text-primary-white'
-        marginBottom='none'
-      >
-        Country profile
-      </H2>
+      <HeadingText type='h2'>Country profile</HeadingText>
       <Spacer size='2xl' />
       <div className='flex items-stretch gap-6 w-full flex-wrap'>
         <CountryProfileCard

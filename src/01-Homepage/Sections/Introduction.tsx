@@ -1,5 +1,3 @@
-import { P } from '@undp/design-system-react';
-import { H2 } from '@undp/design-system-react/Typography';
 import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import * as THREE from 'three';
 import { ArrowDown } from 'lucide-react';
@@ -8,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { DataType } from '@/Types';
 import { ScrollToObj } from '@/Utils/ScrollToObj';
+import { HeadingText, ParagraphText } from '@/Components/Typography';
 
 interface Props {
   data: DataType[];
@@ -28,18 +27,11 @@ const Introduction = (props: Props) => {
   return (
     <>
       <div className='flex flex-col min-h-[calc(100vh-120px)]'>
-        <div className='flex flex-col gap-8 justify-center items-center max-w-[1272px] m-auto px-4'>
-          <H2
-            className='poppins-bold text-center !text-[44px]'
-            marginBottom='none'
-          >
+        <div className='flex flex-col gap-8 justify-center items-center container-md m-auto px-4'>
+          <HeadingText type='h1'>
             Is your nation winning the fight against corruption?
-          </H2>
-          <P
-            className='text-center poppins-regular !leading-[140%]'
-            size='lg'
-            marginBottom='none'
-          >
+          </HeadingText>
+          <ParagraphText alignment='center' size='lg'>
             Explore comprehensive anti-corruption insights using the world's
             most complete database of global corruption measurement. From
             actionable primary indicators on public procurement integrity and
@@ -48,7 +40,7 @@ const Introduction = (props: Props) => {
             institutional strategies - discover, compare, and drive
             evidence-based reforms across all dimensions of anti-corruption
             efforts.
-          </P>
+          </ParagraphText>
           <div className='flex gap-x-10 gap-y-4 flex-wrap'>
             <Button
               variant='primary-without-icon'

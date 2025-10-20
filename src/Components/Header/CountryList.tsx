@@ -1,9 +1,10 @@
 import { fetchAndParseJSON } from '@undp/data-viz/fetchAndParseData';
 import { useEffect, useState } from 'react';
 import { Spinner } from '@undp/design-system-react/Spinner';
-import { H2 } from '@undp/design-system-react/Typography';
 import { Search } from '@undp/design-system-react/Search';
 import { Link } from '@tanstack/react-router';
+
+import { HeadingText } from '../Typography';
 
 import { TaxonomyType } from '@/Types';
 
@@ -26,9 +27,7 @@ export const CountryList = ({
   }, []);
   return (
     <div className='flex flex-col gap-6'>
-      <H2 className='poppins-regular text-[24px]!' marginBottom='none'>
-        Available countries
-      </H2>
+      <HeadingText type='h2'>Available countries</HeadingText>
       {countryTaxonomy.length > 0 ? (
         <>
           <Search

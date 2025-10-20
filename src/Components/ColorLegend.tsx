@@ -4,8 +4,9 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@undp/design-system-react/HoverCard';
-import { P } from '@undp/design-system-react/Typography';
 import { InfoIcon } from 'lucide-react';
+
+import { ParagraphText } from './Typography';
 
 export const ColorLegend = ({
   colors,
@@ -22,13 +23,13 @@ export const ColorLegend = ({
     <div className={cn('flex flex-col gap-4', className)}>
       {showTitle && (
         <div className='flex gap-2 items-center mt-6'>
-          <P
-            size='base'
+          <ParagraphText
+            weight='medium'
             marginBottom='none'
-            className='p-0 leading-normal text-primary-white poppins-medium'
+            className='p-0 leading-normal'
           >
             Indicator Value
-          </P>
+          </ParagraphText>
           <HoverCard openDelay={0}>
             <HoverCardTrigger>
               <InfoIcon color='#fff' size={16} />
@@ -51,9 +52,7 @@ export const ColorLegend = ({
                 backgroundColor: d,
               }}
             />
-            <P size='base' marginBottom='none' leading='none'>
-              {keyValues[i]}
-            </P>
+            <ParagraphText leading='none'>{keyValues[i]}</ParagraphText>
           </div>
         ))}
       </div>

@@ -1,6 +1,7 @@
 import { scaleBand, scaleLinear } from 'd3-scale';
 import { arc } from 'd3-shape';
-import { P } from '@undp/design-system-react/Typography';
+
+import { ParagraphText } from '../Typography';
 
 import { CountryDataType, PillarsMetaDataType } from '@/Types';
 
@@ -116,18 +117,18 @@ export const Graph = ({
                   style={{ overflow: 'visible' }}
                 >
                   <div className='w-full h-full flex items-center flex-col justify-end'>
-                    <P
-                      className='poppins-bold !text-[14px] !leading-[130%] text-primary-white text-center'
+                    <ParagraphText
+                      size='sm'
+                      weight='bold'
+                      leading='snug'
+                      alignment='center'
                       marginBottom='none'
                     >
                       {d.subIndicator}
-                    </P>
-                    <P
-                      className='poppins-light !text-[12px] !leading-[160%] text-primary-white'
-                      marginBottom='none'
-                    >
+                    </ParagraphText>
+                    <ParagraphText size='xs' weight='light' leading='loose'>
                       {d.level}
-                    </P>
+                    </ParagraphText>
                   </div>
                 </foreignObject>
                 <path

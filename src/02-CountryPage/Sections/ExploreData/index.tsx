@@ -1,4 +1,3 @@
-import { H2 } from '@undp/design-system-react/Typography';
 import { useState } from 'react';
 import { SegmentedControl } from '@undp/design-system-react/SegmentedControl';
 import { cn } from '@undp/design-system-react/cn';
@@ -7,6 +6,7 @@ import ProcurementViz from './ProcurementViz';
 import DefaultViz from './DefaultViz';
 
 import { CountryTaxonomyDataType, PillarsMetaDataType } from '@/Types';
+import { HeadingText } from '@/Components/Typography';
 
 interface Props {
   pillarsMetaData: PillarsMetaDataType[];
@@ -16,13 +16,8 @@ interface Props {
 function ExploreData({ pillarsMetaData, countryData }: Props) {
   const [view, setView] = useState<string>(pillarsMetaData[0].value);
   return (
-    <div className='flex flex-col gap-6 max-w-[1660px] mx-auto px-16'>
-      <H2
-        className='poppins-bold !text-[24px] text-primary-white'
-        marginBottom='none'
-      >
-        Explore data
-      </H2>
+    <div className='flex flex-col gap-6 container-lg mx-auto'>
+      <HeadingText type='h2'>Explore data</HeadingText>
       <div className='flex gap-4 w-full items-center flex-col justify-between'>
         <SegmentedControl
           color='blue'

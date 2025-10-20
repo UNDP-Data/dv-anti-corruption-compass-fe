@@ -1,8 +1,8 @@
-import { P } from '@undp/design-system-react';
 import { Fragment } from 'react/jsx-runtime';
 
 import { ScrollToObj } from '@/Utils/ScrollToObj';
 import { PillarsMetaDataType } from '@/Types';
+import { ParagraphText } from '@/Components/Typography';
 
 interface Props {
   inViewSlide: number;
@@ -23,12 +23,12 @@ const Navigation = (props: Props) => {
         <Fragment key={i}>
           <div className='flex gap-2 items-center'>
             <div className='flex items-center h-4 w-20 text-right'>
-              <P
-                className={`poppins-regular !text-[12px] text-right text-[#fff] w-20 opacity-0 md:opacity-100 ${inViewSlide === i ? '' : 'hidden'}`}
-                marginBottom='none'
+              <ParagraphText
+                size='xs'
+                className={`text-right w-20 ${inViewSlide === i ? 'hidden md:block' : 'hidden'}`}
               >
                 {d.value}
-              </P>
+              </ParagraphText>
             </div>
             <div
               className={`cursor-pointer rounded-full w-5 h-5 border-1 border-[#fff] ${inViewSlide === i ? 'bg-[#fff]' : 'bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.5),rgba(7,43,78,0.5))]'}`}
@@ -42,12 +42,12 @@ const Navigation = (props: Props) => {
       ))}
       <div className='flex gap-2 items-center'>
         <div className='flex items-center h-4 w-20 text-right'>
-          <P
-            className={`poppins-regular !text-[12px] text-right text-[#fff] w-20 opacity-0 md:opacity-100 ${inViewSlide === pillarsMetaData.length ? '' : 'hidden'}`}
-            marginBottom='none'
+          <ParagraphText
+            size='xs'
+            className={`text-right w-20 ${inViewSlide === pillarsMetaData.length ? 'hidden md:block' : 'hidden'}`}
           >
             Country level insights
-          </P>
+          </ParagraphText>
         </div>
         <div
           className={`cursor-pointer rounded-full w-5 h-5 border-1 border-[#fff] ${inViewSlide === pillarsMetaData.length ? 'bg-[#fff]' : 'bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.5),rgba(7,43,78,0.5))]'}`}

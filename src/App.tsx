@@ -7,7 +7,6 @@ import {
   createRoute,
   createRootRoute,
 } from '@tanstack/react-router';
-import { H2 } from '@undp/design-system-react/Typography';
 import {
   QueryClient,
   QueryClientProvider,
@@ -23,6 +22,7 @@ import { Header } from './Components/Header';
 import { Footer } from './Components/Footer';
 import CountryPageEl from './02-CountryPage';
 import { ScrollToTop } from './Utils/ScrollToTop';
+import { HeadingText } from './Components/Typography';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -102,7 +102,11 @@ function MainIndicator() {
   const { data: pillarsMetaData } = usePillarsData();
   const { indicator } = mainIndicatorRoute.useParams();
   if (!pillarsMetaData) return <Spinner size='lg' className='my-20 m-auto' />;
-  return <H2 className='p-6 poppins-medium'>{indicator} page coming soon!</H2>;
+  return (
+    <div className='p-6'>
+      <HeadingText type='h2'>{indicator} page coming soon!</HeadingText>
+    </div>
+  );
 }
 
 const mainIndicatorRoute = createRoute({

@@ -2,7 +2,6 @@ import { Spacer } from '@undp/design-system-react/Spacer';
 import { Label } from '@undp/design-system-react/Label';
 import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
 import { useEffect, useState } from 'react';
-import { P } from '@undp/design-system-react/Typography';
 import { DonutChart } from '@undp/data-viz/DonutChart';
 import {
   fetchAndParseCSV,
@@ -25,6 +24,7 @@ import { GraphCard } from '@/Components/GraphCard';
 import { PillarsMetaDataType } from '@/Types';
 import { NoData } from '@/Components/NoData';
 import { ColorLegend } from '@/Components/ColorLegend';
+import { ParagraphText } from '@/Components/Typography';
 
 interface Props {
   country: string;
@@ -89,7 +89,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
             ).map(d => ({ value: d.value, label: d.value }))}
             size='base'
             variant='normal'
-            className='bg-[#FFFFFF12]! poppins-regular border-0! rounded-[8px]!'
+            className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
           />
         </div>
@@ -104,7 +104,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
             options={YEARS.map(d => ({ value: d, label: d }))}
             size='base'
             variant='normal'
-            className='bg-[#FFFFFF12]! poppins-regular border-0! rounded-[8px]!'
+            className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
           />
         </div>
@@ -124,7 +124,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
             options={MARKET.map(d => ({ value: d, label: d }))}
             size='base'
             variant='normal'
-            className='bg-[#FFFFFF12]! poppins-regular border-0! rounded-[8px]!'
+            className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
           />
         </div>
@@ -144,7 +144,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
             options={CONTRACT_VALUE.map(d => ({ value: d, label: d }))}
             size='base'
             variant='normal'
-            className='bg-[#FFFFFF12]! poppins-regular border-0! rounded-[8px]!'
+            className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
           />
         </div>
@@ -155,14 +155,11 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
           <GraphCard title='Overview' chips={[selectedPillar, selectedYear]}>
             {pillarData ? (
               <>
-                <P
-                  className='poppins-regular !text-[14px] !leading-[140%] text-primary-white'
-                  marginBottom='none'
-                >
+                <ParagraphText size='sm'>
                   Contract Modification ipsum dolor sit amet consectetur. Nisi
                   potenti id tellus bibendum sed acc semper malesuada. Nulla
                   aenean.
-                </P>
+                </ParagraphText>
                 <Spacer size='3xl' />
                 <div className='flex grow relative'>
                   <DonutChart
@@ -200,12 +197,9 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
               <div className='flex flex-col gap-4'>
                 {MARKET.map((d, i) => (
                   <div key={i}>
-                    <P
-                      className='poppins-medium text-[14px] text-primary-white'
-                      marginBottom='2xs'
-                    >
+                    <ParagraphText weight='medium' size='sm' marginBottom='2xs'>
                       {d}
-                    </P>
+                    </ParagraphText>
                     <div className='w-full rounded-full bg-primary-white h-2' />
                     <div
                       className='rounded-full h-2 mt-[-8px]'
@@ -230,7 +224,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
           <GraphCard
             title='Regional Breakdown'
             chips={[selectedPillar, selectedYear]}
-            className='basis-[calc(100%)]'
+            className='basis-full'
           >
             <div className='flex dark'>
               {pillarData ? (

@@ -1,7 +1,8 @@
-import { H2, P } from '@undp/design-system-react/Typography';
+import { Spacer } from '@undp/design-system-react/Spacer';
 
 import { CountryTaxonomyDataType, PillarsMetaDataType } from '@/Types';
 import { PolarBarChart } from '@/Components/PolarBarChart';
+import { HeadingText, ParagraphText } from '@/Components/Typography';
 
 interface Props {
   countryData?: CountryTaxonomyDataType;
@@ -16,15 +17,11 @@ function CountryPageEl({ countryData, pillarsMetaData }: Props) {
         className='w-11 mb-2'
         src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${countryData?.['Alpha-2 code']}.svg`}
       />
-      <H2
-        className='poppins-bold !text-[48px] text-primary-white'
-        marginBottom='none'
-      >
-        {countryData?.['Country or Area']}
-      </H2>
-      <P className='poppins-regular !text-[14px] !leading-[140%] text-primary-white mb-10'>
+      <HeadingText type='h1'>{countryData?.['Country or Area']}</HeadingText>
+      <ParagraphText size='sm'>
         {countryData?.['Group 1']} | {countryData?.['Group 2']}
-      </P>
+      </ParagraphText>
+      <Spacer size='4xl' />
       <PolarBarChart
         innerRadiusRatio={0.6}
         pillarsMetaData={pillarsMetaData}

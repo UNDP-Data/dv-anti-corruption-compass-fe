@@ -2,12 +2,12 @@ import { useState } from 'react';
 import * as THREE from 'three';
 import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import { X } from 'lucide-react';
-import { P } from '@undp/design-system-react/Typography';
 import { Link } from '@tanstack/react-router';
 
 import { DataType, PillarsMetaDataType, TaxonomyType } from '@/Types';
 import { ColorLegend } from '@/Components/ColorLegend';
 import { ArcChart } from '@/Components/ArcChart';
+import { ParagraphText } from '@/Components/Typography';
 
 interface Props {
   data: DataType[];
@@ -151,12 +151,14 @@ function GlobeComponent({
               className='w-9 mb-3'
               src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${countryTaxonomy.find(d => d['Alpha-3 code'] === selectedId)?.['Alpha-2 code']}.svg`}
             />
-            <P
-              className='text-[#2D4858] text-[20px] text-center poppins-semibold leading-[140%]'
-              size='lg'
+            <ParagraphText
+              className='text-[#2D4858]'
+              alignment='center'
+              weight='semibold'
+              size='xl'
             >
               {data.find(d => d.id === selectedId)?.country}
-            </P>
+            </ParagraphText>
             <div className='w-full mb-4 flex items-center text-primary-gray-500 justify-center'>
               <ArcChart
                 data={
