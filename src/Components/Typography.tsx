@@ -62,7 +62,7 @@ export const HeadingText = ({
       <H1
         {...props}
         className={cn(
-          `poppins-${weight || 'bold'} text-${alignment || 'center'} !text-[44px] text-[var(--color-text-white)]`,
+          `poppins-${weight || 'bold'} text-${alignment || 'center'} !text-[44px] text-[var(--color-text-white)] normal-case!`,
           className,
         )}
         marginBottom={marginBottom}

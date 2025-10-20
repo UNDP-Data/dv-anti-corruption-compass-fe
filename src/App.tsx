@@ -47,21 +47,14 @@ function usePillarsData() {
 function RootComponent() {
   const { data: pillarsMetaData } = usePillarsData();
 
-  if (!pillarsMetaData)
-    return (
-      <div className='h-screen flex items-center justify-center'>
-        <Spinner size='lg' className='my-20 m-auto' />
-      </div>
-    );
-
   return (
     <div className='min-h-screen flex flex-col background-inherit'>
-      <Header pillarsMetaData={pillarsMetaData} />
+      <Header pillarsMetaData={pillarsMetaData || []} />
       <main className='flex-1 pt-30'>
         <ScrollToTop />
         <Outlet />
       </main>
-      <Footer pillarsMetaData={pillarsMetaData} />
+      <Footer pillarsMetaData={pillarsMetaData || []} />
     </div>
   );
 }

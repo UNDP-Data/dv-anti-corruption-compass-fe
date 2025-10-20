@@ -36,6 +36,9 @@ export const Footer = ({
             <ParagraphText>Home</ParagraphText>
           </Link>
           <div className='flex flex-col gap-4 md:gap-8'>
+            {pillarsMetaData.length === 0 && (
+              <ParagraphText>Loading...</ParagraphText>
+            )}
             {pillarsMetaData.map((d, i) => (
               <Link
                 to='/main-indicators/$indicator'
