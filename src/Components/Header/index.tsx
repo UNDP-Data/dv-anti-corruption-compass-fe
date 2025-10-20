@@ -68,7 +68,7 @@ export const Header = ({
               {pillarsMetaData.map((d, i) => (
                 <DropdownMenuItem
                   key={i}
-                  className='poppins-medium !text-[14px] py-4 px-3 hover:!bg-[#4B6E91] hover:!text-[#fff]'
+                  className='poppins-medium !text-[14px] py-4 px-3 hover:!bg-[#4B6E91] text-[var(--color-black-bg)] hover:!text-[#fff]'
                 >
                   <Link
                     to='/main-indicators/$indicator'
@@ -76,7 +76,12 @@ export const Header = ({
                       indicator: d.value.replaceAll(' ', '-').toLowerCase(),
                     }}
                   >
-                    <ParagraphText alignment='center' size='sm' weight='medium'>
+                    <ParagraphText
+                      alignment='center'
+                      size='sm'
+                      weight='medium'
+                      className='text-[inherit]'
+                    >
                       {d.value}
                     </ParagraphText>
                   </Link>
@@ -105,7 +110,7 @@ export const Header = ({
             </ParagraphText>
           </Link>
         </div>
-        <div className='search-component hidden lg:block'>
+        <div className='hidden lg:block'>
           <button
             type='button'
             className='m-0 p-0 cursor-pointer'
@@ -113,7 +118,7 @@ export const Header = ({
               setShowCountrySelection(true);
             }}
           >
-            <Globe />
+            <Globe color='#fff' size={28} />
           </button>
         </div>
         <div className='grow justify-end gap-8 flex lg:hidden'>

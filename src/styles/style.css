@@ -47,25 +47,6 @@ main {
   color: #fff;
 }
 
-.search-component span {
-  font-family: 'Poppins', sans-serif !important;
-  font-weight: 300 !important;
-  color: #fff;
-  font-size: 14px;
-}
-
-.search-component div div div {
-  flex-direction: row-reverse;
-  justify-content: space-between;
-  width: 100%;
-  padding-right: 12px;
-}
-
-.search-component svg {
-  color: #fff;
-  margin: 0;
-}
-
 .container-sm {
   width: 100%;
   max-width: 1024px;
