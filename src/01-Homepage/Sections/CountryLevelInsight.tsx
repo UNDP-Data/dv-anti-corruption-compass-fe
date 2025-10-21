@@ -39,13 +39,13 @@ const CountryLevelInsight = (props: Props) => {
           <TabsList className='mx-0 pl-0'>
             <TabsTrigger
               value='tab 1'
-              className='text-primary-white! normal-case poppins-medium text-[18px] data-[state=active]:border-[#61D4F8] min-w-[200px]'
+              className='text-primary-white! normal-case poppins-medium text-[18px] data-[state=active]:border-[#61D4F8] px-1'
             >
-              <div className='min-w-[150px]'>Find a Country</div>
+              Find a Country
             </TabsTrigger>
             <TabsTrigger
               value='tab 2'
-              className='text-primary-white! normal-case poppins-medium text-[18px] data-[state=active]:border-[#61D4F8]'
+              className='text-primary-white! normal-case poppins-medium text-[18px] data-[state=active]:border-[#61D4F8] px-1'
             >
               See Full List
             </TabsTrigger>

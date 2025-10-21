@@ -5,13 +5,13 @@ import { Spacer } from '@undp/design-system-react/Spacer';
 
 import GlobeControls from './Components/GlobeControls';
 import Navigation from './Components/Navigation';
-import { CardEl } from './Components/Cards';
 import GlobeComponent from './Components/GlobeComponent';
 import CountryLevelInsight from './Sections/CountryLevelInsight';
 import Introduction from './Sections/Introduction';
 
 import { DataType, PillarsMetaDataType, TaxonomyType } from '@/Types';
 import { HeadingText, ParagraphText } from '@/Components/Typography';
+import { ProjectsSection } from '@/Components/ProjectsSection';
 
 function Homepage({
   pillarsMetaData,
@@ -161,20 +161,21 @@ function Homepage({
           pillarsMetaData={pillarsMetaData}
         />
         <div className='w-full mt-20 px-20'>
-          <HeadingText type='h2'>Recommended projects</HeadingText>
-          <Spacer size='3xl' />
-          <div className='flex gap-6'>
-            <CardEl
-              img='https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-              title='Global Report on Public Procurement'
-              date='July 2nd 2025'
-            />
-            <CardEl
-              img='https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-              title='Global Report on Public Procurement'
-              date='July 2nd 2025'
-            />
-          </div>
+          <ProjectsSection
+            cards={[
+              {
+                img: 'https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                title: 'Global Report on Public Procurement',
+                date: 'July 2nd 2025',
+              },
+              {
+                img: 'https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                title: 'Global Report',
+                date: 'July 2nd 2025',
+              },
+            ]}
+            heading='Recommended projects'
+          />
         </div>
         <div className='w-full my-20 px-20'>
           <HeadingText type='h2'>Partnerships</HeadingText>
