@@ -25,6 +25,7 @@ import { PillarsMetaDataType } from '@/Types';
 import { NoData } from '@/Components/NoData';
 import { ColorLegend } from '@/Components/ColorLegend';
 import { ParagraphText } from '@/Components/Typography';
+import { customDropdownComponents } from '@/Utils/DropdownComponents';
 
 interface Props {
   country: string;
@@ -91,6 +92,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
             variant='normal'
             className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
+            components={customDropdownComponents('dark', false)}
           />
         </div>
         <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
@@ -106,6 +108,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
             variant='normal'
             className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
+            components={customDropdownComponents('dark', false)}
           />
         </div>
         <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
@@ -126,6 +129,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
             variant='normal'
             className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
+            components={customDropdownComponents('dark', false)}
           />
         </div>
         <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
@@ -146,6 +150,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
             variant='normal'
             className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
+            components={customDropdownComponents('dark', false)}
           />
         </div>
       </div>

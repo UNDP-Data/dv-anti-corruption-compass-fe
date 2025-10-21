@@ -15,7 +15,7 @@ export const ArcChart = ({ data, colors, subPillars }: Props) => {
       <div className='mt-4'>
         <div className='flex gap-x-6 gap-y-4 poppins-regular flex-wrap'>
           {colors.map((d, i) => (
-            <div key={i} className='flex gap-2 items-center'>
+            <div key={i} className='flex gap-2 items-start'>
               <div
                 className='w-4 h-4 rounded-full'
                 style={{

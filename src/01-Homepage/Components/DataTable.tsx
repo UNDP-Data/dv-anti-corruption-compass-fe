@@ -5,6 +5,7 @@ import { Badge } from '@undp/design-system-react/Badge';
 import { Link } from '@tanstack/react-router';
 import { Spacer } from '@undp/design-system-react/Spacer';
 import { useState } from 'react';
+import { getTextColorBasedOnBgColor } from '@undp/data-viz/utils';
 
 import {
   DROPDOWN_CLASSNAMES_MULTI_SELECT,
@@ -12,6 +13,7 @@ import {
   YEARS,
 } from '@/Constants';
 import { DataType, PillarsMetaDataType } from '@/Types';
+import { customDropdownComponents } from '@/Utils/DropdownComponents';
 
 interface Props {
   data: DataType[];
@@ -48,6 +50,7 @@ function DataTable({ data, pillarsMetaData }: Props) {
             className='bg-primary-white! border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES_WHITE}
             isClearable={false}
+            components={customDropdownComponents('light', false)}
           />
         </div>
         <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px] max-w-[480px] flex-wrap'>
@@ -76,6 +79,8 @@ function DataTable({ data, pillarsMetaData }: Props) {
             className='bg-primary-white! border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES_MULTI_SELECT}
             isClearable={false}
+            components={customDropdownComponents('light', true)}
+            maxTagCount={2}
           />
         </div>
       </div>
@@ -118,6 +123,11 @@ function DataTable({ data, pillarsMetaData }: Props) {
                         style={{
                           backgroundColor: subPillars.find(d => d.value === p)
                             ?.colors[['Low', 'Medium', 'High'].indexOf(el.x)],
+                          color: getTextColorBasedOnBgColor(
+                            subPillars.find(d => d.value === p)?.colors[
+                              ['Low', 'Medium', 'High'].indexOf(el.x)
+                            ] || '#000000',
+                          ),
                         }}
                       >
                         {el.x}
@@ -128,7 +138,7 @@ function DataTable({ data, pillarsMetaData }: Props) {
                     </div>
                     <Link
                       to='/countries/$isoCode'
-                      className='poppins-regular text-[16px]! text-primary-white! w-[10%] pr-4!'
+                      className='poppins-regular text-[16px]! text-primary-white! w-[10%] pr-4! opacity-100 hover:opacity-80 underline underline-offset-4'
                       params={{ isoCode: el.id }}
                     >
                       View country

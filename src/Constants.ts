@@ -45,7 +45,6 @@ export const DROPDOWN_CLASSNAMES: any = {
   menu: () =>
     'rounded-none! mt-1! border-0! shadow-lg! p-0! bg-primary-gray-650!',
   indicatorSeparator: () => '!hidden',
-  dropdownIndicator: () => '[&>svg]:stroke-[#fff]',
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -77,7 +76,6 @@ export const DROPDOWN_CLASSNAMES_WHITE: any = {
   menu: () => 'mt-1! border-0! shadow-lg! bg-primary-white! rounded-[8px]!',
   menuList: () => 'rounded-[8px]! !p-0 !m-0',
   indicatorSeparator: () => '!hidden',
-  dropdownIndicator: () => '[&>svg]:stroke-[#545463]',
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

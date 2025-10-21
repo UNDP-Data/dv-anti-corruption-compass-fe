@@ -6,6 +6,7 @@ import { HeadingText, ParagraphText } from './Typography';
 
 import { CountryTaxonomyDataType } from '@/Types';
 import { DROPDOWN_CLASSNAMES_WHITE } from '@/Constants';
+import { customDropdownComponents } from '@/Utils/DropdownComponents';
 
 export const CountrySelect = ({
   countryTaxonomy,
@@ -39,6 +40,7 @@ export const CountrySelect = ({
           variant='normal'
           className='bg-primary-white! border-0! rounded-full! px-4!'
           classNames={DROPDOWN_CLASSNAMES_WHITE}
+          components={customDropdownComponents('light', false)}
         />
       ) : (
         <Spinner />

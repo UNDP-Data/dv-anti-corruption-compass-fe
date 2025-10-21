@@ -12,6 +12,7 @@ import { DROPDOWN_CLASSNAMES, YEARS } from '@/Constants';
 import { GraphCard } from '@/Components/GraphCard';
 import { PillarsMetaDataType } from '@/Types';
 import { ParagraphText } from '@/Components/Typography';
+import { customDropdownComponents } from '@/Utils/DropdownComponents';
 
 interface Props {
   country: string;
@@ -54,6 +55,7 @@ function DefaultViz({
             variant='normal'
             className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
+            components={customDropdownComponents('dark', false)}
           />
         </div>
         <div className='flex flex-col gap-1 w-[calc(50%-0.5rem)] grow-1 min-w-[240px]'>
@@ -69,6 +71,7 @@ function DefaultViz({
             variant='normal'
             className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
+            components={customDropdownComponents('dark', false)}
           />
         </div>
       </div>
