@@ -1,53 +1,51 @@
-import { useEffect, useState } from 'react';
-import { fetchAndParseJSON } from '@undp/data-viz/fetchAndParseData';
 import { Spacer } from '@undp/design-system-react/Spacer';
+import { useEffect, useState } from 'react';
 
 import CountryProfile from './Sections/CountryProfile';
 import ExploreData from './Sections/ExploreData';
 import Overview from './Sections/Overview';
 
-import { CountryTaxonomyDataType, PillarsMetaDataType } from '@/Types';
+import {
+  CountryTaxonomyDataType,
+  DataType,
+  PillarsMetaDataType,
+} from '@/Types';
 import { CountrySelect } from '@/Components/CountrySelect';
+import { getFullData } from '@/Utils/getData';
 
 interface Props {
   isoCode: string;
   pillarsMetaData: PillarsMetaDataType[];
+  countryTaxonomy: CountryTaxonomyDataType[];
 }
 
-function CountryPageEl({ isoCode, pillarsMetaData }: Props) {
-  const [countryData, setCountryData] = useState<
-    CountryTaxonomyDataType | undefined
-  >(undefined);
-  const [countryTaxonomy, setCountryTaxonomy] = useState<
-    CountryTaxonomyDataType[]
-  >([]);
-  const [invalidCountry, setInvalidCountry] = useState(false);
+function CountryPageEl({ isoCode, pillarsMetaData, countryTaxonomy }: Props) {
+  const countryData = countryTaxonomy.find(d => d['Alpha-3 code'] === isoCode);
+  const [data, setData] = useState<DataType[]>([]);
+
   useEffect(() => {
-    const fetchData = fetchAndParseJSON(
-      'https://raw.githubusercontent.com/UNDP-Data/country-taxonomy-from-azure/refs/heads/main/country_territory_groups.json',
-    );
-    fetchData.then(d => {
-      setCountryTaxonomy(d as CountryTaxonomyDataType[]);
-      const country = d.find(
-        (c: CountryTaxonomyDataType) => c['Alpha-3 code'] === isoCode,
-      );
-      setCountryData(country);
-      setInvalidCountry(country ? false : true);
+    getFullData(pillarsMetaData).then(d => {
+      setData(d);
     });
-  }, [isoCode]);
-  if (invalidCountry) {
+  }, [pillarsMetaData]);
+  if (!countryData) {
     return (
       <div className='px-4 container-md mx-auto'>
         <CountrySelect
           countryTaxonomy={countryTaxonomy}
           heading="We don't have the data for the selected country"
+          description='Please select a country from the dropdown below'
         />
       </div>
     );
   }
   return (
     <div className='w-full'>
-      <Overview pillarsMetaData={pillarsMetaData} countryData={countryData} />
+      <Overview
+        pillarsMetaData={pillarsMetaData}
+        data={data.filter(d => d.id === isoCode)}
+        countryTaxonomy={countryData}
+      />
       <ExploreData
         countryData={countryData}
         pillarsMetaData={pillarsMetaData}

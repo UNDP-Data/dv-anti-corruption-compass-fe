@@ -1,34 +1,31 @@
-import { fetchAndParseJSON } from '@undp/data-viz/fetchAndParseData';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Spinner } from '@undp/design-system-react/Spinner';
 import { Search } from '@undp/design-system-react/Search';
 import { Link } from '@tanstack/react-router';
 
 import { HeadingText } from '../Typography';
+import { ErrorState } from '../ErrorState';
 
-import { TaxonomyType } from '@/Types';
+import { CountryTaxonomyDataType } from '@/Types';
 
 export const CountryList = ({
   setShowCountrySelection,
+  countryTaxonomyData,
+  countryTaxonomyDataLoading,
+  countryTaxonomyDataError,
 }: {
   setShowCountrySelection: (_d: boolean) => void;
+  countryTaxonomyData: CountryTaxonomyDataType[];
+  countryTaxonomyDataLoading: boolean;
+  countryTaxonomyDataError: boolean;
 }) => {
-  const [countryTaxonomy, setCountryTaxonomy] = useState<TaxonomyType[]>([]);
-  const [searchedCountries, setSearchedCountries] = useState<TaxonomyType[]>(
-    [],
-  );
-  useEffect(() => {
-    fetchAndParseJSON(
-      'https://raw.githubusercontent.com/UNDP-Data/country-taxonomy-from-azure/refs/heads/main/country_territory_groups.json',
-    ).then(d => {
-      setCountryTaxonomy(d);
-      setSearchedCountries(d);
-    });
-  }, []);
+  const [searchedCountries, setSearchedCountries] =
+    useState(countryTaxonomyData);
+  if (countryTaxonomyDataError) return <ErrorState />;
   return (
     <div className='flex flex-col gap-6'>
       <HeadingText type='h2'>Available countries</HeadingText>
-      {countryTaxonomy.length > 0 ? (
+      {countryTaxonomyData.length > 0 && !countryTaxonomyDataLoading ? (
         <>
           <Search
             buttonVariant='icon'
@@ -40,12 +37,12 @@ export const CountryList = ({
             onSearch={d => {
               setSearchedCountries(
                 d
-                  ? countryTaxonomy.filter(country =>
+                  ? countryTaxonomyData.filter(country =>
                       country['Country or Area']
                         .toLowerCase()
                         .includes(d.toLowerCase()),
                     )
-                  : countryTaxonomy,
+                  : countryTaxonomyData,
               );
             }}
           />

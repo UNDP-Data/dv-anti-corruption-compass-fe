@@ -14,7 +14,7 @@ interface Props {
 }
 
 function ExploreData({ pillarsMetaData, countryData }: Props) {
-  const [view, setView] = useState<string>(pillarsMetaData[0].value);
+  const [view, setView] = useState<string>(pillarsMetaData[0].id);
   return (
     <div className='flex flex-col gap-6 container-lg mx-auto'>
       <HeadingText type='h2'>Explore data</HeadingText>
@@ -25,9 +25,9 @@ function ExploreData({ pillarsMetaData, countryData }: Props) {
           onValueChange={d => {
             setView(d);
           }}
-          options={[...new Set(pillarsMetaData.map(d => d.value))].map(d => ({
-            label: d,
-            value: d,
+          options={pillarsMetaData.map(d => ({
+            label: d.value,
+            value: d.id,
           }))}
           size='base'
           variant='normal'
@@ -38,12 +38,12 @@ function ExploreData({ pillarsMetaData, countryData }: Props) {
           buttonClassName='px-16 poppins-regular py-4 rounded-full w-1/2'
           buttonStyle={{
             active: {
-              backgroundImage: `linear-gradient(to right, ${pillarsMetaData.find(d => d.value === view)?.colors[0]}, ${pillarsMetaData.find(d => d.value === view)?.colors[1]})`,
+              backgroundImage: `linear-gradient(to right, ${pillarsMetaData.find(d => d.id === view)?.indicatorGradientColors[0]}, ${pillarsMetaData.find(d => d.id === view)?.indicatorGradientColors[1]})`,
             },
             inactive: {},
           }}
         />
-        {view === 'Public Procurement' ? (
+        {view === 'publicProcurement' ? (
           <ProcurementViz
             country={countryData?.['Country or Area'] || ''}
             isoCode={countryData?.['Alpha-3 code'] || ''}
@@ -54,7 +54,7 @@ function ExploreData({ pillarsMetaData, countryData }: Props) {
             country={countryData?.['Country or Area'] || ''}
             subPillars={
               pillarsMetaData
-                .find(d => d.value === view)
+                .find(d => d.id === view)
                 ?.subPillars.map(d => d.value) || []
             }
             mainIndicator={view}

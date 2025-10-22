@@ -99,7 +99,7 @@ function DefaultViz({
                 strokeWidth={14}
                 showColorScale={false}
                 colors={[
-                  pillarsMetaData.find(d => d.value === mainIndicator)?.color ||
+                  pillarsMetaData.find(d => d.id === mainIndicator)?.color ||
                     '#fff',
                   '#fff',
                 ]}
@@ -123,8 +123,8 @@ function DefaultViz({
                   ])}
                   labels={[country, 'World']}
                   lineColors={[
-                    pillarsMetaData.find(d => d.value === mainIndicator)
-                      ?.color || '#fff',
+                    pillarsMetaData.find(d => d.id === mainIndicator)?.color ||
+                      '#fff',
                     '#fff',
                   ]}
                   showColorLegendAtTop={false}

@@ -6,7 +6,7 @@ import {
 } from '@undp/design-system-react/Tabs';
 import { useState } from 'react';
 
-import DataTable from '../Components/DataTable';
+import DataTable from '../../Components/DataTable';
 
 import {
   CountryTaxonomyDataType,
@@ -54,6 +54,7 @@ const CountryLevelInsight = (props: Props) => {
             <CountrySelect
               countryTaxonomy={countryTaxonomy}
               heading='Uncover detailed anti-corruption data for your country'
+              description='Choose a country to reveal its complete anti-corruption profile — from key indicators to institutional strategies'
             />
           </TabsContent>
           <TabsContent value='tab 2'>

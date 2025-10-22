@@ -17,16 +17,17 @@ export const ArcChart = ({ data, colors, subPillars }: Props) => {
           {colors.map((d, i) => (
             <div key={i} className='flex gap-2 items-start'>
               <div
-                className='w-4 h-4 rounded-full'
+                className='w-3 h-3 rounded-full'
                 style={{
                   backgroundColor: d,
                 }}
               />
               <ParagraphText
                 leading='none'
+                size='xs'
                 className='text-[var(--color-text-black)]'
               >
-                {subPillars[i]}
+                {subPillars[i]}: <strong>{data[i].toFixed(2)}</strong>
               </ParagraphText>
             </div>
           ))}

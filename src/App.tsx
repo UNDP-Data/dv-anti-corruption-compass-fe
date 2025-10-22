@@ -14,15 +14,18 @@ import {
 } from '@tanstack/react-query';
 import { Spinner } from '@undp/design-system-react/Spinner';
 import { fetchAndParseJSON } from '@undp/data-viz/fetchAndParseData';
+import { createContext, useContext } from 'react';
 
 import Homepage from './01-Homepage';
-import MethodologyPage from './03-Methodology';
-import AboutUsPage from './04-AboutUs';
+import MethodologyPage from './04-Methodology';
+import AboutUsPage from './05-AboutUs';
 import { Header } from './Components/Header';
 import { Footer } from './Components/Footer';
 import CountryPageEl from './02-CountryPage';
 import { ScrollToTop } from './Utils/ScrollToTop';
-import { HeadingText } from './Components/Typography';
+import { CountryTaxonomyDataType, PillarsMetaDataType } from './Types';
+import { ErrorState } from './Components/ErrorState';
+import MainIndicatorPageEl from './03-MainIndicator';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,30 +35,84 @@ const queryClient = new QueryClient({
     },
   },
 });
-
 async function fetchPillarsMetaData() {
   return fetchAndParseJSON('/data/pillarMetaData.json');
 }
 
-function usePillarsData() {
-  return useQuery({
+async function fetchCountryTaxonomyData() {
+  return fetchAndParseJSON(
+    'https://raw.githubusercontent.com/UNDP-Data/country-taxonomy-from-azure/refs/heads/main/country_territory_groups.json',
+  );
+}
+
+function useGlobalData() {
+  const pillars = useQuery({
     queryKey: ['pillars'],
     queryFn: fetchPillarsMetaData,
   });
+  const countryTaxonomy = useQuery({
+    queryKey: ['countryTaxonomy'],
+    queryFn: fetchCountryTaxonomyData,
+  });
+  return { pillars, countryTaxonomy };
+}
+
+type GlobalDataContextType = {
+  pillarsMetaData: PillarsMetaDataType[];
+  countryTaxonomyData: CountryTaxonomyDataType[];
+  countryTaxonomyLoading: boolean;
+  countryTaxonomyError: boolean;
+};
+
+const GlobalDataContext = createContext<GlobalDataContextType | null>(null);
+
+export function useGlobalDataContext() {
+  const ctx = useContext(GlobalDataContext);
+  if (!ctx)
+    throw new Error('useGlobalDataContext must be used inside provider');
+  return ctx;
 }
 
 function RootComponent() {
-  const { data: pillarsMetaData } = usePillarsData();
+  const { pillars, countryTaxonomy } = useGlobalData();
+
+  const isLoading = pillars.isLoading;
+  const isError = pillars.isError;
+
+  if (isLoading) return <Spinner size='lg' className='my-20 m-auto' />;
+  if (isError)
+    return (
+      <div className='px-4 container-md mx-auto'>
+        <ErrorState />
+      </div>
+    );
 
   return (
-    <div className='min-h-screen flex flex-col background-inherit'>
-      <Header pillarsMetaData={pillarsMetaData || []} />
-      <main className='flex-1 pt-30'>
-        <ScrollToTop />
-        <Outlet />
-      </main>
-      <Footer pillarsMetaData={pillarsMetaData || []} />
-    </div>
+    <GlobalDataContext.Provider
+      value={{
+        pillarsMetaData: pillars.data,
+        countryTaxonomyData: countryTaxonomy.data,
+        countryTaxonomyLoading: countryTaxonomy.isLoading,
+        countryTaxonomyError: countryTaxonomy.isError,
+      }}
+    >
+      <div className='min-h-screen flex flex-col background-inherit'>
+        <Header
+          pillarsMetaData={pillars.data || []}
+          countryTaxonomyData={countryTaxonomy.data}
+          countryTaxonomyDataLoading={countryTaxonomy.isLoading}
+          countryTaxonomyDataError={countryTaxonomy.isError}
+        />
+        <main className='flex-1 pt-30'>
+          <ScrollToTop />
+          <Outlet />
+        </main>
+        <Footer
+          pillarsMetaData={pillars.data}
+          pillarsMetaDataLoading={pillars.isLoading}
+        />
+      </div>
+    </GlobalDataContext.Provider>
   );
 }
 
@@ -63,16 +120,18 @@ const rootRoute = createRootRoute({
   component: RootComponent,
 });
 
-function Index() {
-  const { data: pillarsMetaData } = usePillarsData();
-  if (!pillarsMetaData) return <Spinner size='lg' className='my-20 m-auto' />;
-  return <Homepage pillarsMetaData={pillarsMetaData} />;
-}
-
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: Index,
+  component: function Index() {
+    const { pillarsMetaData, countryTaxonomyData } = useGlobalDataContext();
+    return (
+      <Homepage
+        pillarsMetaData={pillarsMetaData}
+        countryTaxonomy={countryTaxonomyData}
+      />
+    );
+  },
 });
 
 const aboutRoute = createRoute({
@@ -92,13 +151,31 @@ const methodologyRoute = createRoute({
 });
 
 function MainIndicator() {
-  const { data: pillarsMetaData } = usePillarsData();
   const { indicator } = mainIndicatorRoute.useParams();
-  if (!pillarsMetaData) return <Spinner size='lg' className='my-20 m-auto' />;
+  const {
+    pillarsMetaData,
+    countryTaxonomyData,
+    countryTaxonomyLoading,
+    countryTaxonomyError,
+  } = useGlobalDataContext();
+
+  const pillarMetaData = pillarsMetaData.find(
+    d => d.value.replaceAll(' ', '-').toLowerCase() === indicator,
+  );
+  if (!pillarMetaData)
+    return (
+      <div className='px-4 container-md mx-auto'>
+        The indicator you are trying to search does not exist
+      </div>
+    );
+
   return (
-    <div className='p-6'>
-      <HeadingText type='h2'>{indicator} page coming soon!</HeadingText>
-    </div>
+    <MainIndicatorPageEl
+      pillarMetaData={pillarMetaData}
+      countryTaxonomyDataLoading={countryTaxonomyLoading}
+      countryTaxonomyDataError={countryTaxonomyError}
+      countryTaxonomy={countryTaxonomyData || []}
+    />
   );
 }
 
@@ -110,9 +187,28 @@ const mainIndicatorRoute = createRoute({
 
 function Country() {
   const { isoCode } = countryRoute.useParams();
-  const { data: pillarsMetaData } = usePillarsData();
-  if (!pillarsMetaData) return <Spinner size='lg' className='my-20 m-auto' />;
-  return <CountryPageEl isoCode={isoCode} pillarsMetaData={pillarsMetaData} />;
+  const {
+    pillarsMetaData,
+    countryTaxonomyData,
+    countryTaxonomyLoading,
+    countryTaxonomyError,
+  } = useGlobalDataContext();
+
+  if (countryTaxonomyLoading)
+    return <Spinner size='lg' className='my-20 m-auto' />;
+  if (countryTaxonomyError)
+    return (
+      <div className='px-4 container-md mx-auto'>
+        <ErrorState />
+      </div>
+    );
+  return (
+    <CountryPageEl
+      isoCode={isoCode}
+      countryTaxonomy={countryTaxonomyData}
+      pillarsMetaData={pillarsMetaData}
+    />
+  );
 }
 
 const countryRoute = createRoute({
@@ -136,6 +232,7 @@ declare module '@tanstack/react-router' {
     router: typeof router;
   }
 }
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>

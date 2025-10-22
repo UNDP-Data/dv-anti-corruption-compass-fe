@@ -13,8 +13,10 @@ import { PillarsMetaDataType } from '@/Types';
 
 export const Footer = ({
   pillarsMetaData,
+  pillarsMetaDataLoading,
 }: {
   pillarsMetaData: PillarsMetaDataType[];
+  pillarsMetaDataLoading: boolean;
 }) => {
   return (
     <footer className='bg-[var(--color-black-bg)] px-20 py-24 relative z-10'>
@@ -36,7 +38,7 @@ export const Footer = ({
             <ParagraphText>Home</ParagraphText>
           </Link>
           <div className='flex flex-col gap-4 md:gap-8'>
-            {pillarsMetaData.length === 0 && (
+            {pillarsMetaDataLoading && (
               <ParagraphText>Loading...</ParagraphText>
             )}
             {pillarsMetaData.map((d, i) => (

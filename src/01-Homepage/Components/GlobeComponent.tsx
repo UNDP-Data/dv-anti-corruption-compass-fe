@@ -5,7 +5,11 @@ import { X } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { Spacer } from '@undp/design-system-react/Spacer';
 
-import { DataType, PillarsMetaDataType, TaxonomyType } from '@/Types';
+import {
+  DataType,
+  PillarsMetaDataType,
+  CountryTaxonomyDataType,
+} from '@/Types';
 import { ColorLegend } from '@/Components/ColorLegend';
 import { ArcChart } from '@/Components/ArcChart';
 import { ParagraphText } from '@/Components/Typography';
@@ -15,7 +19,7 @@ interface Props {
   data: DataType[];
   selectedSubPillar: string;
   selectedMainIndicator: string;
-  countryTaxonomy: TaxonomyType[];
+  countryTaxonomy: CountryTaxonomyDataType[];
   rotate: boolean;
   pillarsMetaData: PillarsMetaDataType[];
 }
@@ -126,7 +130,7 @@ function GlobeComponent({
               globeCurvatureResolution={2}
               resetSelectionOnDoubleClick={false}
               autoRotate={rotate ? 1 : false}
-              data={data}
+              data={data.filter(d => d.subPillar === selectedSubPillar)}
             />
           ) : null}
         </div>
@@ -164,14 +168,16 @@ function GlobeComponent({
             <Spacer size='2xl' />
             <div className='w-full mb-4 flex items-center text-primary-gray-500 justify-center'>
               <ArcChart
-                data={
-                  pillarsMetaData
-                    .find(d => d.value === selectedMainIndicator)
-                    ?.subPillars.map(_d => Math.ceil(Math.random() * 100)) || []
-                }
+                data={data
+                  .filter(
+                    d =>
+                      d.id === selectedId &&
+                      d.mainIndicator === selectedMainIndicator,
+                  )
+                  .map(d => d.value)}
                 colors={
                   pillarsMetaData
-                    .find(d => d.value === selectedMainIndicator)
+                    .find(d => d.id === selectedMainIndicator)
                     ?.subPillars.map(d => d.color) || []
                 }
                 subPillars={

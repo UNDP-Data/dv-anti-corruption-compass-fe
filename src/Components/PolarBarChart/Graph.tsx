@@ -3,10 +3,10 @@ import { arc } from 'd3-shape';
 
 import { ParagraphText } from '../Typography';
 
-import { CountryDataType, PillarsMetaDataType } from '@/Types';
+import { DataType, PillarsMetaDataType } from '@/Types';
 
 interface Props {
-  data: CountryDataType[];
+  data: DataType[];
   radius: number;
   innerRadiusRatio: number;
   marginSide: number;
@@ -23,19 +23,19 @@ export const Graph = ({
   pillarsMetaData,
 }: Props) => {
   const x = scaleBand()
-    .domain(data.map(d => d.subIndicator))
+    .domain(data.map(d => d.subPillar))
     .range([-Math.PI / 2, Math.PI / 2]);
   const r = scaleLinear()
-    .domain([0, 100])
+    .domain([0, 1])
     .range([0, radius * (1 - innerRadiusRatio)]);
   return (
     <>
       <svg width={(radius + marginSide) * 2} height={radius + marginTop}>
         <defs>
-          {[...new Set(pillarsMetaData.map(d => d.value))].map((d, i) => (
+          {[...new Set(pillarsMetaData.map(d => d.id))].map((d, i) => (
             <radialGradient
               key={i}
-              id={`${d.replaceAll(' ', '-')}-gradient`}
+              id={`${d}-radial-gradient`}
               gradientUnits='userSpaceOnUse'
               r={radius}
               cx={0}
@@ -47,13 +47,15 @@ export const Graph = ({
               <stop
                 offset='10%'
                 stopColor={
-                  pillarsMetaData.find(el => el.value === d)?.colors[0]
+                  pillarsMetaData.find(el => el.id === d)
+                    ?.indicatorGradientColors[0]
                 }
               />
               <stop
                 offset='90%'
                 stopColor={
-                  pillarsMetaData.find(el => el.value === d)?.colors[1]
+                  pillarsMetaData.find(el => el.id === d)
+                    ?.indicatorGradientColors[1]
                 }
               />
             </radialGradient>
@@ -74,7 +76,7 @@ export const Graph = ({
             fill='#fff'
           />
           {data.map((d, i) => {
-            const startAngle = x(d.subIndicator)!;
+            const startAngle = x(d.subPillar)!;
             const endAngle = startAngle + (x.bandwidth() as number);
             const angle = (startAngle + endAngle) / 2;
 
@@ -85,8 +87,8 @@ export const Graph = ({
                     arc()({
                       innerRadius: radius * innerRadiusRatio,
                       outerRadius: radius,
-                      startAngle: x(d.subIndicator) as number,
-                      endAngle: x(d.subIndicator)! + (x.bandwidth() as number),
+                      startAngle: x(d.subPillar) as number,
+                      endAngle: x(d.subPillar)! + (x.bandwidth() as number),
                     }) as string
                   }
                   fill='#F3F4F6'
@@ -124,10 +126,10 @@ export const Graph = ({
                       alignment='center'
                       marginBottom='none'
                     >
-                      {d.subIndicator}
+                      {d.subPillar}
                     </ParagraphText>
                     <ParagraphText size='xs' weight='light' leading='loose'>
-                      {d.level}
+                      {d.x}
                     </ParagraphText>
                   </div>
                 </foreignObject>
@@ -136,11 +138,11 @@ export const Graph = ({
                     arc()({
                       innerRadius: radius * innerRadiusRatio,
                       outerRadius: radius * innerRadiusRatio + r(d.value),
-                      startAngle: x(d.subIndicator) as number,
-                      endAngle: x(d.subIndicator)! + (x.bandwidth() as number),
+                      startAngle: x(d.subPillar) as number,
+                      endAngle: x(d.subPillar)! + (x.bandwidth() as number),
                     }) as string
                   }
-                  fill={`url(#${d.mainIndicator.replaceAll(' ', '-')}-gradient)`}
+                  fill={`url(#${d.mainIndicator}-radial-gradient)`}
                 />
               </g>
             );

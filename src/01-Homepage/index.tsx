@@ -1,6 +1,5 @@
 import { motion, useInView, useScroll, useTransform } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
-import { fetchAndParseJSON } from '@undp/data-viz/fetchAndParseData';
 import { Spacer } from '@undp/design-system-react/Spacer';
 
 import GlobeControls from './Components/GlobeControls';
@@ -9,22 +8,27 @@ import GlobeComponent from './Components/GlobeComponent';
 import CountryLevelInsight from './Sections/CountryLevelInsight';
 import Introduction from './Sections/Introduction';
 
-import { DataType, PillarsMetaDataType, TaxonomyType } from '@/Types';
+import {
+  DataType,
+  PillarsMetaDataType,
+  CountryTaxonomyDataType,
+} from '@/Types';
 import { HeadingText, ParagraphText } from '@/Components/Typography';
 import { ProjectsSection } from '@/Components/ProjectsSection';
+import { getFullData } from '@/Utils/getData';
 
 function Homepage({
   pillarsMetaData,
+  countryTaxonomy,
 }: {
   pillarsMetaData: PillarsMetaDataType[];
+  countryTaxonomy: CountryTaxonomyDataType[];
 }) {
   const [data, setData] = useState<DataType[]>([]);
-  const [countryTaxonomy, setCountryTaxonomy] = useState<TaxonomyType[]>([]);
   const [inViewSlide, setInViewSlide] = useState<number>(0);
   const [selectedSubPillar, setSelectedSubPillar] = useState<string[]>(
-    [...new Set(pillarsMetaData.map(d => d.value))].map(
-      d =>
-        pillarsMetaData.find(el => el.value === d)?.subPillars[0].value || '',
+    [...new Set(pillarsMetaData.map(d => d.id))].map(
+      d => pillarsMetaData.find(el => el.id === d)?.subPillars[0].value || '',
     ),
   );
   const [showNavigation, setShowNavigation] = useState(false);
@@ -59,15 +63,10 @@ function Homepage({
   );
 
   useEffect(() => {
-    fetchAndParseJSON('/data/data.json').then(d => {
-      setData(d as DataType[]);
+    getFullData(pillarsMetaData).then(d => {
+      setData(d);
     });
-    fetchAndParseJSON(
-      'https://raw.githubusercontent.com/UNDP-Data/country-taxonomy-from-azure/refs/heads/main/country_territory_groups.json',
-    ).then(d => {
-      setCountryTaxonomy(d);
-    });
-  }, []);
+  }, [pillarsMetaData]);
 
   useEffect(() => {
     const unsubscribe = introductionOpacity.on('change', latest => {
@@ -76,7 +75,6 @@ function Homepage({
 
     return () => unsubscribe();
   }, [introductionOpacity]);
-
   return (
     <div className='relative'>
       {showNavigation && (
@@ -147,7 +145,7 @@ function Homepage({
           countryTaxonomy={countryTaxonomy}
           rotate={inViewSlide < pillarsMetaData.length ? true : false}
           pillarsMetaData={pillarsMetaData}
-          selectedMainIndicator={pillarsMetaData[inViewSlide]?.value || ''}
+          selectedMainIndicator={pillarsMetaData[inViewSlide]?.id || ''}
         />
       </motion.div>
 

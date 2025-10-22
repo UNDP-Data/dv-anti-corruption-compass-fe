@@ -9,12 +9,12 @@ import { InfoIcon } from 'lucide-react';
 import { ParagraphText } from './Typography';
 
 export const ColorLegend = ({
-  colors,
+  colors = [],
   className,
   showTitle = true,
   keyValues = ['Low', 'Medium', 'High'],
 }: {
-  colors: string[];
+  colors?: string[];
   className?: string;
   showTitle?: boolean;
   keyValues?: string[];

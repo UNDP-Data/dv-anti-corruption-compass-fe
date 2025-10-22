@@ -11,19 +11,18 @@ import { customDropdownComponents } from '@/Utils/DropdownComponents';
 export const CountrySelect = ({
   countryTaxonomy,
   heading,
+  description,
 }: {
   countryTaxonomy: CountryTaxonomyDataType[];
   heading: string;
+  description: string;
 }) => {
   const navigate = useNavigate();
   return (
     <div className='gap-8 flex flex-col w-full text-primary-gray-700 pt-7'>
       <div className='flex flex-col gap-3'>
         <HeadingText type='h2'>{heading}</HeadingText>
-        <ParagraphText leading='snug'>
-          Choose a country to reveal its complete anti-corruption profile — from
-          key indicators to institutional strategies
-        </ParagraphText>
+        <ParagraphText leading='snug'>{description}</ParagraphText>
       </div>
       {countryTaxonomy.length > 0 ? (
         <DropdownSelect

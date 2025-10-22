@@ -16,7 +16,11 @@ export default defineConfig({
       target: 'react',
       autoCodeSplitting: true,
     }),
-    react(),
+    react({
+      babel: {
+        plugins: ['babel-plugin-react-compiler'],
+      },
+    }),
     eslint(),
     visualizer({ filename: 'stats.html', open: true }),
     viteStaticCopy({

@@ -13,12 +13,18 @@ import { HeadingText, ParagraphText } from '../Typography';
 
 import { CountryList } from './CountryList';
 
-import { PillarsMetaDataType } from '@/Types';
+import { CountryTaxonomyDataType, PillarsMetaDataType } from '@/Types';
 
 export const Header = ({
   pillarsMetaData,
+  countryTaxonomyDataLoading,
+  countryTaxonomyDataError,
+  countryTaxonomyData,
 }: {
   pillarsMetaData: PillarsMetaDataType[];
+  countryTaxonomyDataLoading: boolean;
+  countryTaxonomyDataError: boolean;
+  countryTaxonomyData: CountryTaxonomyDataType[];
 }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [showCountrySelection, setShowCountrySelection] = useState(false);
@@ -65,7 +71,7 @@ export const Header = ({
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className='w-60 rounded-[8px] mt-2 p-0 z-1000 border-none shadow-[0_2px_4px_0_rgba(0,0,0,0.25)]'>
-              {pillarsMetaData.map((d, i) => (
+              {(pillarsMetaData || []).map((d, i) => (
                 <DropdownMenuItem
                   key={i}
                   className='poppins-medium !text-[14px] py-4 px-3 hover:!bg-[#4B6E91] text-[var(--color-black-bg)] hover:!text-[var(--color-text-white)]'
@@ -179,7 +185,12 @@ export const Header = ({
             }}
             className='bg-[var(--color-black-bg)]! border-0!'
           >
-            <CountryList setShowCountrySelection={setShowCountrySelection} />
+            <CountryList
+              countryTaxonomyData={countryTaxonomyData || []}
+              countryTaxonomyDataLoading={countryTaxonomyDataLoading}
+              countryTaxonomyDataError={countryTaxonomyDataError}
+              setShowCountrySelection={setShowCountrySelection}
+            />
           </Modal>
         </div>
       )}

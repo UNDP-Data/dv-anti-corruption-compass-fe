@@ -1,997 +1,798 @@
 [
   {
     "id": "ARE",
-    "country": "United Arab Emirates",
-    "x": "High"
+    "country": "United Arab Emirates"
   },
   {
     "id": "BHR",
-    "country": "Bahrain",
-    "x": "Medium"
+    "country": "Bahrain"
   },
   {
     "id": "DJI",
-    "country": "Djibouti",
-    "x": "Low"
+    "country": "Djibouti"
   },
   {
     "id": "DZA",
-    "country": "Algeria",
-    "x": "Low"
+    "country": "Algeria"
   },
   {
     "id": "EGY",
-    "country": "Egypt",
-    "x": "Medium"
+    "country": "Egypt"
   },
   {
     "id": "IRQ",
-    "country": "Iraq",
-    "x": "High"
+    "country": "Iraq"
   },
   {
     "id": "JOR",
-    "country": "Jordan",
-    "x": "Medium"
+    "country": "Jordan"
   },
   {
     "id": "KWT",
-    "country": "Kuwait",
-    "x": "High"
+    "country": "Kuwait"
   },
   {
     "id": "LBN",
-    "country": "Lebanon",
-    "x": "High"
+    "country": "Lebanon"
   },
   {
     "id": "LBY",
-    "country": "Libya",
-    "x": "Low"
+    "country": "Libya"
   },
   {
     "id": "MAR",
-    "country": "Morocco",
-    "x": "Low"
+    "country": "Morocco"
   },
   {
     "id": "OMN",
-    "country": "Oman",
-    "x": "Low"
+    "country": "Oman"
   },
   {
     "id": "PSE",
-    "country": "Palestine, State of",
-    "x": "High"
+    "country": "Palestine, State of"
   },
   {
     "id": "QAT",
-    "country": "Qatar",
-    "x": "High"
+    "country": "Qatar"
   },
   {
     "id": "SAU",
-    "country": "Saudi Arabia",
-    "x": "Low"
+    "country": "Saudi Arabia"
   },
   {
     "id": "SDN",
-    "country": "Sudan",
-    "x": "High"
+    "country": "Sudan"
   },
   {
     "id": "SOM",
-    "country": "Somalia",
-    "x": "High"
+    "country": "Somalia"
   },
   {
     "id": "SYR",
-    "country": "Syrian Arab Republic",
-    "x": "Medium"
+    "country": "Syrian Arab Republic"
   },
   {
     "id": "TUN",
-    "country": "Tunisia",
-    "x": "High"
+    "country": "Tunisia"
   },
   {
     "id": "YEM",
-    "country": "Yemen",
-    "x": "Low"
+    "country": "Yemen"
   },
   {
     "id": "BRN",
-    "country": "Brunei Darussalam",
-    "x": "Low"
+    "country": "Brunei Darussalam"
   },
   {
     "id": "CHN",
-    "country": "China",
-    "x": "High"
+    "country": "China"
   },
   {
     "id": "FJI",
-    "country": "Fiji",
-    "x": "Low"
+    "country": "Fiji"
   },
   {
     "id": "FSM",
-    "country": "Micronesia (Federated States of)",
-    "x": "High"
+    "country": "Micronesia (Federated States of)"
   },
   {
     "id": "IDN",
-    "country": "Indonesia",
-    "x": "Medium"
+    "country": "Indonesia"
   },
   {
     "id": "KHM",
-    "country": "Cambodia",
-    "x": "High"
+    "country": "Cambodia"
   },
   {
     "id": "KIR",
-    "country": "Kiribati",
-    "x": "Low"
+    "country": "Kiribati"
   },
   {
     "id": "LAO",
-    "country": "Lao People's Democratic Republic",
-    "x": "Low"
+    "country": "Lao People's Democratic Republic"
   },
   {
     "id": "MHL",
-    "country": "Marshall Islands",
-    "x": "High"
+    "country": "Marshall Islands"
   },
   {
     "id": "MMR",
-    "country": "Myanmar",
-    "x": "Low"
+    "country": "Myanmar"
   },
   {
     "id": "MNG",
-    "country": "Mongolia",
-    "x": "High"
+    "country": "Mongolia"
   },
   {
     "id": "MYS",
-    "country": "Malaysia",
-    "x": "High"
+    "country": "Malaysia"
   },
   {
     "id": "NRU",
-    "country": "Nauru",
-    "x": "High"
+    "country": "Nauru"
   },
   {
     "id": "PHL",
-    "country": "Philippines",
-    "x": "Low"
+    "country": "Philippines"
   },
   {
     "id": "PLW",
-    "country": "Palau",
-    "x": "High"
+    "country": "Palau"
   },
   {
     "id": "PNG",
-    "country": "Papua New Guinea",
-    "x": "Medium"
+    "country": "Papua New Guinea"
   },
   {
     "id": "PRK",
-    "country": "Korea (Democratic People's Rep. of)",
-    "x": "Low"
+    "country": "Korea (Democratic People's Rep. of)"
   },
   {
     "id": "SGP",
-    "country": "Singapore",
-    "x": "Medium"
+    "country": "Singapore"
   },
   {
     "id": "SLB",
-    "country": "Solomon Islands",
-    "x": "Medium"
+    "country": "Solomon Islands"
   },
   {
     "id": "THA",
-    "country": "Thailand",
-    "x": "Low"
+    "country": "Thailand"
   },
   {
     "id": "TLS",
-    "country": "Timor-Leste",
-    "x": "Low"
+    "country": "Timor-Leste"
   },
   {
     "id": "TON",
-    "country": "Tonga",
-    "x": "High"
+    "country": "Tonga"
   },
   {
     "id": "TUV",
-    "country": "Tuvalu",
-    "x": "Medium"
+    "country": "Tuvalu"
   },
   {
     "id": "VNM",
-    "country": "Viet Nam",
-    "x": "Medium"
+    "country": "Viet Nam"
   },
   {
     "id": "VUT",
-    "country": "Vanuatu",
-    "x": "Low"
+    "country": "Vanuatu"
   },
   {
     "id": "WSM",
-    "country": "Samoa",
-    "x": "Low"
+    "country": "Samoa"
   },
   {
     "id": "ALB",
-    "country": "Albania",
-    "x": "Medium"
+    "country": "Albania"
   },
   {
     "id": "ARM",
-    "country": "Armenia",
-    "x": "Medium"
+    "country": "Armenia"
   },
   {
     "id": "AZE",
-    "country": "Azerbaijan",
-    "x": "Medium"
+    "country": "Azerbaijan"
   },
   {
     "id": "BIH",
-    "country": "Bosnia and Herzegovina",
-    "x": "Low"
+    "country": "Bosnia and Herzegovina"
   },
   {
     "id": "BLR",
-    "country": "Belarus",
-    "x": "Medium"
+    "country": "Belarus"
   },
   {
     "id": "GEO",
-    "country": "Georgia",
-    "x": "Medium"
+    "country": "Georgia"
   },
   {
     "id": "KAZ",
-    "country": "Kazakhstan",
-    "x": "High"
+    "country": "Kazakhstan"
   },
   {
     "id": "KGZ",
-    "country": "Kyrgyzstan",
-    "x": "High"
+    "country": "Kyrgyzstan"
   },
   {
     "id": "MDA",
-    "country": "Moldova (Republic of)",
-    "x": "High"
+    "country": "Moldova (Republic of)"
   },
   {
     "id": "MKD",
-    "country": "North Macedonia",
-    "x": "High"
+    "country": "North Macedonia"
   },
   {
     "id": "MNE",
-    "country": "Montenegro",
-    "x": "Low"
+    "country": "Montenegro"
   },
   {
     "id": "SRB",
-    "country": "Serbia",
-    "x": "High"
+    "country": "Serbia"
   },
   {
     "id": "TJK",
-    "country": "Tajikistan",
-    "x": "Medium"
+    "country": "Tajikistan"
   },
   {
     "id": "TKM",
-    "country": "Turkmenistan",
-    "x": "Medium"
+    "country": "Turkmenistan"
   },
   {
     "id": "TUR",
-    "country": "Turkiye",
-    "x": "Low"
+    "country": "Turkiye"
   },
   {
     "id": "UKR",
-    "country": "Ukraine",
-    "x": "High"
+    "country": "Ukraine"
   },
   {
     "id": "UZB",
-    "country": "Uzbekistan",
-    "x": "High"
+    "country": "Uzbekistan"
   },
   {
     "id": "XKX",
-    "country": "Kosovo (As per UNSCR 1244)",
-    "x": "Low"
+    "country": "Kosovo (As per UNSCR 1244)"
   },
   {
     "id": "ARG",
-    "country": "Argentina",
-    "x": "High"
+    "country": "Argentina"
   },
   {
     "id": "ATG",
-    "country": "Antigua and Barbuda",
-    "x": "Medium"
+    "country": "Antigua and Barbuda"
   },
   {
     "id": "BHS",
-    "country": "Bahamas",
-    "x": "Low"
+    "country": "Bahamas"
   },
   {
     "id": "BLZ",
-    "country": "Belize",
-    "x": "Low"
+    "country": "Belize"
   },
   {
     "id": "BOL",
-    "country": "Bolivia (Plurinational State of)",
-    "x": "High"
+    "country": "Bolivia (Plurinational State of)"
   },
   {
     "id": "BRA",
-    "country": "Brazil",
-    "x": "Medium"
+    "country": "Brazil"
   },
   {
     "id": "BRB",
-    "country": "Barbados",
-    "x": "Low"
+    "country": "Barbados"
   },
   {
     "id": "CHL",
-    "country": "Chile",
-    "x": "High"
+    "country": "Chile"
   },
   {
     "id": "COL",
-    "country": "Colombia",
-    "x": "Medium"
+    "country": "Colombia"
   },
   {
     "id": "CRI",
-    "country": "Costa Rica",
-    "x": "Medium"
+    "country": "Costa Rica"
   },
   {
     "id": "CUB",
-    "country": "Cuba",
-    "x": "Low"
+    "country": "Cuba"
   },
   {
     "id": "DMA",
-    "country": "Dominica",
-    "x": "Low"
+    "country": "Dominica"
   },
   {
     "id": "DOM",
-    "country": "Dominican Republic",
-    "x": "Low"
+    "country": "Dominican Republic"
   },
   {
     "id": "ECU",
-    "country": "Ecuador",
-    "x": "Medium"
+    "country": "Ecuador"
   },
   {
     "id": "GRD",
-    "country": "Grenada",
-    "x": "High"
+    "country": "Grenada"
   },
   {
     "id": "GTM",
-    "country": "Guatemala",
-    "x": "High"
+    "country": "Guatemala"
   },
   {
     "id": "GUY",
-    "country": "Guyana",
-    "x": "High"
+    "country": "Guyana"
   },
   {
     "id": "HND",
-    "country": "Honduras",
-    "x": "Low"
+    "country": "Honduras"
   },
   {
     "id": "HTI",
-    "country": "Haiti",
-    "x": "Low"
+    "country": "Haiti"
   },
   {
     "id": "JAM",
-    "country": "Jamaica",
-    "x": "Low"
+    "country": "Jamaica"
   },
   {
     "id": "KNA",
-    "country": "Saint Kitts and Nevis",
-    "x": "Low"
+    "country": "Saint Kitts and Nevis"
   },
   {
     "id": "LCA",
-    "country": "Saint Lucia",
-    "x": "Medium"
+    "country": "Saint Lucia"
   },
   {
     "id": "MEX",
-    "country": "Mexico",
-    "x": "Medium"
+    "country": "Mexico"
   },
   {
     "id": "NIC",
-    "country": "Nicaragua",
-    "x": "Medium"
+    "country": "Nicaragua"
   },
   {
     "id": "PAN",
-    "country": "Panama",
-    "x": "High"
+    "country": "Panama"
   },
   {
     "id": "PER",
-    "country": "Peru",
-    "x": "Low"
+    "country": "Peru"
   },
   {
     "id": "PRY",
-    "country": "Paraguay",
-    "x": "Medium"
+    "country": "Paraguay"
   },
   {
     "id": "SLV",
-    "country": "El Salvador",
-    "x": "Medium"
+    "country": "El Salvador"
   },
   {
     "id": "SUR",
-    "country": "Suriname",
-    "x": "Low"
+    "country": "Suriname"
   },
   {
     "id": "TTO",
-    "country": "Trinidad and Tobago",
-    "x": "High"
+    "country": "Trinidad and Tobago"
   },
   {
     "id": "URY",
-    "country": "Uruguay",
-    "x": "Low"
+    "country": "Uruguay"
   },
   {
     "id": "VCT",
-    "country": "Saint Vincent and the Grenadines",
-    "x": "Low"
+    "country": "Saint Vincent and the Grenadines"
   },
   {
     "id": "VEN",
-    "country": "Venezuela (Bolivarian Republic of)",
-    "x": "Low"
+    "country": "Venezuela (Bolivarian Republic of)"
   },
   {
     "id": "AFG",
-    "country": "Afghanistan",
-    "x": "High"
+    "country": "Afghanistan"
   },
   {
     "id": "BGD",
-    "country": "Bangladesh",
-    "x": "Medium"
+    "country": "Bangladesh"
   },
   {
     "id": "BTN",
-    "country": "Bhutan",
-    "x": "Low"
+    "country": "Bhutan"
   },
   {
     "id": "IND",
-    "country": "India",
-    "x": "Low"
+    "country": "India"
   },
   {
     "id": "IRN",
-    "country": "Iran (Islamic Republic of)",
-    "x": "Low"
+    "country": "Iran (Islamic Republic of)"
   },
   {
     "id": "LKA",
-    "country": "Sri Lanka",
-    "x": "High"
+    "country": "Sri Lanka"
   },
   {
     "id": "MDV",
-    "country": "Maldives",
-    "x": "Low"
+    "country": "Maldives"
   },
   {
     "id": "NPL",
-    "country": "Nepal",
-    "x": "Low"
+    "country": "Nepal"
   },
   {
     "id": "PAK",
-    "country": "Pakistan",
-    "x": "Medium"
+    "country": "Pakistan"
   },
   {
     "id": "AGO",
-    "country": "Angola",
-    "x": "High"
+    "country": "Angola"
   },
   {
     "id": "BDI",
-    "country": "Burundi",
-    "x": "High"
+    "country": "Burundi"
   },
   {
     "id": "BEN",
-    "country": "Benin",
-    "x": "Low"
+    "country": "Benin"
   },
   {
     "id": "BFA",
-    "country": "Burkina Faso",
-    "x": "Medium"
+    "country": "Burkina Faso"
   },
   {
     "id": "BWA",
-    "country": "Botswana",
-    "x": "High"
+    "country": "Botswana"
   },
   {
     "id": "CAF",
-    "country": "Central African Republic",
-    "x": "Medium"
+    "country": "Central African Republic"
   },
   {
     "id": "CIV",
-    "country": "Côte d’Ivoire",
-    "x": "Low"
+    "country": "Côte d’Ivoire"
   },
   {
     "id": "CMR",
-    "country": "Cameroon",
-    "x": "Low"
+    "country": "Cameroon"
   },
   {
     "id": "COD",
-    "country": "Congo (Democratic Republic of the)",
-    "x": "High"
+    "country": "Congo (Democratic Republic of the)"
   },
   {
     "id": "COG",
-    "country": "Congo",
-    "x": "Medium"
+    "country": "Congo"
   },
   {
     "id": "COM",
-    "country": "Comoros",
-    "x": "High"
+    "country": "Comoros"
   },
   {
     "id": "CPV",
-    "country": "Cabo Verde",
-    "x": "Low"
+    "country": "Cabo Verde"
   },
   {
     "id": "ERI",
-    "country": "Eritrea",
-    "x": "Low"
+    "country": "Eritrea"
   },
   {
     "id": "ETH",
-    "country": "Ethiopia",
-    "x": "Low"
+    "country": "Ethiopia"
   },
   {
     "id": "GAB",
-    "country": "Gabon",
-    "x": "High"
+    "country": "Gabon"
   },
   {
     "id": "GHA",
-    "country": "Ghana",
-    "x": "Low"
+    "country": "Ghana"
   },
   {
     "id": "GIN",
-    "country": "Guinea",
-    "x": "Low"
+    "country": "Guinea"
   },
   {
     "id": "GMB",
-    "country": "Gambia",
-    "x": "High"
+    "country": "Gambia"
   },
   {
     "id": "GNB",
-    "country": "Guinea-Bissau",
-    "x": "Low"
+    "country": "Guinea-Bissau"
   },
   {
     "id": "GNQ",
-    "country": "Equatorial Guinea",
-    "x": "High"
+    "country": "Equatorial Guinea"
   },
   {
     "id": "KEN",
-    "country": "Kenya",
-    "x": "High"
+    "country": "Kenya"
   },
   {
     "id": "LBR",
-    "country": "Liberia",
-    "x": "High"
+    "country": "Liberia"
   },
   {
     "id": "LSO",
-    "country": "Lesotho",
-    "x": "High"
+    "country": "Lesotho"
   },
   {
     "id": "MDG",
-    "country": "Madagascar",
-    "x": "Medium"
+    "country": "Madagascar"
   },
   {
     "id": "MLI",
-    "country": "Mali",
-    "x": "High"
+    "country": "Mali"
   },
   {
     "id": "MOZ",
-    "country": "Mozambique",
-    "x": "Medium"
+    "country": "Mozambique"
   },
   {
     "id": "MRT",
-    "country": "Mauritania",
-    "x": "Low"
+    "country": "Mauritania"
   },
   {
     "id": "MUS",
-    "country": "Mauritius",
-    "x": "Medium"
+    "country": "Mauritius"
   },
   {
     "id": "MWI",
-    "country": "Malawi",
-    "x": "Low"
+    "country": "Malawi"
   },
   {
     "id": "NAM",
-    "country": "Namibia",
-    "x": "Medium"
+    "country": "Namibia"
   },
   {
     "id": "NER",
-    "country": "Niger",
-    "x": "High"
+    "country": "Niger"
   },
   {
     "id": "NGA",
-    "country": "Nigeria",
-    "x": "Low"
+    "country": "Nigeria"
   },
   {
     "id": "RWA",
-    "country": "Rwanda",
-    "x": "High"
+    "country": "Rwanda"
   },
   {
     "id": "SEN",
-    "country": "Senegal",
-    "x": "Low"
+    "country": "Senegal"
   },
   {
     "id": "SLE",
-    "country": "Sierra Leone",
-    "x": "Low"
+    "country": "Sierra Leone"
   },
   {
     "id": "SSD",
-    "country": "South Sudan",
-    "x": "Medium"
+    "country": "South Sudan"
   },
   {
     "id": "STP",
-    "country": "Sao Tome and Principe",
-    "x": "Medium"
+    "country": "Sao Tome and Principe"
   },
   {
     "id": "SWZ",
-    "country": "Eswatini (Kingdom of)",
-    "x": "High"
+    "country": "Eswatini (Kingdom of)"
   },
   {
     "id": "SYC",
-    "country": "Seychelles",
-    "x": "Low"
+    "country": "Seychelles"
   },
   {
     "id": "TCD",
-    "country": "Chad",
-    "x": "Medium"
+    "country": "Chad"
   },
   {
     "id": "TGO",
-    "country": "Togo",
-    "x": "High"
+    "country": "Togo"
   },
   {
     "id": "TZA",
-    "country": "Tanzania (United Republic of)",
-    "x": "High"
+    "country": "Tanzania (United Republic of)"
   },
   {
     "id": "UGA",
-    "country": "Uganda",
-    "x": "High"
+    "country": "Uganda"
   },
   {
     "id": "ZAF",
-    "country": "South Africa",
-    "x": "Low"
+    "country": "South Africa"
   },
   {
     "id": "ZMB",
-    "country": "Zambia",
-    "x": "High"
+    "country": "Zambia"
   },
   {
     "id": "ZWE",
-    "country": "Zimbabwe",
-    "x": "Low"
+    "country": "Zimbabwe"
   },
   {
     "id": "AND",
-    "country": "Andorra",
-    "x": "Low"
+    "country": "Andorra"
   },
   {
     "id": "AUS",
-    "country": "Australia",
-    "x": "High"
+    "country": "Australia"
   },
   {
     "id": "AUT",
-    "country": "Austria",
-    "x": "High"
+    "country": "Austria"
   },
   {
     "id": "BEL",
-    "country": "Belgium",
-    "x": "High"
+    "country": "Belgium"
   },
   {
     "id": "BGR",
-    "country": "Bulgaria",
-    "x": "Low"
+    "country": "Bulgaria"
   },
   {
     "id": "CAN",
-    "country": "Canada",
-    "x": "Medium"
+    "country": "Canada"
   },
   {
     "id": "CHE",
-    "country": "Switzerland",
-    "x": "Medium"
+    "country": "Switzerland"
   },
   {
     "id": "CYP",
-    "country": "Cyprus",
-    "x": "Medium"
+    "country": "Cyprus"
   },
   {
     "id": "CZE",
-    "country": "Czechia",
-    "x": "High"
+    "country": "Czechia"
   },
   {
     "id": "DEU",
-    "country": "Germany",
-    "x": "High"
+    "country": "Germany"
   },
   {
     "id": "DNK",
-    "country": "Denmark",
-    "x": "High"
+    "country": "Denmark"
   },
   {
     "id": "ESP",
-    "country": "Spain",
-    "x": "High"
+    "country": "Spain"
   },
   {
     "id": "EST",
-    "country": "Estonia",
-    "x": "Low"
+    "country": "Estonia"
   },
   {
     "id": "FIN",
-    "country": "Finland",
-    "x": "Low"
+    "country": "Finland"
   },
   {
     "id": "FRA",
-    "country": "France",
-    "x": "High"
+    "country": "France"
   },
   {
     "id": "GBR",
-    "country": "United Kingdom",
-    "x": "Medium"
+    "country": "United Kingdom"
   },
   {
     "id": "GRC",
-    "country": "Greece",
-    "x": "High"
+    "country": "Greece"
   },
   {
     "id": "HKG",
-    "country": "China, Hong Kong Special Administrative Region",
-    "x": "Low"
+    "country": "China, Hong Kong Special Administrative Region"
   },
   {
     "id": "HRV",
-    "country": "Croatia",
-    "x": "Medium"
+    "country": "Croatia"
   },
   {
     "id": "HUN",
-    "country": "Hungary",
-    "x": "High"
+    "country": "Hungary"
   },
   {
     "id": "IRL",
-    "country": "Ireland",
-    "x": "High"
+    "country": "Ireland"
   },
   {
     "id": "ISL",
-    "country": "Iceland",
-    "x": "High"
+    "country": "Iceland"
   },
   {
     "id": "ISR",
-    "country": "Israel",
-    "x": "High"
+    "country": "Israel"
   },
   {
     "id": "ITA",
-    "country": "Italy",
-    "x": "Low"
+    "country": "Italy"
   },
   {
     "id": "JPN",
-    "country": "Japan",
-    "x": "Medium"
+    "country": "Japan"
   },
   {
     "id": "KOR",
-    "country": "Korea (Republic of)",
-    "x": "High"
+    "country": "Korea (Republic of)"
   },
   {
     "id": "LIE",
-    "country": "Liechtenstein",
-    "x": "Medium"
+    "country": "Liechtenstein"
   },
   {
     "id": "LTU",
-    "country": "Lithuania",
-    "x": "High"
+    "country": "Lithuania"
   },
   {
     "id": "LUX",
-    "country": "Luxembourg",
-    "x": "Low"
+    "country": "Luxembourg"
   },
   {
     "id": "LVA",
-    "country": "Latvia",
-    "x": "High"
+    "country": "Latvia"
   },
   {
     "id": "MAC",
-    "country": "China, Macao Special Administrative Region",
-    "x": "Low"
+    "country": "China, Macao Special Administrative Region"
   },
   {
     "id": "MCO",
-    "country": "Monaco",
-    "x": "High"
+    "country": "Monaco"
   },
   {
     "id": "MLT",
-    "country": "Malta",
-    "x": "High"
+    "country": "Malta"
   },
   {
     "id": "NLD",
-    "country": "Netherlands",
-    "x": "Medium"
+    "country": "Netherlands"
   },
   {
     "id": "NOR",
-    "country": "Norway",
-    "x": "Low"
+    "country": "Norway"
   },
   {
     "id": "NZL",
-    "country": "New Zealand",
-    "x": "High"
+    "country": "New Zealand"
   },
   {
     "id": "POL",
-    "country": "Poland",
-    "x": "Low"
+    "country": "Poland"
   },
   {
     "id": "PRT",
-    "country": "Portugal",
-    "x": "Medium"
+    "country": "Portugal"
   },
   {
     "id": "ROU",
-    "country": "Romania",
-    "x": "Medium"
+    "country": "Romania"
   },
   {
     "id": "RUS",
-    "country": "Russian Federation",
-    "x": "Medium"
+    "country": "Russian Federation"
   },
   {
     "id": "SMR",
-    "country": "San Marino",
-    "x": "High"
+    "country": "San Marino"
   },
   {
     "id": "SVK",
-    "country": "Slovakia",
-    "x": "High"
+    "country": "Slovakia"
   },
   {
     "id": "SVN",
-    "country": "Slovenia",
-    "x": "Low"
+    "country": "Slovenia"
   },
   {
     "id": "SWE",
-    "country": "Sweden",
-    "x": "Low"
+    "country": "Sweden"
   },
   {
     "id": "USA",
-    "country": "United States",
-    "x": "High"
+    "country": "United States"
   },
   {
     "id": "ABW",
-    "country": "Aruba",
-    "x": "Medium"
+    "country": "Aruba"
   },
   {
     "id": "CUW",
-    "country": "Curacao",
-    "x": "Medium"
+    "country": "Curacao"
   }
 ]

@@ -10,7 +10,7 @@ interface Props {
 
 export const Graph = ({ data, radius, colors, strokeWidth = 8 }: Props) => {
   const x = scaleLinear()
-    .domain([0, 100])
+    .domain([0, 1])
     .range([-Math.PI / 2, Math.PI / 2]);
   return (
     <>
@@ -27,7 +27,7 @@ export const Graph = ({ data, radius, colors, strokeWidth = 8 }: Props) => {
                       outerRadius:
                         radius - i * 2 * strokeWidth - strokeWidth / 2 + 1,
                       startAngle: x(0),
-                      endAngle: x(100),
+                      endAngle: x(1),
                     }) as string
                   }
                   fill='none'

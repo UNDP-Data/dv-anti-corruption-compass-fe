@@ -3,10 +3,6 @@ import { Label } from '@undp/design-system-react/Label';
 import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
 import { useEffect, useState } from 'react';
 import { DonutChart } from '@undp/data-viz/DonutChart';
-import {
-  fetchAndParseCSV,
-  fetchAndParseJSON,
-} from '@undp/data-viz/fetchAndParseData';
 import { Spinner } from '@undp/design-system-react';
 import { MultiLineChart } from '@undp/data-viz/MultiLineChart';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
@@ -26,6 +22,7 @@ import { NoData } from '@/Components/NoData';
 import { ColorLegend } from '@/Components/ColorLegend';
 import { ParagraphText } from '@/Components/Typography';
 import { customDropdownComponents } from '@/Utils/DropdownComponents';
+import { getCountryData, getRegionData } from '@/Utils/getData';
 
 interface Props {
   country: string;
@@ -51,24 +48,11 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
   >(undefined);
 
   useEffect(() => {
-    fetchAndParseJSON('/data/pillarDummyData.json').then(d => {
+    getCountryData().then(d => {
       setPillarData(d);
     });
-  }, [country]);
-
-  useEffect(() => {
-    fetchAndParseCSV(
-      `https://raw.githubusercontent.com/UNDP-Data/dv-country-geojson/refs/heads/main/ADM1_RegionList/${isoCode}.csv`,
-    ).then(d => {
-      const levels = ['Low', 'Medium', 'High'];
-      setRegionData(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (d as any).map((el: any) => ({
-          region: el['Region name'],
-          value: Math.random() * 100,
-          level: levels[Math.floor(Math.random() * levels.length)],
-        })),
-      );
+    getRegionData(isoCode).then(d => {
+      setRegionData(d);
     });
   }, [isoCode]);
 
@@ -238,7 +222,11 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                     <div className='basis-[calc(50%-0.5rem)] flex flex-col min-w-[320px]'>
                       <ColorLegend
                         className='mb-4'
-                        colors={['#DCE7C1', '#ADD06A', '#89C124']}
+                        colors={
+                          pillarsMetaData.find(
+                            d => d.value === 'Public Procurement',
+                          )?.colors
+                        }
                       />
                       <ChoroplethMap
                         mapData={`https://raw.githubusercontent.com/UNDP-Data/dv-country-geojson/refs/heads/main/ADM1/${isoCode}.json`}
@@ -252,7 +240,11 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                         )}
                         scaleType='categorical'
                         colorDomain={['Low', 'Medium', 'High']}
-                        colors={['#DCE7C1', '#ADD06A', '#89C124']}
+                        colors={
+                          pillarsMetaData.find(
+                            d => d.value === 'Public Procurement',
+                          )?.colors
+                        }
                         showColorScale={false}
                       />
                     </div>
@@ -289,7 +281,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                                     <div
                                       className='rounded-full h-2 mt-[-8px]'
                                       style={{
-                                        width: `${d.value}%`,
+                                        width: `${d.value * 100}%`,
                                         backgroundColor:
                                           pillarsMetaData.find(
                                             d =>
@@ -304,7 +296,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                                     rounded='full'
                                     className='bg-primary-white! text-primary-gray-700! poppins-bold p-1! text-[14px]! w-full! flex justify-center'
                                   >
-                                    {Math.round(d.value)}%
+                                    {d.value.toFixed(2)}
                                   </Badge>
                                 </div>
                               </div>

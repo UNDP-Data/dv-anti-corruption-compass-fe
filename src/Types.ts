@@ -1,21 +1,3 @@
-export interface TaxonomyType {
-  'Alpha-3 code': string;
-  'Country or Area': string;
-  'Alpha-2 code': string;
-  'Numeric code': string;
-  'Latitude (average)': string;
-  'Longitude (average)': string;
-  'Group 1': string;
-  'Group 2': string;
-  'Group 3': string;
-  LDC: boolean;
-  LLDC: boolean;
-  SIDS: boolean;
-  'Development classification': string;
-  'Income group': string;
-  UNDP_Region: string;
-}
-
 export interface CountryDataType {
   mainIndicator: string;
   subIndicator: string;
@@ -39,12 +21,17 @@ export interface CountryTaxonomyDataType {
   SIDS: boolean;
   'Development classification': string;
   'Income group': string;
+  UNDP_Region: string;
 }
 
 export interface DataType {
   id: string;
   country: string;
-  x: 'High' | 'Medium' | 'Low';
+  subPillar: string;
+  mainIndicator: string;
+  value: number;
+  dataAvailability: number;
+  x: 'Low' | 'Medium' | 'High';
 }
 
 export interface SubPillarsMetaDataType {
@@ -55,8 +42,10 @@ export interface SubPillarsMetaDataType {
 
 export interface PillarsMetaDataType {
   value: string;
+  id: string;
   description: string;
   color: string;
+  indicatorGradientColors: string[];
   colors: string[];
   subPillars: SubPillarsMetaDataType[];
 }

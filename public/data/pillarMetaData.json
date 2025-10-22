@@ -1,11 +1,17 @@
 [
-    {
+    {  
+        "id": "publicProcurement",
         "value": "Public Procurement",
         "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers.",
         "color": "#A9DE48",
-        "colors": [
+        "indicatorGradientColors": [
             "#00904A",
             "#789D24"
+        ],
+        "colors": [
+            "#8BE49D",
+            "#4CA462",
+            "#03682B"
         ],
         "subPillars": [
             {
@@ -56,12 +62,18 @@
         ]
     },
     {
-        "value": "Business Experiences",
+        "id": "enterpriseSurvey",
+        "value": "Enterprise Survey",
         "description": "What do businesses really experience on the ground? Go beyond perception to understand real encounters with corruption. Our indicators capture the incidence of corrupt practices, document specific practices businesses encounter, and reveal counter measures organizations implement. This ground-truth data empowers evidence-based strategies.",
         "color": "#E3512C",
-        "colors": [
+        "indicatorGradientColors": [
             "#E3512C",
             "#F66428"
+        ],
+        "colors": [
+            "#E6CCC0",
+            "#F0B292",
+            "#F49764"
         ],
         "subPillars": [
             {
