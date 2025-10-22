@@ -38,7 +38,7 @@ function MainIndicatorPageEl({
         title={pillarMetaData.value}
         description={pillarMetaData.description}
       />
-      <div className='container-lg mx-auto'>
+      <div className='container mx-auto'>
         <Spacer size='6xl' />
         <div className='flex items-center gap-4 w-full'>
           <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>

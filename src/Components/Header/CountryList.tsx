@@ -13,18 +13,25 @@ export const CountryList = ({
   countryTaxonomyData,
   countryTaxonomyDataLoading,
   countryTaxonomyDataError,
+  mode,
 }: {
   setShowCountrySelection: (_d: boolean) => void;
   countryTaxonomyData: CountryTaxonomyDataType[];
   countryTaxonomyDataLoading: boolean;
   countryTaxonomyDataError: boolean;
+  mode: 'dark' | 'light';
 }) => {
   const [searchedCountries, setSearchedCountries] =
     useState(countryTaxonomyData);
   if (countryTaxonomyDataError) return <ErrorState />;
   return (
     <div className='flex flex-col gap-6'>
-      <HeadingText type='h2'>Available countries</HeadingText>
+      <HeadingText
+        type='h2'
+        className={mode === 'light' ? 'text-[#545463]' : 'text-[#fff]'}
+      >
+        Available countries
+      </HeadingText>
       {countryTaxonomyData.length > 0 && !countryTaxonomyDataLoading ? (
         <>
           <Search
@@ -32,7 +39,7 @@ export const CountryList = ({
             className='flex-row-reverse'
             inputSize='sm'
             inputVariant='light'
-            inputClassName='bg-transparent rounded-full py-3 px-3 border-1 border-[#000] text-[#000] w-full poppins-regular !text-[12px]'
+            inputClassName='bg-primary-white rounded-full py-3 px-3 border-1 border-[#D9D9D9] text-[#000] w-full poppins-regular !text-[12px]'
             showSearchButton={false}
             onSearch={d => {
               setSearchedCountries(
@@ -52,7 +59,7 @@ export const CountryList = ({
                 key={i}
                 to='/countries/$isoCode'
                 params={{ isoCode: country['Alpha-3 code'] }}
-                className='poppins-regular w-[calc(33.33%-0.67rem)] !text-[16px]'
+                className={`poppins-medium w-[calc(33.33%-0.67rem)] !text-[16px] ${mode === 'light' ? 'text-[#545463]' : 'text-[#fff]'}`}
                 onClick={() => {
                   setShowCountrySelection(false);
                 }}

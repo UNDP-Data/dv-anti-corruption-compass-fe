@@ -16,7 +16,7 @@ interface Props {
 function ExploreData({ pillarsMetaData, countryData }: Props) {
   const [view, setView] = useState<string>(pillarsMetaData[0].id);
   return (
-    <div className='flex flex-col gap-6 container-lg mx-auto'>
+    <div className='flex flex-col gap-6 container mx-auto'>
       <HeadingText type='h2'>Explore data</HeadingText>
       <div className='flex gap-4 w-full items-center flex-col justify-between'>
         <SegmentedControl

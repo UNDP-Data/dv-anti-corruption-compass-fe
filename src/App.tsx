@@ -82,7 +82,7 @@ function RootComponent() {
   if (isLoading) return <Spinner size='lg' className='my-20 m-auto' />;
   if (isError)
     return (
-      <div className='px-4 container-md mx-auto'>
+      <div className='px-4 container mx-auto'>
         <ErrorState />
       </div>
     );
@@ -164,7 +164,7 @@ function MainIndicator() {
   );
   if (!pillarMetaData)
     return (
-      <div className='px-4 container-md mx-auto'>
+      <div className='px-4 container mx-auto'>
         The indicator you are trying to search does not exist
       </div>
     );
@@ -198,7 +198,7 @@ function Country() {
     return <Spinner size='lg' className='my-20 m-auto' />;
   if (countryTaxonomyError)
     return (
-      <div className='px-4 container-md mx-auto'>
+      <div className='px-4 container mx-auto'>
         <ErrorState />
       </div>
     );

@@ -8,7 +8,7 @@ interface Props {
 function CountryPageEl({ title, description }: Props) {
   return (
     <div className='flex items-center justify-center gap-1 flex-col mt-16 mb-26'>
-      <div className='flex flex-col gap-8 justify-center items-center container-md m-auto px-4'>
+      <div className='flex flex-col gap-8 justify-center items-center container m-auto px-4'>
         <HeadingText type='h1'>{title}</HeadingText>
         <ParagraphText alignment='center' size='lg'>
           {description}

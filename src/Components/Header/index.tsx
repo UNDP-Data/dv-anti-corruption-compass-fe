@@ -183,13 +183,14 @@ export const Header = ({
           onClose={() => {
             setShowCountrySelection(false);
           }}
-          className='bg-[var(--color-black-bg)]! border-0!'
+          className='bg-[#F5F5F5]! border-0! rounded-lg!'
         >
           <CountryList
             countryTaxonomyData={countryTaxonomyData || []}
             countryTaxonomyDataLoading={countryTaxonomyDataLoading}
             countryTaxonomyDataError={countryTaxonomyDataError}
             setShowCountrySelection={setShowCountrySelection}
+            mode='light'
           />
         </Modal>
       )}

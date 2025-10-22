@@ -28,7 +28,7 @@ const Introduction = (props: Props) => {
   return (
     <>
       <div className='flex flex-col min-h-[calc(100vh-120px)]'>
-        <div className='flex flex-col gap-8 justify-center items-center container-md m-auto px-4'>
+        <div className='flex flex-col gap-8 justify-center items-center container m-auto px-4'>
           <HeadingText type='h1'>
             Is your nation winning the fight against corruption?
           </HeadingText>

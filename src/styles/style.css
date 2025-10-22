@@ -56,16 +56,9 @@ main {
   padding: 0 1rem;
 }
 
-.container-md {
+.container {
   width: 100%;
-  max-width: 1272px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.container-lg {
-  width: 100%;
-  max-width: 1600px;
+  max-width: 1392px;
   margin: 0 auto;
   padding: 0 1rem;
 }
