@@ -38,8 +38,9 @@ export const DROPDOWN_CLASSNAMES: any = {
   placeholder: () =>
     'text-primary-gray-550! dark:text-primary-gray-400! text-base',
   group: () => 'py-0!',
+
   groupHeading: () =>
-    'font-bold! text-base! normal-case! py-[12px]! m-0! bg-primary-gray-600 text-primary-gray-700! text-primary-white!',
+    'poppins-semibold! text-base! normal-case! py-[12px]! m-0! text-primary-white! bg-transparent! font-bold!',
   input: () => 'text-base undp-select-input',
   valueContainer: () => 'px-2 py-[2px]',
   menu: () =>
@@ -70,7 +71,7 @@ export const DROPDOWN_CLASSNAMES_WHITE: any = {
     'text-primary-gray-550! dark:text-primary-gray-400! text-base',
   group: () => 'py-0!',
   groupHeading: () =>
-    'font-bold! text-base! normal-case! py-[12px]! m-0! bg-primary-gray-600 text-primary-gray-700! text-primary-white!',
+    'poppins-bold! text-base! normal-case! py-[12px]! m-0! text-primary-gray-700! bg-transparent! font-bold!',
   input: () => 'text-base',
   valueContainer: () => 'px-2 py-[2px]',
   menu: () => 'mt-1! border-0! shadow-lg! bg-primary-white! rounded-[8px]!',

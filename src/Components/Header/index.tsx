@@ -74,6 +74,7 @@ export const Header = ({
               {(pillarsMetaData || []).map((d, i) => (
                 <DropdownMenuItem
                   key={i}
+                  asChild
                   className='poppins-medium !text-[14px] py-4 px-3 hover:!bg-[#4B6E91] text-[var(--color-black-bg)] hover:!text-[var(--color-text-white)]'
                 >
                   <Link
@@ -177,22 +178,20 @@ export const Header = ({
         </div>
       </header>
       {showCountrySelection && (
-        <div className='dark'>
-          <Modal
-            open={showCountrySelection}
-            onClose={() => {
-              setShowCountrySelection(false);
-            }}
-            className='bg-[var(--color-black-bg)]! border-0!'
-          >
-            <CountryList
-              countryTaxonomyData={countryTaxonomyData || []}
-              countryTaxonomyDataLoading={countryTaxonomyDataLoading}
-              countryTaxonomyDataError={countryTaxonomyDataError}
-              setShowCountrySelection={setShowCountrySelection}
-            />
-          </Modal>
-        </div>
+        <Modal
+          open={showCountrySelection}
+          onClose={() => {
+            setShowCountrySelection(false);
+          }}
+          className='bg-[var(--color-black-bg)]! border-0!'
+        >
+          <CountryList
+            countryTaxonomyData={countryTaxonomyData || []}
+            countryTaxonomyDataLoading={countryTaxonomyDataLoading}
+            countryTaxonomyDataError={countryTaxonomyDataError}
+            setShowCountrySelection={setShowCountrySelection}
+          />
+        </Modal>
       )}
     </>
   );

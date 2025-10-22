@@ -80,7 +80,7 @@ function DataTable({
                   }))}
                   size='base'
                   variant='normal'
-                  className='bg-primary-white! border-0! rounded-[8px]!'
+                  className='bg-primary-white! border-0! rounded-full! px-4!'
                   classNames={DROPDOWN_CLASSNAMES_WHITE}
                   isClearable={false}
                   components={customDropdownComponents('light', false)}
@@ -109,7 +109,7 @@ function DataTable({
                   }))}
                   size='base'
                   variant='normal'
-                  className='bg-primary-white! border-0! rounded-[8px]!'
+                  className='bg-primary-white! border-0! rounded-full! px-4!'
                   classNames={DROPDOWN_CLASSNAMES_MULTI_SELECT}
                   isClearable={false}
                   components={customDropdownComponents('light', true)}

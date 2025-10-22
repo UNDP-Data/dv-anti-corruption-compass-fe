@@ -101,6 +101,7 @@ function Homepage({
         <Introduction
           data={data}
           pillarVisualizationRef={pillarVisualizationRef}
+          countryLevelInsightsRef={countryLevelInsightsRef}
         />
       </motion.div>
       <motion.div

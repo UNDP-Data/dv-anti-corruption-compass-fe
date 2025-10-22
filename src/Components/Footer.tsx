@@ -19,7 +19,7 @@ export const Footer = ({
   pillarsMetaDataLoading: boolean;
 }) => {
   return (
-    <footer className='bg-[var(--color-black-bg)] px-20 py-24 relative z-10'>
+    <footer className='bg-[#437390] px-20 py-24 relative z-10'>
       <div className='flex flex-wrap flex-col lg:flex-row gap-4 md:gap-12 lg:gap-0'>
         <div className='w-full lg:w-1/2'>
           <ParagraphText size='sm'>

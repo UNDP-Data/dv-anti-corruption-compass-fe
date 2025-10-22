@@ -11,10 +11,11 @@ import { Button } from '@/Components/Button';
 interface Props {
   data: DataType[];
   pillarVisualizationRef: React.RefObject<HTMLDivElement | null>;
+  countryLevelInsightsRef: React.RefObject<HTMLDivElement | null>;
 }
 
 const Introduction = (props: Props) => {
-  const { data, pillarVisualizationRef } = props;
+  const { data, pillarVisualizationRef, countryLevelInsightsRef } = props;
   const [globeYOffSet, setGlobeYOffSet] = useState(0);
   const globeDiv = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -44,7 +45,14 @@ const Introduction = (props: Props) => {
           <div className='flex gap-x-10 gap-y-4 flex-wrap'>
             <Button variant='secondary'>Take a Tour →</Button>
 
-            <Button variant='primary'>View Country Level Insights →</Button>
+            <Button
+              variant='primary'
+              onClick={() => {
+                ScrollToObj(countryLevelInsightsRef.current);
+              }}
+            >
+              View Country Level Insights →
+            </Button>
           </div>
         </div>
         <div

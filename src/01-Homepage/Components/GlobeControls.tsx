@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useInView } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
+import { cn } from '@undp/design-system-react/cn';
 
 import { HeadingText, ParagraphText } from '@/Components/Typography';
 import { Button } from '@/Components/Button';
@@ -56,12 +57,12 @@ const GlobeControls = (props: Props) => {
                 setActiveButton(d.label);
                 onClick(d.label);
               }}
-              style={{
-                backgroundColor:
-                  activeButton === d.label ? '#fff' : 'transparent',
-                color: activeButton === d.label ? 'var(--gray-700)' : '#fff',
-              }}
-              className='flex pointer items-center rounded-xl py-4 px-4 gap-4 w-[calc(50%-0.5rem)] border-1 border-[#fff] cursor-pointer'
+              className={cn(
+                'flex pointer items-center rounded-xl py-4 px-4 gap-4 w-[calc(50%-0.5rem)] border-1 border-[#fff] cursor-pointer bg-transparent hover:bg-[#124E6F]',
+                activeButton === d.label
+                  ? 'text-[var(--gray-700)] bg-[#fff] hover:bg-[#fff]'
+                  : 'text-[#fff]',
+              )}
             >
               <div
                 style={{
