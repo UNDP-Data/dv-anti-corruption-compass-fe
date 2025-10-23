@@ -49,3 +49,19 @@ export interface PillarsMetaDataType {
   colors: string[];
   subPillars: SubPillarsMetaDataType[];
 }
+
+export interface RegionDataType {
+  region: string;
+  value: number;
+  dataAvailability: string;
+  level: 'Low' | 'Medium' | 'High';
+}
+
+export interface PillarDataType {
+  id: string;
+  country: string;
+  subPillar: string;
+  value: number;
+  dataAvailability: string;
+  level: 'Low' | 'Medium' | 'High';
+}

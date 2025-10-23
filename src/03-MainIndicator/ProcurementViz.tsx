@@ -4,7 +4,6 @@ import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import { useEffect, useState } from 'react';
 import { ChoroplethMap } from '@undp/data-viz/ChoroplethMap';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
-import { Badge } from '@undp/design-system-react/Badge';
 import { ArrowDownToLine } from 'lucide-react';
 
 import { MethodologySection } from './Components/MethodologySection';
@@ -18,6 +17,7 @@ import { ProjectsSection } from '@/Components/ProjectsSection';
 import { getPillarData } from '@/Utils/getData';
 import { ColorLegend } from '@/Components/ColorLegend';
 import { Button } from '@/Components/Button';
+import { BarChartTable } from '@/Components/BarChartTable';
 
 interface Props {
   pillarMetaData: SubPillarsMetaDataType;
@@ -57,7 +57,7 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
                 <ParagraphText
                   weight='light'
                   leading='none'
-                  className='text-[56px] m-0'
+                  className='text-[56px]'
                 >
                   {[...new Set(data.map(d => d.country))].length}
                 </ParagraphText>
@@ -115,34 +115,8 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
                     }
                     fogSettings={{
                       color: pillarMetaData.color,
-                      near:
-                        (window.innerWidth / 2 - 160) /
-                          (window.innerHeight - 200) >
-                        0.9
-                          ? 150
-                          : (window.innerWidth / 2 - 160) /
-                                (window.innerHeight - 200) >
-                              0.8
-                            ? 200
-                            : (window.innerWidth / 2 - 160) /
-                                  (window.innerHeight - 200) >
-                                0.7
-                              ? 250
-                              : 300,
-                      far:
-                        (window.innerWidth / 2 - 160) /
-                          (window.innerHeight - 200) >
-                        0.9
-                          ? 300
-                          : (window.innerWidth / 2 - 160) /
-                                (window.innerHeight - 200) >
-                              0.8
-                            ? 350
-                            : (window.innerWidth / 2 - 160) /
-                                  (window.innerHeight - 200) >
-                                0.7
-                              ? 400
-                              : 450,
+                      near: 300,
+                      far: 450,
                     }}
                     atmosphereAltitude={0.1}
                     globeCurvatureResolution={2}
@@ -199,6 +173,7 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
                       size='sm'
                       showTitle={false}
                       colors={pillarMetaData.colors}
+                      keyValues={['< 33', '33 - 66', '> 66']}
                     />
                     <ChoroplethMap
                       data={transformDataForGraph(data, 'choroplethMap', [
@@ -210,7 +185,7 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
                       zoomInteraction='noZoom'
                       centerPoint={[15, 15]}
                       scale={1.05}
-                      colorDomain={[20, 40, 60, 80]}
+                      colorDomain={[33, 66]}
                       showColorScale={false}
                       footNote={
                         <div>
@@ -231,53 +206,16 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
                     />
                   </div>
                   <div className='basis-[calc(50%-0.5rem)] flex flex-col min-w-[320px]'>
-                    <div className='h-[500px] pr-4 undp-scrollbar'>
-                      <div className='flex flex-col'>
-                        <div className='flex gap-8 py-2 pr-4 border-b border-b-[#9BA5AB]'>
-                          <div className='w-[calc(100%-48px)] poppins-medium text-[14px] text-[#9BA5AB]'>
-                            Region
-                          </div>
-
-                          <div className='w-[48px] poppins-medium text-[14px] text-[#9BA5AB]'>
-                            Value
-                          </div>
-                        </div>
-                        {data
-                          .sort(
-                            (a, b) => b.dataAvailability - a.dataAvailability,
-                          )
-                          .map((d, i) => (
-                            <div
-                              className='flex gap-8 py-3 pr-4 items-center border-b border-b-[0.5px] border-b-[#FFFFFF0F]'
-                              key={i}
-                            >
-                              <div className='w-full gap-2 flex items-center'>
-                                <div className='w-full poppins-medium text-[14px] text-primary-white'>
-                                  {d.country}
-                                </div>
-                                <div className='w-[60%] poppins-medium text-[14px] text-primary-white'>
-                                  <div className='w-full rounded-full bg-primary-white h-2' />
-                                  <div
-                                    className='rounded-full h-2 mt-[-8px]'
-                                    style={{
-                                      width: `${d.dataAvailability}%`,
-                                      backgroundColor: pillarMetaData.color,
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                              <div className='min-w-[48px] poppins-medium text-[14px] text-primary-white text-right'>
-                                <Badge
-                                  rounded='full'
-                                  className='bg-primary-white! text-[var(--color-text-black)]! poppins-bold px-1! text-[14px]! w-full! flex justify-center'
-                                >
-                                  {Math.round(d.dataAvailability)}%
-                                </Badge>
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                    </div>
+                    <BarChartTable
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      data={data.map((d: any) => ({
+                        region: d.country,
+                        value: d.dataAvailability,
+                      }))}
+                      color={pillarMetaData.color}
+                      maxValue={100}
+                      suffix='%'
+                    />
                   </div>
                 </div>
               ) : (

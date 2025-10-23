@@ -1,7 +1,7 @@
 import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import * as THREE from 'three';
 import { ArrowDown } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useEffectEvent } from 'react';
 
 import { DataType } from '@/Types';
 import { ScrollToObj } from '@/Utils/ScrollToObj';
@@ -18,11 +18,14 @@ const Introduction = (props: Props) => {
   const { data, pillarVisualizationRef, countryLevelInsightsRef } = props;
   const [globeYOffSet, setGlobeYOffSet] = useState(0);
   const globeDiv = useRef<HTMLDivElement>(null);
+  const setOffset = useEffectEvent(() => {
+    setGlobeYOffSet(
+      (100 * (globeDiv.current?.getBoundingClientRect()?.height || 0)) / 228,
+    );
+  });
   useEffect(() => {
     if (globeDiv.current) {
-      setGlobeYOffSet(
-        (100 * (globeDiv.current?.getBoundingClientRect()?.height || 0)) / 228,
-      );
+      setOffset();
     }
   }, []);
   return (
@@ -43,8 +46,6 @@ const Introduction = (props: Props) => {
             efforts.
           </ParagraphText>
           <div className='flex gap-x-10 gap-y-4 flex-wrap'>
-            <Button variant='secondary'>Take a Tour →</Button>
-
             <Button
               variant='primary'
               onClick={() => {

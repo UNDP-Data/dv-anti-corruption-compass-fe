@@ -4,6 +4,7 @@ import {
 } from '@undp/data-viz/fetchAndParseData';
 
 import { PillarsMetaDataType, SubPillarsMetaDataType } from '@/Types';
+import { MARKET } from '@/Constants';
 
 export const getFullData = async (pillarsMetaData: PillarsMetaDataType[]) => {
   const data = await fetchAndParseJSON('/data/data.json');
@@ -59,4 +60,8 @@ export const getRegionData = async (countryCode: string) => {
     level: ['Low', 'Medium', 'High'][Math.floor(Math.random() * 3)],
   }));
   return dataFormatted;
+};
+
+export const getMarketData = async () => {
+  return MARKET.map(d => ({ market: d, value: Math.random() }));
 };

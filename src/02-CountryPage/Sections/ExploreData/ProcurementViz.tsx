@@ -8,7 +8,6 @@ import { MultiLineChart } from '@undp/data-viz/MultiLineChart';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
 import { GroupedBarGraph } from '@undp/data-viz/BarGraph';
 import { ChoroplethMap } from '@undp/data-viz/ChoroplethMap';
-import { Badge } from '@undp/design-system-react/Badge';
 
 import {
   CONTRACT_VALUE,
@@ -17,12 +16,13 @@ import {
   YEARS,
 } from '@/Constants';
 import { GraphCard } from '@/Components/GraphCard';
-import { PillarsMetaDataType } from '@/Types';
+import { PillarDataType, PillarsMetaDataType, RegionDataType } from '@/Types';
 import { NoData } from '@/Components/NoData';
 import { ColorLegend } from '@/Components/ColorLegend';
 import { ParagraphText } from '@/Components/Typography';
 import { customDropdownComponents } from '@/Utils/DropdownComponents';
-import { getCountryData, getRegionData } from '@/Utils/getData';
+import { getCountryData, getMarketData, getRegionData } from '@/Utils/getData';
+import { BarChartTable } from '@/Components/BarChartTable';
 
 interface Props {
   country: string;
@@ -35,10 +35,11 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
     pillarsMetaData.find(d => d.value === 'Public Procurement')?.subPillars[0]
       .value || '',
   );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [pillarData, setPillarData] = useState<any>([]);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [regionData, setRegionData] = useState<any>([]);
+  const [pillarData, setPillarData] = useState<PillarDataType[]>([]);
+  const [regionData, setRegionData] = useState<RegionDataType[]>([]);
+  const [marketData, setMarketData] = useState<
+    { market: string; value: number }[]
+  >([]);
   const [selectedYear, setSelectedYear] = useState<number>(2022);
   const [selectedMarket, setSelectedMarket] = useState<string | undefined>(
     undefined,
@@ -54,8 +55,10 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
     getRegionData(isoCode).then(d => {
       setRegionData(d);
     });
+    getMarketData().then(d => {
+      setMarketData(d);
+    });
   }, [isoCode]);
-
   return (
     <div className='w-full'>
       <Spacer size='xl' />
@@ -182,18 +185,18 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
             title='Market Breakdown'
             chips={[selectedPillar, selectedYear]}
           >
-            {pillarData ? (
+            {marketData.length > 0 ? (
               <div className='flex flex-col gap-4'>
-                {MARKET.map((d, i) => (
+                {marketData.map((d, i) => (
                   <div key={i}>
                     <ParagraphText weight='medium' size='sm' marginBottom='2xs'>
-                      {d}
+                      {d.market}
                     </ParagraphText>
                     <div className='w-full rounded-full bg-primary-white h-2' />
                     <div
                       className='rounded-full h-2 mt-[-8px]'
                       style={{
-                        width: `${Math.random() * 100}%`,
+                        width: `${d.value * 100}%`,
                         backgroundColor:
                           pillarsMetaData.find(
                             d => d.value === 'Public Procurement',
@@ -205,7 +208,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                 <div />
               </div>
             ) : (
-              <NoData />
+              <Spinner />
             )}
           </GraphCard>
         </div>
@@ -269,55 +272,18 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                       />
                     </div>
                     <div className='basis-[calc(50%-0.5rem)] flex flex-col min-w-[320px]'>
-                      <div className='h-[500px] pr-4 undp-scrollbar'>
-                        <div className='flex flex-col'>
-                          <div className='flex gap-8 py-2 pr-4 border-b border-b-[#9BA5AB]'>
-                            <div className='w-[calc(100%-48px)] poppins-medium text-[14px] text-[#9BA5AB]'>
-                              Region
-                            </div>
-
-                            <div className='w-[48px] poppins-medium text-[14px] text-[#9BA5AB]'>
-                              Value
-                            </div>
-                          </div>
-                          {[...regionData]
-                            .sort((a, b) => b.value - a.value)
-                            .map((d, i) => (
-                              <div
-                                className='flex gap-8 py-3 pr-4 items-center border-b border-b-[0.5px] border-b-[#FFFFFF0F]'
-                                key={i}
-                              >
-                                <div className='w-full gap-2 flex items-center'>
-                                  <div className='w-full poppins-medium text-[14px] text-primary-white'>
-                                    {d.region}
-                                  </div>
-                                  <div className='w-[60%] poppins-medium text-[14px] text-primary-white'>
-                                    <div className='w-full rounded-full bg-primary-white h-2' />
-                                    <div
-                                      className='rounded-full h-2 mt-[-8px]'
-                                      style={{
-                                        width: `${d.value * 100}%`,
-                                        backgroundColor:
-                                          pillarsMetaData.find(
-                                            d =>
-                                              d.value === 'Public Procurement',
-                                          )?.color || '#fff',
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-                                <div className='min-w-[48px] poppins-medium text-[14px] text-primary-white text-right'>
-                                  <Badge
-                                    rounded='full'
-                                    className='bg-primary-white! text-[var(--color-text-black)]! poppins-bold px-1! text-[14px]! w-full! flex justify-center'
-                                  >
-                                    {d.value.toFixed(2)}
-                                  </Badge>
-                                </div>
-                              </div>
-                            ))}
-                        </div>
-                      </div>
+                      <BarChartTable
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        data={regionData.map((d: any) => ({
+                          region: d.region,
+                          value: d.value,
+                        }))}
+                        color={
+                          pillarsMetaData.find(
+                            d => d.value === 'Public Procurement',
+                          )?.color || '#fff'
+                        }
+                      />
                     </div>
                   </div>
                 ) : (
