@@ -91,13 +91,33 @@ export default defineConfig({
     cssCodeSplit: false,
     rollupOptions: {
       output: {
-        manualChunks: {
-          react: ['react', 'react-dom'],
-          tanstack: ['@tanstack/react-query', '@tanstack/react-router'],
-          undp: ['@undp/data-viz', '@undp/design-system-react'],
-          three: ['three', 'react-globe.gl'],
-          icons: ['lucide-react'],
-          motion: ['motion'],
+        manualChunks: id => {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react';
+            }
+            if (
+              id.includes('@tanstack/react-query') ||
+              id.includes('@tanstack/react-router')
+            ) {
+              return 'tanstack';
+            }
+            if (
+              id.includes('@undp/data-viz') ||
+              id.includes('@undp/design-system-react')
+            ) {
+              return 'undp';
+            }
+            if (id.includes('three') || id.includes('react-globe.gl')) {
+              return 'three';
+            }
+            if (id.includes('lucide-react')) {
+              return 'icons';
+            }
+            if (id.includes('motion')) {
+              return 'motion';
+            }
+          }
         },
         chunkFileNames: '[name]-[hash].js',
         assetFileNames: '[name].[ext]',
