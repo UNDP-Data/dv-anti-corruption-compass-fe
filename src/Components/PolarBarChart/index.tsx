@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useEffectEvent } from 'react';
 
 import { Graph } from './Graph';
 
@@ -19,12 +19,17 @@ export const PolarBarChart = ({
   const marginSide = 100;
   const marginTop = 100;
   const graphDiv = useRef<HTMLDivElement>(null);
+  const setRadiusEvent = useEffectEvent(() => {
+    if (graphDiv.current) {
+      setRadius((graphDiv.current.clientWidth || 620) / 2);
+    }
+  });
   useEffect(() => {
     const resizeObserver = new ResizeObserver(entries => {
       setRadius((entries[0].target.clientWidth || 620) / 2);
     });
     if (graphDiv.current) {
-      setRadius((graphDiv.current.clientWidth || 620) / 2);
+      setRadiusEvent();
       resizeObserver.observe(graphDiv.current);
     }
     return () => resizeObserver.disconnect();

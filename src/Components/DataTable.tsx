@@ -4,7 +4,7 @@ import { Label } from '@undp/design-system-react/Label';
 import { Badge } from '@undp/design-system-react/Badge';
 import { Link } from '@tanstack/react-router';
 import { Spacer } from '@undp/design-system-react/Spacer';
-import { useEffect, useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 import { getTextColorBasedOnBgColor } from '@undp/data-viz/utils';
 import {
   HoverCard,
@@ -48,13 +48,16 @@ function DataTable({
   const [selectedYear, setSelectedYear] = useState(2022);
   const subPillars = pillarsMetaData.map(d => d.subPillars).flat();
 
-  useEffect(() => {
+  const setFilteredDataEvent = useEffectEvent(() => {
     const filtered = data.filter(d =>
       showFiltersAndPillars
         ? selectedPillars?.indexOf(d.subPillar) !== -1
         : true,
     );
     setFilteredData(filtered);
+  });
+  useEffect(() => {
+    setFilteredDataEvent();
   }, [data, selectedPillars, showFiltersAndPillars]);
   return (
     <div className='gap-4.5 flex flex-col w-full text-primary-gray-700'>
