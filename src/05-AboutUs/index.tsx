@@ -28,7 +28,7 @@ function AboutUsPage() {
       </HeadingText>
       <Spacer size='xl' />
       <div className='flex gap-10 items-center flex-wrap'>
-        <div className='w-full md:w-[calc(66.66%-20px)] shrink-0'>
+        <div className='w-full md:w-[calc(60%-20px)] shrink-0'>
           <ParagraphText>
             The Global Initiative for Measuring Corruption is part of UNDP’s
             Global Anti-Corruption Programme, which serves as the organization’s
@@ -62,7 +62,7 @@ function AboutUsPage() {
             Find out more on UNDP Anti-Corruption Web Portal here.
           </ParagraphText>
         </div>
-        <div className='w-full md:w-[calc(33.33%-20px)] max-w-[320px]'>
+        <div className='w-full md:w-[calc(40%-20px)]'>
           <img
             src='/imgs/GlobalInitiativeLogo.png'
             alt='Logo'

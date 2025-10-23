@@ -11,11 +11,13 @@ import { ParagraphText } from './Typography';
 export const ColorLegend = ({
   colors = [],
   className,
+  size = 'base',
   showTitle = true,
   keyValues = ['Low', 'Medium', 'High'],
 }: {
   colors?: string[];
   className?: string;
+  size?: 'sm' | 'base' | 'lg';
   showTitle?: boolean;
   keyValues?: string[];
 }) => {
@@ -43,16 +45,18 @@ export const ColorLegend = ({
         </div>
       )}
 
-      <div className='flex flex gap-7 poppins-regular'>
+      <div className='flex flex gap-6 poppins-regular'>
         {colors.map((d, i) => (
           <div key={i} className='flex gap-2 items-center'>
             <div
-              className='w-4 h-4 rounded-full'
+              className='w-3 h-3 rounded-full'
               style={{
                 backgroundColor: d,
               }}
             />
-            <ParagraphText leading='none'>{keyValues[i]}</ParagraphText>
+            <ParagraphText size={size} leading='none'>
+              {keyValues[i]}
+            </ParagraphText>
           </div>
         ))}
       </div>

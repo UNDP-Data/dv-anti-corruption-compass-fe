@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const ProjectCards = ({ img, title, date }: Props) => (
-  <Card className='rounded-[20px] border-0 max-w-65 p-0 min-w-auto bg-[#242730] cursor-pointer hover:bg-[#124E6F]'>
+  <Card className='rounded-[20px] border-0 max-w-65 p-0 min-w-auto bg-[#252836] cursor-pointer hover:bg-[#124E6F]'>
     <img
       className='rounded-tl-[20px] rounded-tr-[20px] h-40'
       src={img}

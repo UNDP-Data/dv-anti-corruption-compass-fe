@@ -6,10 +6,9 @@
 
 @config '../../tailwind.config.js';
 
-
 :root {
   --color-black-bg: #537286;
-  --color-white-bg: #FFFFFF12;
+  --color-white-bg: #ffffff12;
   --color-text-black: #2d4858;
   --color-text-white: #fff;
 }
@@ -34,7 +33,8 @@ main {
   flex: 1;
 }
 
-.background-inherit,#root {
+.background-inherit,
+#root {
   background: inherit;
 }
 

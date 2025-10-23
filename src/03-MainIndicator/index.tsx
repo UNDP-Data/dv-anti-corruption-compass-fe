@@ -39,7 +39,6 @@ function MainIndicatorPageEl({
         description={pillarMetaData.description}
       />
       <div className='container mx-auto'>
-        <Spacer size='6xl' />
         <div className='flex items-center gap-4 w-full'>
           <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
             <Label className='text-primary-white'>Sub-pillar</Label>
@@ -55,9 +54,9 @@ function MainIndicatorPageEl({
               }))}
               size='base'
               variant='normal'
-              className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
+              className='poppins-regular border-0! rounded-[100px]! px-2!'
               classNames={DROPDOWN_CLASSNAMES}
-              components={customDropdownComponents('dark', false)}
+              components={customDropdownComponents('light', false)}
             />
           </div>
           <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
@@ -71,9 +70,9 @@ function MainIndicatorPageEl({
               options={YEARS.map(d => ({ value: d, label: d }))}
               size='base'
               variant='normal'
-              className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
+              className='poppins-regular border-0! rounded-[100px]! px-2!'
               classNames={DROPDOWN_CLASSNAMES}
-              components={customDropdownComponents('dark', false)}
+              components={customDropdownComponents('light', false)}
             />
           </div>
         </div>

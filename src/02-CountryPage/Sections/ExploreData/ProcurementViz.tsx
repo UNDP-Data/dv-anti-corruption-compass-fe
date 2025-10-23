@@ -74,9 +74,9 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
             ).map(d => ({ value: d.value, label: d.value }))}
             size='base'
             variant='normal'
-            className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
+            className='poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
-            components={customDropdownComponents('dark', false)}
+            components={customDropdownComponents('light', false)}
           />
         </div>
         <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
@@ -90,9 +90,9 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
             options={YEARS.map(d => ({ value: d, label: d }))}
             size='base'
             variant='normal'
-            className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
+            className='poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
-            components={customDropdownComponents('dark', false)}
+            components={customDropdownComponents('light', false)}
           />
         </div>
         <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
@@ -111,9 +111,9 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
             options={MARKET.map(d => ({ value: d, label: d }))}
             size='base'
             variant='normal'
-            className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
+            className='poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
-            components={customDropdownComponents('dark', false)}
+            components={customDropdownComponents('light', false)}
           />
         </div>
         <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
@@ -132,9 +132,9 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
             options={CONTRACT_VALUE.map(d => ({ value: d, label: d }))}
             size='base'
             variant='normal'
-            className='bg-[var(--color-white-bg)]! poppins-regular border-0! rounded-[8px]!'
+            className='poppins-regular border-0! rounded-[8px]!'
             classNames={DROPDOWN_CLASSNAMES}
-            components={customDropdownComponents('dark', false)}
+            components={customDropdownComponents('light', false)}
           />
         </div>
       </div>
@@ -221,13 +221,15 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                   <div className='flex gap-4 flex-wrap items-stretch'>
                     <div className='basis-[calc(50%-0.5rem)] flex flex-col min-w-[320px]'>
                       <ColorLegend
-                        className='mb-4'
+                        size='sm'
+                        showTitle={false}
                         colors={
                           pillarsMetaData.find(
                             d => d.value === 'Public Procurement',
                           )?.colors
                         }
                       />
+
                       <ChoroplethMap
                         mapData={`https://raw.githubusercontent.com/UNDP-Data/dv-country-geojson/refs/heads/main/ADM1/${isoCode}.json`}
                         data={transformDataForGraph(
@@ -239,6 +241,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                           ],
                         )}
                         scaleType='categorical'
+                        zoomInteraction='noZoom'
                         colorDomain={['Low', 'Medium', 'High']}
                         colors={
                           pillarsMetaData.find(
@@ -246,19 +249,34 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                           )?.colors
                         }
                         showColorScale={false}
+                        footNote={
+                          <div>
+                            <ParagraphText
+                              size='xs'
+                              className='opacity-50 poppins-light'
+                            >
+                              The designations employed and the presentation of
+                              material on this map do not imply the expression
+                              of any opinion whatsoever on the part of the
+                              Secretariat of the United Nations or UNDP
+                              concerning the legal status of any country,
+                              territory, city or area or its authorities, or
+                              concerning the delimitation of its frontiers or
+                              boundaries.
+                            </ParagraphText>
+                          </div>
+                        }
                       />
                     </div>
                     <div className='basis-[calc(50%-0.5rem)] flex flex-col min-w-[320px]'>
-                      <div className='h-[500px] undp-scrollbar'>
+                      <div className='h-[500px] pr-4 undp-scrollbar'>
                         <div className='flex flex-col'>
-                          <div className='flex gap-0 py-2 border-b border-b-[#9BA5AB]'>
-                            <div className='w-[10%] px-2 poppins-medium text-[14px] text-[#9BA5AB]'>
-                              No.
-                            </div>
-                            <div className='w-[calc(90%-75px)] px-2 poppins-medium text-[14px] text-[#9BA5AB]'>
+                          <div className='flex gap-8 py-2 pr-4 border-b border-b-[#9BA5AB]'>
+                            <div className='w-[calc(100%-48px)] poppins-medium text-[14px] text-[#9BA5AB]'>
                               Region
                             </div>
-                            <div className='w-[75px] poppins-medium px-2 text-[14px] text-[#9BA5AB] text-right'>
+
+                            <div className='w-[48px] poppins-medium text-[14px] text-[#9BA5AB]'>
                               Value
                             </div>
                           </div>
@@ -266,17 +284,14 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                             .sort((a, b) => b.value - a.value)
                             .map((d, i) => (
                               <div
-                                className='flex gap-0 py-4 items-center'
+                                className='flex gap-8 py-3 pr-4 items-center border-b border-b-[0.5px] border-b-[#FFFFFF0F]'
                                 key={i}
                               >
-                                <div className='w-[10%] px-2 poppins-medium text-[14px] text-primary-white'>
-                                  {i + 1}
-                                </div>
-                                <div className='w-[calc(90%-75px)] flex items-center'>
-                                  <div className='w-[40%] px-2 poppins-medium text-[14px] text-primary-white'>
+                                <div className='w-full gap-2 flex items-center'>
+                                  <div className='w-full poppins-medium text-[14px] text-primary-white'>
                                     {d.region}
                                   </div>
-                                  <div className='w-[60%] px-2 poppins-medium text-[14px] text-primary-white'>
+                                  <div className='w-[60%] poppins-medium text-[14px] text-primary-white'>
                                     <div className='w-full rounded-full bg-primary-white h-2' />
                                     <div
                                       className='rounded-full h-2 mt-[-8px]'
@@ -291,10 +306,10 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                                     />
                                   </div>
                                 </div>
-                                <div className='w-[75px] poppins-medium px-2 text-[14px] text-primary-white text-right'>
+                                <div className='min-w-[48px] poppins-medium text-[14px] text-primary-white text-right'>
                                   <Badge
                                     rounded='full'
-                                    className='bg-primary-white! text-primary-gray-700! poppins-bold p-1! text-[14px]! w-full! flex justify-center'
+                                    className='bg-primary-white! text-[var(--color-text-black)]! poppins-bold px-1! text-[14px]! w-full! flex justify-center'
                                   >
                                     {d.value.toFixed(2)}
                                   </Badge>
@@ -340,6 +355,14 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                     showColorLegendAtTop={false}
                     showDots={false}
                     animate
+                    classNames={{
+                      xAxis: {
+                        labels: 'poppins-regular',
+                      },
+                      yAxis: {
+                        labels: 'poppins-regular',
+                      },
+                    }}
                   />
                 ) : (
                   <Spinner />
@@ -371,6 +394,11 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                       )?.color || '#fff',
                       '#fff',
                     ]}
+                    classNames={{
+                      xAxis: {
+                        labels: 'poppins-regular',
+                      },
+                    }}
                     animate
                     showValues
                     leftMargin={0}

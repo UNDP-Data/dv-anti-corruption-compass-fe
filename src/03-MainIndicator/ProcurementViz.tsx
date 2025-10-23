@@ -4,8 +4,8 @@ import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import { useEffect, useState } from 'react';
 import { ChoroplethMap } from '@undp/data-viz/ChoroplethMap';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
-import { Colors } from '@undp/data-viz/Colors';
 import { Badge } from '@undp/design-system-react/Badge';
+import { ArrowDownToLine } from 'lucide-react';
 
 import { MethodologySection } from './Components/MethodologySection';
 
@@ -16,6 +16,8 @@ import { ParagraphText } from '@/Components/Typography';
 import DataTable from '@/Components/DataTable';
 import { ProjectsSection } from '@/Components/ProjectsSection';
 import { getPillarData } from '@/Utils/getData';
+import { ColorLegend } from '@/Components/ColorLegend';
+import { Button } from '@/Components/Button';
 
 interface Props {
   pillarMetaData: SubPillarsMetaDataType;
@@ -55,11 +57,11 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
                 <ParagraphText
                   weight='light'
                   leading='none'
-                  className='text-[56px]'
+                  className='text-[56px] m-0'
                 >
                   {[...new Set(data.map(d => d.country))].length}
                 </ParagraphText>
-                <Spacer size='2xl' />
+                <Spacer size='xl' />
                 <ParagraphText leading='none'>
                   countries with {pillarMetaData.value.toLowerCase()} data
                 </ParagraphText>
@@ -71,7 +73,7 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
                 >
                   {Math.min(...new Set(data.map(d => d.value))).toFixed(2)}
                 </ParagraphText>
-                <Spacer size='2xl' />
+                <Spacer size='xl' />
                 <ParagraphText leading='none'>minimum value</ParagraphText>
                 <Spacer size='6xl' />
                 <ParagraphText
@@ -81,7 +83,7 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
                 >
                   {Math.max(...new Set(data.map(d => d.value))).toFixed(2)}
                 </ParagraphText>
-                <Spacer size='2xl' />
+                <Spacer size='xl' />
                 <ParagraphText leading='none'>maximum value</ParagraphText>
                 <Spacer size='6xl' />
               </>
@@ -94,59 +96,70 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
             chips={[pillarMetaData.value, year]}
           >
             {data ? (
-              <div className='flex flex-col gap-4 grow'>
-                <ThreeDGlobe
-                  showColorScale={false}
-                  polygonAltitude={0.005}
-                  highlightedAltitude={0.01}
-                  colors={pillarMetaData.colors}
-                  colorDomain={['Low', 'Medium', 'High']}
-                  scale={1.5}
-                  enableZoom={false}
-                  atmosphereColor={pillarMetaData.color}
-                  globeMaterial={
-                    new THREE.MeshBasicMaterial({
-                      color: 0xfafafa,
-                    })
-                  }
-                  fogSettings={{
-                    color: pillarMetaData.color,
-                    near:
-                      (window.innerWidth / 2 - 160) /
-                        (window.innerHeight - 200) >
-                      0.9
-                        ? 150
-                        : (window.innerWidth / 2 - 160) /
-                              (window.innerHeight - 200) >
-                            0.8
-                          ? 200
+              <>
+                <div className='flex flex-col gap-4 grow radialGradientMask'>
+                  <ThreeDGlobe
+                    showColorScale={false}
+                    polygonAltitude={0.005}
+                    highlightedAltitude={0.01}
+                    colors={pillarMetaData.colors}
+                    colorDomain={['Low', 'Medium', 'High']}
+                    scale={1.65}
+                    footNote=''
+                    enableZoom={false}
+                    atmosphereColor={pillarMetaData.color}
+                    globeMaterial={
+                      new THREE.MeshBasicMaterial({
+                        color: 0xfafafa,
+                      })
+                    }
+                    fogSettings={{
+                      color: pillarMetaData.color,
+                      near:
+                        (window.innerWidth / 2 - 160) /
+                          (window.innerHeight - 200) >
+                        0.9
+                          ? 150
                           : (window.innerWidth / 2 - 160) /
                                 (window.innerHeight - 200) >
-                              0.7
-                            ? 250
-                            : 300,
-                    far:
-                      (window.innerWidth / 2 - 160) /
-                        (window.innerHeight - 200) >
-                      0.9
-                        ? 300
-                        : (window.innerWidth / 2 - 160) /
-                              (window.innerHeight - 200) >
-                            0.8
-                          ? 350
+                              0.8
+                            ? 200
+                            : (window.innerWidth / 2 - 160) /
+                                  (window.innerHeight - 200) >
+                                0.7
+                              ? 250
+                              : 300,
+                      far:
+                        (window.innerWidth / 2 - 160) /
+                          (window.innerHeight - 200) >
+                        0.9
+                          ? 300
                           : (window.innerWidth / 2 - 160) /
                                 (window.innerHeight - 200) >
-                              0.7
-                            ? 400
-                            : 450,
-                  }}
-                  atmosphereAltitude={0.1}
-                  globeCurvatureResolution={2}
-                  resetSelectionOnDoubleClick={false}
-                  autoRotate={1}
-                  data={data}
-                />
-              </div>
+                              0.8
+                            ? 350
+                            : (window.innerWidth / 2 - 160) /
+                                  (window.innerHeight - 200) >
+                                0.7
+                              ? 400
+                              : 450,
+                    }}
+                    atmosphereAltitude={0.1}
+                    globeCurvatureResolution={2}
+                    resetSelectionOnDoubleClick={false}
+                    autoRotate={1}
+                    data={data}
+                  />
+                </div>
+                <ParagraphText size='xs' className='opacity-50 poppins-light '>
+                  The designations employed and the presentation of material on
+                  this map do not imply the expression of any opinion whatsoever
+                  on the part of the Secretariat of the United Nations or UNDP
+                  concerning the legal status of any country, territory, city or
+                  area or its authorities, or concerning the delimitation of its
+                  frontiers or boundaries.
+                </ParagraphText>
+              </>
             ) : (
               <NoData />
             )}
@@ -158,6 +171,7 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
             chips={[pillarMetaData.value, year]}
             className='basis-full'
           >
+            <Spacer size='xl' />
             <div className='flex dark'>
               {data.length > 0 ? (
                 <DataTable
@@ -180,27 +194,51 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
             <div className='flex dark'>
               {data.length > 0 ? (
                 <div className='flex gap-4'>
-                  <div className='basis-[calc(50%-0.5rem)] flex flex-col min-w-[320px]'>
+                  <div className='basis-[calc(50%-0.5rem)] flex flex-col min-w-[320px] poppins-regular'>
+                    <ColorLegend
+                      size='sm'
+                      showTitle={false}
+                      colors={pillarMetaData.colors}
+                    />
                     <ChoroplethMap
                       data={transformDataForGraph(data, 'choroplethMap', [
                         { chartConfigId: 'id', columnId: 'id' },
                         { chartConfigId: 'x', columnId: 'dataAvailability' },
                       ])}
-                      colors={Colors.light.sequentialColors.positiveColorsx05}
+                      colors={pillarMetaData.colors}
+                      mapBorderColor='var(--color-text-black)'
+                      zoomInteraction='noZoom'
+                      centerPoint={[15, 15]}
+                      scale={1.05}
                       colorDomain={[20, 40, 60, 80]}
+                      showColorScale={false}
+                      footNote={
+                        <div>
+                          <ParagraphText
+                            size='xs'
+                            className='opacity-50 poppins-light'
+                          >
+                            The designations employed and the presentation of
+                            material on this map do not imply the expression of
+                            any opinion whatsoever on the part of the
+                            Secretariat of the United Nations or UNDP concerning
+                            the legal status of any country, territory, city or
+                            area or its authorities, or concerning the
+                            delimitation of its frontiers or boundaries.
+                          </ParagraphText>
+                        </div>
+                      }
                     />
                   </div>
                   <div className='basis-[calc(50%-0.5rem)] flex flex-col min-w-[320px]'>
-                    <div className='h-[500px] undp-scrollbar'>
+                    <div className='h-[500px] pr-4 undp-scrollbar'>
                       <div className='flex flex-col'>
-                        <div className='flex gap-0 py-2 border-b border-b-[#9BA5AB]'>
-                          <div className='w-[10%] px-2 poppins-medium text-[14px] text-[#9BA5AB]'>
-                            No.
-                          </div>
-                          <div className='w-[calc(90%-75px)] px-2 poppins-medium text-[14px] text-[#9BA5AB]'>
+                        <div className='flex gap-8 py-2 pr-4 border-b border-b-[#9BA5AB]'>
+                          <div className='w-[calc(100%-48px)] poppins-medium text-[14px] text-[#9BA5AB]'>
                             Region
                           </div>
-                          <div className='w-[75px] poppins-medium px-2 text-[14px] text-[#9BA5AB] text-right'>
+
+                          <div className='w-[48px] poppins-medium text-[14px] text-[#9BA5AB]'>
                             Value
                           </div>
                         </div>
@@ -210,17 +248,14 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
                           )
                           .map((d, i) => (
                             <div
-                              className='flex gap-0 py-4 items-center'
+                              className='flex gap-8 py-3 pr-4 items-center border-b border-b-[0.5px] border-b-[#FFFFFF0F]'
                               key={i}
                             >
-                              <div className='w-[10%] px-2 poppins-medium text-[14px] text-primary-white'>
-                                {i + 1}
-                              </div>
-                              <div className='w-[calc(90%-75px)] flex items-center'>
-                                <div className='w-[40%] px-2 poppins-medium text-[14px] text-primary-white'>
+                              <div className='w-full gap-2 flex items-center'>
+                                <div className='w-full poppins-medium text-[14px] text-primary-white'>
                                   {d.country}
                                 </div>
-                                <div className='w-[60%] px-2 poppins-medium text-[14px] text-primary-white'>
+                                <div className='w-[60%] poppins-medium text-[14px] text-primary-white'>
                                   <div className='w-full rounded-full bg-primary-white h-2' />
                                   <div
                                     className='rounded-full h-2 mt-[-8px]'
@@ -231,12 +266,12 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
                                   />
                                 </div>
                               </div>
-                              <div className='w-[75px] poppins-medium px-2 text-[14px] text-primary-white text-right'>
+                              <div className='min-w-[48px] poppins-medium text-[14px] text-primary-white text-right'>
                                 <Badge
                                   rounded='full'
-                                  className='bg-primary-white! text-primary-gray-700! poppins-bold p-1! text-[14px]! w-full! flex justify-center'
+                                  className='bg-primary-white! text-[var(--color-text-black)]! poppins-bold px-1! text-[14px]! w-full! flex justify-center'
                                 >
-                                  {Math.round(d.dataAvailability)}
+                                  {Math.round(d.dataAvailability)}%
                                 </Badge>
                               </div>
                             </div>
@@ -251,52 +286,55 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
             </div>
           </GraphCard>
         </div>
-        <Spacer size='6xl' />
-        <ProjectsSection
-          cards={[
-            {
-              img: 'https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-              title: 'Global Report on Public Procurement',
-              date: 'July 2nd 2025',
-            },
-            {
-              img: 'https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-              title: 'Global Report',
-              date: 'July 2nd 2025',
-            },
-          ]}
-          heading='Case studies'
-        />
-        <Spacer size='6xl' />
-        <MethodologySection
-          description={
-            <ParagraphText>
-              Lorem ipsum dolor sit amet consectetur. Sit luctus feugiat
-              faucibus dui feugiat vitae sit enim venenatis. Ut posuere
-              consectetur id nec. Scelerisque tellus mi ac id non donec
-              tristique purus dictum. Vitae sit aenean nisi risus ut id massa.
-              Neque egestas elementum fringilla fermentum in. Bibendum massa at
-              hac lectus malesuada. Cras vulputate neque morbi nulla. Quis
-              mauris urna dictum vulputate consectetur. Faucibus sit velit amet
-              urna. Auctor pharetra fringilla pharetra est non egestas tempus
-              vitae blandit. Egestas purus magna risus laoreet lobortis
-              sagittis.
-              <br />
-              <br />
-              Accumsan vitae blandit odio est Lorem ipsum dolor sit amet
-              consectetur. Sit luctus feugiat faucibus dui feugiat vitae sit
-              enim venenatis. Ut posuere consectetur id nec. Scelerisque tellus
-              mi ac id non donec tristique purus dictum. Vitae sit aenean nisi
-              risus ut id massa. Neque egestas elementum fringilla fermentum in.
-              Bibendum massa at hac lectus malesuada. Cras vulputate neque morbi
-              nulla. Quis mauris urna dictum vulputate consectetur. Faucibus sit
-              velit amet urna. Auctor pharetra fringilla pharetra est non
-              egestas tempus vitae blandit. Egestas purus magna risus laoreet
-              lobortis sagittis. Accumsan vitae blandit odio est
-            </ParagraphText>
-          }
-        />
+        <Button variant='secondary' className='w-fit flex items-center gap-2'>
+          Download Public Procurement Data{' '}
+          <ArrowDownToLine size={16} strokeWidth={3} />
+        </Button>
       </div>
+      <Spacer size='6xl' />
+      <ProjectsSection
+        cards={[
+          {
+            img: 'https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            title: 'Global Report on Public Procurement',
+            date: 'July 2nd 2025',
+          },
+          {
+            img: 'https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            title: 'Global Report',
+            date: 'July 2nd 2025',
+          },
+        ]}
+        heading='Case studies'
+      />
+      <Spacer size='6xl' />
+      <MethodologySection
+        description={
+          <ParagraphText>
+            Lorem ipsum dolor sit amet consectetur. Sit luctus feugiat faucibus
+            dui feugiat vitae sit enim venenatis. Ut posuere consectetur id nec.
+            Scelerisque tellus mi ac id non donec tristique purus dictum. Vitae
+            sit aenean nisi risus ut id massa. Neque egestas elementum fringilla
+            fermentum in. Bibendum massa at hac lectus malesuada. Cras vulputate
+            neque morbi nulla. Quis mauris urna dictum vulputate consectetur.
+            Faucibus sit velit amet urna. Auctor pharetra fringilla pharetra est
+            non egestas tempus vitae blandit. Egestas purus magna risus laoreet
+            lobortis sagittis.
+            <br />
+            <br />
+            Accumsan vitae blandit odio est Lorem ipsum dolor sit amet
+            consectetur. Sit luctus feugiat faucibus dui feugiat vitae sit enim
+            venenatis. Ut posuere consectetur id nec. Scelerisque tellus mi ac
+            id non donec tristique purus dictum. Vitae sit aenean nisi risus ut
+            id massa. Neque egestas elementum fringilla fermentum in. Bibendum
+            massa at hac lectus malesuada. Cras vulputate neque morbi nulla.
+            Quis mauris urna dictum vulputate consectetur. Faucibus sit velit
+            amet urna. Auctor pharetra fringilla pharetra est non egestas tempus
+            vitae blandit. Egestas purus magna risus laoreet lobortis sagittis.
+            Accumsan vitae blandit odio est
+          </ParagraphText>
+        }
+      />
     </>
   );
 }

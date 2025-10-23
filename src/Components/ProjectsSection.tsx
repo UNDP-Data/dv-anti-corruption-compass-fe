@@ -17,7 +17,7 @@ export const ProjectsSection = (props: Props) => {
   return (
     <>
       <HeadingText type='h2'>{heading}</HeadingText>
-      <Spacer size='3xl' />
+      <Spacer size='2xl' />
       <div className='flex gap-6'>
         {cards.map((d, i) => (
           <ProjectCards img={d.img} title={d.title} date={d.date} key={i} />

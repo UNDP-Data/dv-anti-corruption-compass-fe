@@ -5,7 +5,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { HeadingText, ParagraphText } from './Typography';
 
 import { CountryTaxonomyDataType } from '@/Types';
-import { DROPDOWN_CLASSNAMES_WHITE } from '@/Constants';
+import { DROPDOWN_CLASSNAMES } from '@/Constants';
 import { customDropdownComponents } from '@/Utils/DropdownComponents';
 
 export const CountrySelect = ({
@@ -38,7 +38,7 @@ export const CountrySelect = ({
           size='base'
           variant='normal'
           className='bg-primary-white! border-0! rounded-full! px-4!'
-          classNames={DROPDOWN_CLASSNAMES_WHITE}
+          classNames={DROPDOWN_CLASSNAMES}
           components={customDropdownComponents('light', false)}
         />
       ) : (

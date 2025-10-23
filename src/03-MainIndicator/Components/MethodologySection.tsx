@@ -13,7 +13,7 @@ export const MethodologySection = ({
   return (
     <>
       <HeadingText type='h2'>Methodology</HeadingText>
-      <Spacer size='xl' />
+      <Spacer size='2xl' />
       {description}
       <Spacer size='xl' />
       <Link to='/methodology'>

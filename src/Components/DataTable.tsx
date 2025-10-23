@@ -18,7 +18,7 @@ import { ParagraphText } from './Typography';
 
 import {
   DROPDOWN_CLASSNAMES_MULTI_SELECT,
-  DROPDOWN_CLASSNAMES_WHITE,
+  DROPDOWN_CLASSNAMES,
   YEARS,
 } from '@/Constants';
 import { DataType, PillarsMetaDataType } from '@/Types';
@@ -81,7 +81,7 @@ function DataTable({
                   size='base'
                   variant='normal'
                   className='bg-primary-white! border-0! rounded-full! px-4!'
-                  classNames={DROPDOWN_CLASSNAMES_WHITE}
+                  classNames={DROPDOWN_CLASSNAMES}
                   isClearable={false}
                   components={customDropdownComponents('light', false)}
                 />
@@ -141,27 +141,27 @@ function DataTable({
       <div className='dark'>
         <div className='flex w-full pb-2 border-b border-b-primary-white'>
           <div
-            className={`poppins-bold text-[16px]! text-primary-white! ${showFiltersAndPillars ? 'w-[35%]' : 'w-[45%]'} pr-4!`}
+            className={`poppins-semibold text-[16px]! text-primary-white! ${showFiltersAndPillars ? 'w-[35%]' : 'w-[45%]'} pr-4!`}
           >
             Country name
           </div>
           {showFiltersAndPillars && (
-            <div className='poppins-bold text-[16px]! text-primary-white! w-[25%] pr-4!'>
+            <div className='poppins-semibold text-[16px]! text-primary-white! w-[25%] pr-4!'>
               Pillar
             </div>
           )}
           <div
-            className={`poppins-bold text-[16px]! text-primary-white! ${showFiltersAndPillars ? 'w-[20%]' : 'w-[25%]'} pr-4!`}
+            className={`poppins-semibold text-[16px]! text-primary-white! ${showFiltersAndPillars ? 'w-[20%]' : 'w-[25%]'} pr-4!`}
           >
             Indicator value
           </div>
           <div
-            className={`poppins-bold text-[16px]! text-primary-white! ${showFiltersAndPillars ? 'w-[10%]' : 'w-[15%]'} pr-4!`}
+            className={`poppins-semibold text-[16px]! text-primary-white! ${showFiltersAndPillars ? 'w-[10%]' : 'w-[15%]'} pr-4!`}
           >
             Value
           </div>
           <div
-            className={`poppins-bold text-[16px]! text-primary-white! ${showFiltersAndPillars ? 'w-[10%]' : 'w-[15%]'} pr-4!`}
+            className={`poppins-semibold text-[16px]! text-primary-white! ${showFiltersAndPillars ? 'w-[10%]' : 'w-[15%]'} pr-4!`}
           />
         </div>
         <div>
@@ -179,23 +179,23 @@ function DataTable({
                       [];
                 return (
                   <div key={i}>
-                    <div className='flex w-full py-4 border-b border-b-primary-white items-center'>
+                    <div className='flex w-full py-4 border-b border-b-[0.5px] border-b-primary-white items-center'>
                       <div
-                        className={`poppins-regular text-[16px]! text-primary-white! ${showFiltersAndPillars ? 'w-[35%]' : 'w-[45%]'} pr-4!`}
+                        className={`poppins-light text-[16px]! text-primary-white! ${showFiltersAndPillars ? 'w-[35%]' : 'w-[45%]'} pr-4!`}
                       >
                         {el.country}
                       </div>
                       {showFiltersAndPillars && (
-                        <div className='poppins-regular text-[16px]! text-primary-white! w-[25%] pr-4!'>
+                        <div className='poppins-light text-[16px]! text-primary-white! w-[25%] pr-4!'>
                           {el.subPillar}
                         </div>
                       )}
                       <div
-                        className={`poppins-regular text-[16px]! text-primary-white! ${showFiltersAndPillars ? 'w-[20%]' : 'w-[25%]'} pr-4!`}
+                        className={`poppins-light text-[16px]! text-primary-white! ${showFiltersAndPillars ? 'w-[20%]' : 'w-[25%]'} pr-4!`}
                       >
                         <Badge
                           rounded='full'
-                          className='poppins-regular'
+                          className='poppins-medium py-0 text-[12px]! px-3!'
                           style={{
                             backgroundColor:
                               tagColors[
@@ -212,16 +212,16 @@ function DataTable({
                         </Badge>
                       </div>
                       <div
-                        className={`poppins-regular text-[16px]! text-primary-white! ${showFiltersAndPillars ? 'w-[10%]' : 'w-[15%]'} pr-4!`}
+                        className={`poppins-light text-[16px]! text-primary-white! ${showFiltersAndPillars ? 'w-[10%]' : 'w-[15%]'} pr-4!`}
                       >
                         {el.value.toFixed(2)}
                       </div>
                       <Link
                         to='/countries/$isoCode'
-                        className={`poppins-regular text-[16px]! text-primary-white! ${showFiltersAndPillars ? 'w-[10%]' : 'w-[15%]'} pr-4! opacity-100 hover:opacity-80 underline underline-offset-4`}
+                        className={`poppins-light text-[16px]! text-primary-white! ${showFiltersAndPillars ? 'w-[10%]' : 'w-[15%]'} pr-4! opacity-100 hover:opacity-80 underline underline-offset-4`}
                         params={{ isoCode: el.id }}
                       >
-                        View country
+                        View Details
                       </Link>
                     </div>
                   </div>
@@ -234,7 +234,6 @@ function DataTable({
         <Spacer size='5xl' />
         <Pagination
           total={filteredData.length}
-          className='poppins-medium'
           pageSize={pageLength}
           onChange={page => {
             setPage(page);
