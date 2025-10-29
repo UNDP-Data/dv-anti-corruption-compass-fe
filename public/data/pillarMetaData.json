@@ -28,7 +28,7 @@
         "colors": ["#FFBFA2", "#FF9B6D", "#FD6925"]
       },
       {
-        "value": "Beneficiary ownership",
+        "value": "Single bidding",
         "color": "#666666",
         "colors": ["#E0DEDF", "#B2AFB0", "#666666"]
       }
