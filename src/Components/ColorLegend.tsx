@@ -13,7 +13,7 @@ export const ColorLegend = ({
   className,
   size = 'base',
   showTitle = true,
-  keyValues = ['Low', 'Medium', 'High'],
+  keyValues = ['LOW', 'MEDIUM', 'HIGH'],
 }: {
   colors?: string[];
   className?: string;

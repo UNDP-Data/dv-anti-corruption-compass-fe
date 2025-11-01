@@ -24,7 +24,7 @@ export const getFullData = async (pillarsMetaData: PillarsMetaDataType[]) => {
           mainIndicator: subPillar.mainIndicator,
           value: Math.random(),
           dataAvailability: Math.ceil(Math.random() * 100),
-          x: ['Low', 'Medium', 'High'][Math.floor(Math.random() * 3)],
+          x: ['LOW', 'MEDIUM', 'HIGH'][Math.floor(Math.random() * 3)],
         })),
     )
     .flat();
@@ -38,7 +38,7 @@ export const getPillarData = async (pillarMetaData: SubPillarsMetaDataType) => {
     subPillar: pillarMetaData.value,
     value: Math.random(),
     dataAvailability: Math.ceil(Math.random() * 100),
-    x: ['Low', 'Medium', 'High'][Math.floor(Math.random() * 3)],
+    x: ['LOW', 'MEDIUM', 'HIGH'][Math.floor(Math.random() * 3)],
   }));
   return dataFormatted;
 };
@@ -57,7 +57,7 @@ export const getRegionData = async (countryCode: string) => {
     region: el['Region name'],
     value: Math.random(),
     dataAvailability: Math.ceil(Math.random() * 100),
-    level: ['Low', 'Medium', 'High'][Math.floor(Math.random() * 3)],
+    level: ['LOW', 'MEDIUM', 'HIGH'][Math.floor(Math.random() * 3)],
   }));
   return dataFormatted;
 };

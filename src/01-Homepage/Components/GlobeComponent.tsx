@@ -4,6 +4,7 @@ import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import { X } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { Spacer } from '@undp/design-system-react/Spacer';
+import { transformDataForGraph } from '@undp/data-viz/transformData';
 
 import {
   DataType,
@@ -33,6 +34,10 @@ function GlobeComponent({
   selectedMainIndicator,
 }: Props) {
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+  const year = Math.max(
+    ...(data.find(d => d.id === selectedMainIndicator)?.data.map(d => d.Year) ??
+      []),
+  );
   return (
     <>
       <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col py-24 pl-10 pr-30'>
@@ -42,7 +47,7 @@ function GlobeComponent({
               pillarsMetaData
                 .map(d => d.subPillars)
                 .flat()
-                .find(d => d.value === selectedSubPillar)?.colors || []
+                .find(d => d.id === selectedSubPillar)?.colors || []
             }
           />
         </div>
@@ -56,13 +61,13 @@ function GlobeComponent({
                 pillarsMetaData
                   .map(d => d.subPillars)
                   .flat()
-                  .find(d => d.value === selectedSubPillar)?.colors
+                  .find(d => d.id === selectedSubPillar)?.colors
               }
               selectedId={selectedId}
               onSeriesMouseClick={d => {
                 setSelectedId(d.id);
               }}
-              colorDomain={['Low', 'Medium', 'High']}
+              colorDomain={['LOW', 'MEDIUM', 'HIGH']}
               scale={
                 (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
                 0.95
@@ -86,7 +91,7 @@ function GlobeComponent({
                 pillarsMetaData
                   .map(d => d.subPillars)
                   .flat()
-                  .find(d => d.value === selectedSubPillar)?.color
+                  .find(d => d.id === selectedSubPillar)?.color
               }
               globeMaterial={
                 new THREE.MeshBasicMaterial({
@@ -98,7 +103,7 @@ function GlobeComponent({
                   pillarsMetaData
                     .map(d => d.subPillars)
                     .flat()
-                    .find(d => d.value === selectedSubPillar)?.color || '#fff',
+                    .find(d => d.id === selectedSubPillar)?.color || '#fff',
                 near:
                   (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
                   0.9
@@ -130,7 +135,18 @@ function GlobeComponent({
               globeCurvatureResolution={2}
               resetSelectionOnDoubleClick={false}
               autoRotate={rotate ? 1 : false}
-              data={data.filter(d => d.subPillar === selectedSubPillar)}
+              data={transformDataForGraph(
+                data
+                  .find(d => d.id === selectedMainIndicator)
+                  ?.data.filter(
+                    d => d.Indicator === selectedSubPillar && d.Year === year,
+                  ),
+                'threeDGlobe',
+                [
+                  { chartConfigId: 'id', columnId: 'ISO3_Code' },
+                  { chartConfigId: 'x', columnId: 'Indicator_value' },
+                ],
+              )}
             />
           ) : null}
         </div>
@@ -163,18 +179,39 @@ function GlobeComponent({
               weight='semibold'
               size='xl'
             >
-              {data.find(d => d.id === selectedId)?.country}
+              {
+                countryTaxonomy.find(
+                  el =>
+                    el['Alpha-3 code'] ===
+                    data
+                      .find(d => d.id === selectedMainIndicator)
+                      ?.data.find(
+                        d =>
+                          d.Indicator === selectedSubPillar &&
+                          d.Year === year &&
+                          d.ISO3_Code === selectedId,
+                      )?.ISO3_Code,
+                )?.['Country or Area']
+              }
             </ParagraphText>
             <Spacer size='2xl' />
             <div className='w-full mb-4 flex items-center text-primary-gray-500 justify-center'>
               <ArcChart
-                data={data
-                  .filter(
-                    d =>
-                      d.id === selectedId &&
-                      d.mainIndicator === selectedMainIndicator,
-                  )
-                  .map(d => d.value)}
+                data={
+                  pillarsMetaData
+                    .find(d => d.id === selectedMainIndicator)
+                    ?.subPillars.map(
+                      el =>
+                        data
+                          .find(d => d.id === selectedMainIndicator)
+                          ?.data.find(
+                            d =>
+                              d.Year === year &&
+                              d.ISO3_Code === selectedId &&
+                              d.Indicator === el.id,
+                          )?.Indicator_value_numeric || 0,
+                    ) || []
+                }
                 colors={
                   pillarsMetaData
                     .find(d => d.id === selectedMainIndicator)

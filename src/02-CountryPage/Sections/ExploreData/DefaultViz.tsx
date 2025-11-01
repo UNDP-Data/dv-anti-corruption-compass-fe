@@ -10,7 +10,7 @@ import { transformDataForGraph } from '@undp/data-viz/transformData';
 
 import { DROPDOWN_CLASSNAMES, YEARS } from '@/Constants';
 import { GraphCard } from '@/Components/GraphCard';
-import { PillarsMetaDataType } from '@/Types';
+import { IndicatorDataType, PillarsMetaDataType } from '@/Types';
 import { ParagraphText } from '@/Components/Typography';
 import { customDropdownComponents } from '@/Utils/DropdownComponents';
 
@@ -18,15 +18,11 @@ interface Props {
   country: string;
   mainIndicator: string;
   subPillars: string[];
-  pillarsMetaData: PillarsMetaDataType[];
+  pillarsMetaData: PillarsMetaDataType;
+  data: IndicatorDataType[];
 }
 
-function DefaultViz({
-  country,
-  subPillars,
-  mainIndicator,
-  pillarsMetaData,
-}: Props) {
+function DefaultViz({ country, subPillars, pillarsMetaData, data }: Props) {
   const [selectedPillar, setSelectedPillar] = useState(subPillars[0]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [pillarData, setPillarData] = useState<any>([]);
@@ -89,21 +85,36 @@ function DefaultViz({
                 data={[
                   {
                     label: 'Value',
-                    size: 86,
+                    size:
+                      data.find(
+                        d =>
+                          d.Indicator === selectedPillar &&
+                          d.Year === selectedYear,
+                      )?.Indicator_value_numeric || 0,
                   },
                   {
                     label: 'Rest',
-                    size: 14,
+                    size:
+                      1 -
+                      (data.find(
+                        d =>
+                          d.Indicator === selectedPillar &&
+                          d.Year === selectedYear,
+                      )?.Indicator_value_numeric || 0),
                   },
                 ]}
                 strokeWidth={14}
                 showColorScale={false}
-                colors={[
-                  pillarsMetaData.find(d => d.id === mainIndicator)?.color ||
-                    '#fff',
-                  '#fff',
-                ]}
-                mainText='86%'
+                colors={[pillarsMetaData.color || '#fff', '#fff']}
+                mainText={
+                  data
+                    .find(
+                      d =>
+                        d.Indicator === selectedPillar &&
+                        d.Year === selectedYear,
+                    )
+                    ?.Indicator_value_numeric?.toFixed(2) ?? 'NA'
+                }
               />
             </div>
           </GraphCard>
@@ -122,11 +133,7 @@ function DefaultViz({
                     },
                   ])}
                   labels={[country, 'World']}
-                  lineColors={[
-                    pillarsMetaData.find(d => d.id === mainIndicator)?.color ||
-                      '#fff',
-                    '#fff',
-                  ]}
+                  lineColors={[pillarsMetaData.color || '#fff', '#fff']}
                   showColorLegendAtTop={false}
                   showDots={false}
                   animate

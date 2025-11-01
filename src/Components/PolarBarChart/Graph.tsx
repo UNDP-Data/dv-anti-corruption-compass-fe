@@ -3,10 +3,10 @@ import { arc } from 'd3-shape';
 
 import { ParagraphText } from '../Typography';
 
-import { DataType, PillarsMetaDataType } from '@/Types';
+import { IndicatorDataType, PillarsMetaDataType } from '@/Types';
 
 interface Props {
-  data: DataType[];
+  data: IndicatorDataType[];
   radius: number;
   innerRadiusRatio: number;
   marginSide: number;
@@ -22,11 +22,17 @@ export const Graph = ({
   marginTop,
   pillarsMetaData,
 }: Props) => {
+  const subPillarMetaData = pillarsMetaData
+    .map(d => d.subPillars.map(el => ({ ...el, mainIndicator: d.id })))
+    .flat();
   const x = scaleBand()
-    .domain(data.map(d => d.subPillar))
+    .domain([...new Set(data.map(d => d.Indicator))])
     .range([-Math.PI / 2, Math.PI / 2]);
   const r = scaleLinear()
     .domain([0, 1])
+    .range([0, radius * (1 - innerRadiusRatio)]);
+  const r2 = scaleLinear()
+    .domain([0, 100])
     .range([0, radius * (1 - innerRadiusRatio)]);
   return (
     <>
@@ -76,7 +82,7 @@ export const Graph = ({
             fill='#fff'
           />
           {data.map((d, i) => {
-            const startAngle = x(d.subPillar)!;
+            const startAngle = x(d.Indicator)!;
             const endAngle = startAngle + (x.bandwidth() as number);
             const angle = (startAngle + endAngle) / 2;
 
@@ -87,8 +93,8 @@ export const Graph = ({
                     arc()({
                       innerRadius: radius * innerRadiusRatio,
                       outerRadius: radius,
-                      startAngle: x(d.subPillar) as number,
-                      endAngle: x(d.subPillar)! + (x.bandwidth() as number),
+                      startAngle: x(d.Indicator) as number,
+                      endAngle: x(d.Indicator)! + (x.bandwidth() as number),
                     }) as string
                   }
                   fill='#F3F4F6'
@@ -126,10 +132,13 @@ export const Graph = ({
                       alignment='center'
                       marginBottom='none'
                     >
-                      {d.subPillar}
+                      {
+                        subPillarMetaData.find(el => el.id === d.Indicator)
+                          ?.value
+                      }
                     </ParagraphText>
                     <ParagraphText size='xs' weight='light' leading='loose'>
-                      {d.x}
+                      {d.Indicator_value || 'NA'}
                     </ParagraphText>
                   </div>
                 </foreignObject>
@@ -137,12 +146,17 @@ export const Graph = ({
                   d={
                     arc()({
                       innerRadius: radius * innerRadiusRatio,
-                      outerRadius: radius * innerRadiusRatio + r(d.value),
-                      startAngle: x(d.subPillar) as number,
-                      endAngle: x(d.subPillar)! + (x.bandwidth() as number),
+                      outerRadius:
+                        radius * innerRadiusRatio +
+                        (subPillarMetaData.find(el => el.id === d.Indicator)
+                          ?.mainIndicator === 'enterpriseSurvey'
+                          ? r2(d.Indicator_value_numeric)
+                          : r(d.Indicator_value_numeric)),
+                      startAngle: x(d.Indicator) as number,
+                      endAngle: x(d.Indicator)! + (x.bandwidth() as number),
                     }) as string
                   }
-                  fill={`url(#${d.mainIndicator}-radial-gradient)`}
+                  fill={`url(#${subPillarMetaData.find(el => el.id === d.Indicator)?.mainIndicator}-radial-gradient)`}
                 />
               </g>
             );

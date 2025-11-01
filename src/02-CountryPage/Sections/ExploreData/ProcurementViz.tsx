@@ -9,14 +9,14 @@ import { transformDataForGraph } from '@undp/data-viz/transformData';
 import { GroupedBarGraph } from '@undp/data-viz/BarGraph';
 import { ChoroplethMap } from '@undp/data-viz/ChoroplethMap';
 
-import {
-  CONTRACT_VALUE,
-  DROPDOWN_CLASSNAMES,
-  MARKET,
-  YEARS,
-} from '@/Constants';
+import { CONTRACT_VALUE, DROPDOWN_CLASSNAMES, MARKET } from '@/Constants';
 import { GraphCard } from '@/Components/GraphCard';
-import { PillarDataType, PillarsMetaDataType, RegionDataType } from '@/Types';
+import {
+  IndicatorDataType,
+  PillarDataType,
+  PillarsMetaDataType,
+  RegionDataType,
+} from '@/Types';
 import { NoData } from '@/Components/NoData';
 import { ColorLegend } from '@/Components/ColorLegend';
 import { ParagraphText } from '@/Components/Typography';
@@ -27,20 +27,23 @@ import { BarChartTable } from '@/Components/BarChartTable';
 interface Props {
   country: string;
   isoCode: string;
-  pillarsMetaData: PillarsMetaDataType[];
+  pillarsMetaData: PillarsMetaDataType;
+  data: IndicatorDataType[];
 }
 
-function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
-  const [selectedPillar, setSelectedPillar] = useState<string>(
-    pillarsMetaData.find(d => d.value === 'Public Procurement')?.subPillars[0]
-      .value || '',
-  );
+function ProcurementViz({ country, isoCode, pillarsMetaData, data }: Props) {
+  const [selectedPillar, setSelectedPillar] = useState({
+    value: pillarsMetaData.subPillars[0].id,
+    label: pillarsMetaData.subPillars[0].value,
+  });
   const [pillarData, setPillarData] = useState<PillarDataType[]>([]);
   const [regionData, setRegionData] = useState<RegionDataType[]>([]);
   const [marketData, setMarketData] = useState<
     { market: string; value: number }[]
   >([]);
-  const [selectedYear, setSelectedYear] = useState<number>(2022);
+  const [selectedYear, setSelectedYear] = useState<number>(
+    Math.max(...data.map(d => d.Year)),
+  );
   const [selectedMarket, setSelectedMarket] = useState<string | undefined>(
     undefined,
   );
@@ -68,13 +71,13 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
           <DropdownSelect
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onChange={(d: any) => {
-              setSelectedPillar(d.value);
+              setSelectedPillar(d);
             }}
-            value={{ value: selectedPillar, label: selectedPillar }}
-            options={(
-              pillarsMetaData.find(d => d.value === 'Public Procurement')
-                ?.subPillars || []
-            ).map(d => ({ value: d.value, label: d.value }))}
+            value={selectedPillar}
+            options={pillarsMetaData.subPillars.map(d => ({
+              value: d.id,
+              label: d.value,
+            }))}
             size='base'
             variant='normal'
             className='poppins-regular border-0! rounded-[8px]!'
@@ -90,7 +93,10 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
               setSelectedYear(d.value);
             }}
             value={{ value: selectedYear, label: selectedYear }}
-            options={YEARS.map(d => ({ value: d, label: d }))}
+            options={[...new Set(data.map(d => d.Year))].map(d => ({
+              value: d,
+              label: d,
+            }))}
             size='base'
             variant='normal'
             className='poppins-regular border-0! rounded-[8px]!'
@@ -144,13 +150,21 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
       <Spacer size='2xl' />
       <div className='flex flex-col gap-6'>
         <div className='flex gap-6 flex-wrap'>
-          <GraphCard title='Overview' chips={[selectedPillar, selectedYear]}>
-            {pillarData ? (
+          <GraphCard
+            title='Overview'
+            chips={[selectedPillar.label, selectedYear]}
+          >
+            {data.filter(
+              d =>
+                d.Year === selectedYear && d.Indicator === selectedPillar.value,
+            ).length !== 0 ? (
               <>
                 <ParagraphText size='sm'>
-                  Contract Modification ipsum dolor sit amet consectetur. Nisi
-                  potenti id tellus bibendum sed acc semper malesuada. Nulla
-                  aenean.
+                  {
+                    pillarsMetaData.subPillars.find(
+                      d => d.id === selectedPillar.value,
+                    )?.description
+                  }
                 </ParagraphText>
                 <Spacer size='3xl' />
                 <div className='flex grow relative'>
@@ -158,22 +172,36 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                     data={[
                       {
                         label: 'Value',
-                        size: 86,
+                        size:
+                          data.find(
+                            d =>
+                              d.Indicator === selectedPillar.value &&
+                              d.Year === selectedYear,
+                          )?.Indicator_value_numeric || 0,
                       },
                       {
                         label: 'Rest',
-                        size: 14,
+                        size:
+                          1 -
+                          (data.find(
+                            d =>
+                              d.Indicator === selectedPillar.value &&
+                              d.Year === selectedYear,
+                          )?.Indicator_value_numeric || 0),
                       },
                     ]}
                     strokeWidth={14}
                     showColorScale={false}
-                    colors={[
-                      pillarsMetaData.find(
-                        d => d.value === 'Public Procurement',
-                      )?.color || '#fff',
-                      '#fff',
-                    ]}
-                    mainText='86%'
+                    colors={[pillarsMetaData.color || '#fff', '#fff']}
+                    mainText={
+                      data
+                        .find(
+                          d =>
+                            d.Indicator === selectedPillar.value &&
+                            d.Year === selectedYear,
+                        )
+                        ?.Indicator_value_numeric?.toFixed(2) ?? 'NA'
+                    }
                   />
                 </div>
               </>
@@ -183,7 +211,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
           </GraphCard>
           <GraphCard
             title='Market Breakdown'
-            chips={[selectedPillar, selectedYear]}
+            chips={[selectedPillar.label, selectedYear]}
           >
             {marketData.length > 0 ? (
               <div className='flex flex-col gap-4'>
@@ -197,10 +225,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                       className='rounded-full h-2 mt-[-8px]'
                       style={{
                         width: `${d.value * 100}%`,
-                        backgroundColor:
-                          pillarsMetaData.find(
-                            d => d.value === 'Public Procurement',
-                          )?.color || '#fff',
+                        backgroundColor: pillarsMetaData.color || '#fff',
                       }}
                     />
                   </div>
@@ -215,80 +240,59 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
         <div className='flex gap-6 flex-wrap'>
           <GraphCard
             title='Regional Breakdown'
-            chips={[selectedPillar, selectedYear]}
+            chips={[selectedPillar.label, selectedYear]}
             className='basis-full'
           >
             <div className='flex dark'>
-              {pillarData ? (
-                regionData.length > 0 ? (
-                  <div className='flex gap-4 flex-wrap items-stretch'>
-                    <div className='basis-[calc(50%-0.5rem)] flex flex-col min-w-[320px]'>
-                      <ColorLegend
-                        size='sm'
-                        showTitle={false}
-                        colors={
-                          pillarsMetaData.find(
-                            d => d.value === 'Public Procurement',
-                          )?.colors
-                        }
-                      />
+              {regionData.length > 0 ? (
+                <div className='flex gap-4 flex-wrap items-stretch'>
+                  <div className='basis-[calc(50%-0.5rem)] flex flex-col min-w-[320px]'>
+                    <ColorLegend
+                      size='sm'
+                      showTitle={false}
+                      colors={pillarsMetaData.colors}
+                    />
 
-                      <ChoroplethMap
-                        mapData={`https://raw.githubusercontent.com/UNDP-Data/dv-country-geojson/refs/heads/main/ADM1/${isoCode}.json`}
-                        data={transformDataForGraph(
-                          regionData,
-                          'choroplethMap',
-                          [
-                            { chartConfigId: 'x', columnId: 'level' },
-                            { chartConfigId: 'id', columnId: 'region' },
-                          ],
-                        )}
-                        scaleType='categorical'
-                        zoomInteraction='noZoom'
-                        colorDomain={['Low', 'Medium', 'High']}
-                        colors={
-                          pillarsMetaData.find(
-                            d => d.value === 'Public Procurement',
-                          )?.colors
-                        }
-                        showColorScale={false}
-                        footNote={
-                          <div>
-                            <ParagraphText
-                              size='xs'
-                              className='opacity-50 poppins-light'
-                            >
-                              The designations employed and the presentation of
-                              material on this map do not imply the expression
-                              of any opinion whatsoever on the part of the
-                              Secretariat of the United Nations or UNDP
-                              concerning the legal status of any country,
-                              territory, city or area or its authorities, or
-                              concerning the delimitation of its frontiers or
-                              boundaries.
-                            </ParagraphText>
-                          </div>
-                        }
-                      />
-                    </div>
-                    <div className='basis-[calc(50%-0.5rem)] flex flex-col min-w-[320px]'>
-                      <BarChartTable
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        data={regionData.map((d: any) => ({
-                          region: d.region,
-                          value: d.value,
-                        }))}
-                        color={
-                          pillarsMetaData.find(
-                            d => d.value === 'Public Procurement',
-                          )?.color || '#fff'
-                        }
-                      />
-                    </div>
+                    <ChoroplethMap
+                      mapData={`https://raw.githubusercontent.com/UNDP-Data/dv-country-geojson/refs/heads/main/ADM1/${isoCode}.json`}
+                      data={transformDataForGraph(regionData, 'choroplethMap', [
+                        { chartConfigId: 'x', columnId: 'level' },
+                        { chartConfigId: 'id', columnId: 'region' },
+                      ])}
+                      scaleType='categorical'
+                      zoomInteraction='noZoom'
+                      colorDomain={['LOW', 'MEDIUM', 'HIGH']}
+                      colors={pillarsMetaData.colors}
+                      showColorScale={false}
+                      footNote={
+                        <div>
+                          <ParagraphText
+                            size='xs'
+                            className='opacity-50 poppins-light'
+                          >
+                            The designations employed and the presentation of
+                            material on this map do not imply the expression of
+                            any opinion whatsoever on the part of the
+                            Secretariat of the United Nations or UNDP concerning
+                            the legal status of any country, territory, city or
+                            area or its authorities, or concerning the
+                            delimitation of its frontiers or boundaries.
+                          </ParagraphText>
+                        </div>
+                      }
+                    />
                   </div>
-                ) : (
-                  <Spinner />
-                )
+                  <div className='basis-[calc(50%-0.5rem)] flex flex-col min-w-[320px]'>
+                    <BarChartTable
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      data={regionData.map((d: any) => ({
+                        region: d.region,
+                        value: d.value,
+                      }))}
+                      color={pillarsMetaData.color || '#fff'}
+                    />
+                  </div>
+                </div>
               ) : (
                 <NoData />
               )}
@@ -298,7 +302,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
         <div className='flex gap-6 flex-wrap'>
           <GraphCard
             title='Comparison to global average'
-            chips={[selectedPillar]}
+            chips={[selectedPillar.label]}
           >
             <div className='flex h-[360px] dark'>
               {pillarData ? (
@@ -312,12 +316,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                       },
                     ])}
                     labels={[country, 'World']}
-                    lineColors={[
-                      pillarsMetaData.find(
-                        d => d.value === 'Public Procurement',
-                      )?.color || '#fff',
-                      '#fff',
-                    ]}
+                    lineColors={[pillarsMetaData.color || '#fff', '#fff']}
                     showColorLegendAtTop={false}
                     showDots={false}
                     animate
@@ -338,7 +337,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
               )}
             </div>
           </GraphCard>
-          <GraphCard title='Data availability' chips={[selectedPillar]}>
+          <GraphCard title='Data availability' chips={[selectedPillar.label]}>
             <div className='flex h-[360px] dark'>
               {pillarData ? (
                 pillarData.length > 0 ? (
@@ -354,12 +353,7 @@ function ProcurementViz({ country, isoCode, pillarsMetaData }: Props) {
                       },
                     ])}
                     colorDomain={[country, 'World']}
-                    colors={[
-                      pillarsMetaData.find(
-                        d => d.value === 'Public Procurement',
-                      )?.color || '#fff',
-                      '#fff',
-                    ]}
+                    colors={[pillarsMetaData.color || '#fff', '#fff']}
                     classNames={{
                       xAxis: {
                         labels: 'poppins-regular',

@@ -9,26 +9,36 @@
     "subPillars": [
       {
         "value": "Contract Modifications",
+        "id": "corr_contractmod",
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers.",
         "color": "#4CA462",
         "colors": ["#8BE49D", "#4CA462", "#03682B"]
       },
       {
         "value": "No Call for tenders Published",
+        "id": "corr_nocft",
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers.",
         "color": "#DFB707",
         "colors": ["#FFF3BD", "#EEDB88", "#DFB707"]
       },
       {
         "value": "Tax Haven",
+        "id": "corr_tax_haven",
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers.",
         "color": "#A21942",
         "colors": ["#F297B2", "#E9346A", "#A21942"]
       },
       {
         "value": "Non-open procedure",
+        "id": "corr_nonopenproc",
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers.",
         "color": "#FD6925",
         "colors": ["#FFBFA2", "#FF9B6D", "#FD6925"]
       },
       {
         "value": "Single bidding",
+        "id": "corr_singleb",
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers.",
         "color": "#666666",
         "colors": ["#E0DEDF", "#B2AFB0", "#666666"]
       }
@@ -43,19 +53,81 @@
     "colors": ["#E6CCC0", "#F0B292", "#F49764"],
     "subPillars": [
       {
-        "value": "Incidence",
+        "value": "Percent of firms expected to give gifts in meetings with tax officials",
+        "id": "CORR1",
         "color": "#F49764",
-        "colors": ["#E6CCC0", "#F0B292", "#F49764"]
+        "colors": ["#E6CCC0", "#F0B292", "#F49764"],
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers."
       },
       {
-        "value": "Practices",
+        "value": "Percent of firms expected to give gifts to secure government contract",
+        "id": "CORR2",
         "color": "#FFDD00",
-        "colors": ["#FEF8D0", "#FFEF84", "#FFDD00"]
+        "colors": ["#FEF8D0", "#FFEF84", "#FFDD00"],
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers."
       },
       {
-        "value": "Counter Measures",
+        "value": "Percent of firms expected to give gifts to public officials to get things done",
+        "id": "CORR4",
         "color": "#D001B4",
-        "colors": ["#FFD5E6", "#F884E9", "#D001B4"]
+        "colors": ["#FFD5E6", "#F884E9", "#D001B4"],
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers."
+      },
+      {
+        "value": "Percent of firms expected to give gifts to get an electrical connection",
+        "id": "CORR6",
+        "color": "#D001B4",
+        "colors": ["#FFD5E6", "#F884E9", "#D001B4"],
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers."
+      },
+      {
+        "value": "Percent of firms expected to give gifts to get a water connection",
+        "id": "CORR7",
+        "color": "#D001B4",
+        "colors": ["#FFD5E6", "#F884E9", "#D001B4"],
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers."
+      },
+      {
+        "value": "Percent of firms expected to give gifts to get a construction permit",
+        "id": "CORR8",
+        "color": "#D001B4",
+        "colors": ["#FFD5E6", "#F884E9", "#D001B4"],
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers."
+      },
+      {
+        "value": "Percent of firms expected to give gifts to get an import license",
+        "id": "CORR9",
+        "color": "#D001B4",
+        "colors": ["#FFD5E6", "#F884E9", "#D001B4"],
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers."
+      },
+      {
+        "value": "Percent of firms expected to give gifts to get an operating license",
+        "id": "CORR10",
+        "color": "#D001B4",
+        "colors": ["#FFD5E6", "#F884E9", "#D001B4"],
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers."
+      },
+      {
+        "value": "Percent of firms identifying corruption as a major or very severe constraint",
+        "id": "CORR11",
+        "color": "#D001B4",
+        "colors": ["#FFD5E6", "#F884E9", "#D001B4"],
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers."
+      },
+      {
+        "value": "Average bribery depth (% of public transactions where a gift or informal payment was requested)",
+        "id": "GRAFT2",
+        "color": "#D001B4",
+        "colors": ["#FFD5E6", "#F884E9", "#D001B4"],
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers."
+      },
+      {
+        "value": "Bribery incidence (percent of firms experiencing at least one bribe payment request)",
+        "id": "GRAFT3",
+        "color": "#D001B4",
+        "colors": ["#FFD5E6", "#F884E9", "#D001B4"],
+        "description": "Uncover the hidden patterns in public procurement. Our primary indicators reveal critical insights into procurement transparency. Explore contract modifications, instances where no call for tenders was published, non-open procedures, single bidding cases, tax haven connections, and beneficiary ownership transparency. These experience-based indicators provide actionable intelligence for reformers."
       }
     ]
   }

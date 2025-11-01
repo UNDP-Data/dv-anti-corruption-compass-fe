@@ -6,7 +6,7 @@ import {
 } from '@undp/design-system-react/Tabs';
 import { useState } from 'react';
 
-import DataTable from '../../Components/DataTable';
+import DataTableWithFilters from '../../Components/DataTable';
 
 import {
   CountryTaxonomyDataType,
@@ -58,7 +58,11 @@ const CountryLevelInsight = (props: Props) => {
             />
           </TabsContent>
           <TabsContent value='tab 2'>
-            <DataTable data={data} pillarsMetaData={pillarsMetaData} />
+            <DataTableWithFilters
+              data={data}
+              pillarsMetaData={pillarsMetaData}
+              countryTaxonomy={countryTaxonomy}
+            />
           </TabsContent>
         </Tabs>
       </div>

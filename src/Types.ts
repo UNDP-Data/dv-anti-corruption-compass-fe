@@ -1,7 +1,9 @@
+export type STATUS_DATA_TYPE = 'LOW' | 'MEDIUM' | 'HIGH' | 'NOT AVAILABLE';
+
 export interface CountryDataType {
   mainIndicator: string;
   subIndicator: string;
-  level: 'Low' | 'Medium' | 'High';
+  level: STATUS_DATA_TYPE;
   value: number;
   year: number;
 }
@@ -24,20 +26,26 @@ export interface CountryTaxonomyDataType {
   UNDP_Region: string;
 }
 
+export interface IndicatorDataType {
+  ISO3_Code: string;
+  Year: number;
+  Indicator: string;
+  Indicator_value: STATUS_DATA_TYPE;
+  Indicator_value_numeric: number;
+  Data_Availability: number;
+}
+
 export interface DataType {
   id: string;
-  country: string;
-  subPillar: string;
-  mainIndicator: string;
-  value: number;
-  dataAvailability: number;
-  x: 'Low' | 'Medium' | 'High';
+  data: IndicatorDataType[];
 }
 
 export interface SubPillarsMetaDataType {
   value: string;
+  id: string;
   color: string;
   colors: string[];
+  description: string;
 }
 
 export interface PillarsMetaDataType {
@@ -54,7 +62,7 @@ export interface RegionDataType {
   region: string;
   value: number;
   dataAvailability: string;
-  level: 'Low' | 'Medium' | 'High';
+  level: STATUS_DATA_TYPE;
 }
 
 export interface PillarDataType {
@@ -63,5 +71,5 @@ export interface PillarDataType {
   subPillar: string;
   value: number;
   dataAvailability: string;
-  level: 'Low' | 'Medium' | 'High';
+  level: STATUS_DATA_TYPE;
 }

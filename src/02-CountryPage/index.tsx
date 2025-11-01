@@ -1,18 +1,33 @@
 import { Spacer } from '@undp/design-system-react/Spacer';
-import { useEffect, useState } from 'react';
+import { fetchAndParseJSON } from '@undp/data-viz/fetchAndParseData';
+import { useQuery } from '@tanstack/react-query';
+import { Spinner } from '@undp/design-system-react/Spinner';
 
 import CountryProfile from './Sections/CountryProfile';
 import ExploreData from './Sections/ExploreData';
 import Overview from './Sections/Overview';
 
-import {
-  CountryTaxonomyDataType,
-  DataType,
-  PillarsMetaDataType,
-} from '@/Types';
+import { CountryTaxonomyDataType, PillarsMetaDataType } from '@/Types';
 import { CountrySelect } from '@/Components/CountrySelect';
-import { getFullData } from '@/Utils/getData';
+import { ErrorState } from '@/Components/ErrorState';
 
+async function fetchData(pillarId: string) {
+  return fetchAndParseJSON(`/data/${pillarId}.json`);
+}
+function useAllPillarsData(pillarsId: string[]) {
+  return useQuery({
+    queryKey: ['all-pillars'],
+    queryFn: async () => {
+      const results = await Promise.all(
+        pillarsId.map(async (d: string) => ({
+          id: d,
+          data: await fetchData(d),
+        })),
+      );
+      return results;
+    },
+  });
+}
 interface Props {
   isoCode: string;
   pillarsMetaData: PillarsMetaDataType[];
@@ -20,15 +35,12 @@ interface Props {
 }
 
 function CountryPageEl({ isoCode, pillarsMetaData, countryTaxonomy }: Props) {
-  const countryData = countryTaxonomy.find(d => d['Alpha-3 code'] === isoCode);
-  const [data, setData] = useState<DataType[]>([]);
+  const countryInfo = countryTaxonomy.find(d => d['Alpha-3 code'] === isoCode);
+  const { data, isLoading, isError } = useAllPillarsData(
+    pillarsMetaData.map(d => d.id),
+  );
 
-  useEffect(() => {
-    getFullData(pillarsMetaData).then(d => {
-      setData(d);
-    });
-  }, [pillarsMetaData]);
-  if (!countryData) {
+  if (!countryInfo) {
     return (
       <div className='px-4 container mx-auto'>
         <CountrySelect
@@ -39,25 +51,41 @@ function CountryPageEl({ isoCode, pillarsMetaData, countryTaxonomy }: Props) {
       </div>
     );
   }
-  return (
-    <div className='w-full'>
-      <Overview
-        pillarsMetaData={pillarsMetaData}
-        data={data.filter(d => d.id === isoCode)}
-        countryTaxonomy={countryData}
-      />
-      <ExploreData
-        countryData={countryData}
-        pillarsMetaData={pillarsMetaData}
-      />
-      <div className='container mx-auto'>
-        <Spacer size='6xl' />
-        <CountryProfile />
+  if (isLoading) return <Spinner size='lg' className='my-20 m-auto' />;
+  if (isError)
+    return (
+      <div className='px-4 container mx-auto'>
+        <ErrorState />
       </div>
-      <Spacer size='7xl' />
-      <Spacer size='7xl' />
-    </div>
-  );
+    );
+  if (data)
+    return (
+      <div className='w-full'>
+        <Overview
+          pillarsMetaData={pillarsMetaData}
+          data={data}
+          countryInfo={countryInfo}
+        />
+        <ExploreData
+          countryInfo={countryInfo}
+          pillarsMetaData={pillarsMetaData}
+          data={data.map(d => ({
+            ...d,
+            data: d.data.filter(
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (el: any) => el.ISO3_Code === countryInfo['Alpha-3 code'],
+            ),
+          }))}
+        />
+        <div className='container mx-auto'>
+          <Spacer size='6xl' />
+          <CountryProfile />
+        </div>
+        <Spacer size='7xl' />
+        <Spacer size='7xl' />
+      </div>
+    );
+  return;
 }
 
 export default CountryPageEl;

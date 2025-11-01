@@ -1,57 +1,51 @@
 import { Spacer } from '@undp/design-system-react/Spacer';
 import * as THREE from 'three';
 import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
-import { useEffect, useState } from 'react';
 import { ChoroplethMap } from '@undp/data-viz/ChoroplethMap';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
 import { ArrowDownToLine } from 'lucide-react';
+import { checkIfNullOrUndefined } from '@undp/data-viz/utils';
 
 import { MethodologySection } from './Components/MethodologySection';
 
 import { GraphCard } from '@/Components/GraphCard';
-import { DataType, SubPillarsMetaDataType } from '@/Types';
+import {
+  CountryTaxonomyDataType,
+  IndicatorDataType,
+  SubPillarsMetaDataType,
+} from '@/Types';
 import { NoData } from '@/Components/NoData';
 import { ParagraphText } from '@/Components/Typography';
-import DataTable from '@/Components/DataTable';
 import { ProjectsSection } from '@/Components/ProjectsSection';
-import { getPillarData } from '@/Utils/getData';
 import { ColorLegend } from '@/Components/ColorLegend';
 import { Button } from '@/Components/Button';
 import { BarChartTable } from '@/Components/BarChartTable';
+import DataTableSimple from '@/Components/DataTable/SecondaryTable';
 
 interface Props {
-  pillarMetaData: SubPillarsMetaDataType;
+  subPillarMetaData: SubPillarsMetaDataType;
   year: number;
+  countryTaxonomy: CountryTaxonomyDataType[];
+  data: IndicatorDataType[];
 }
-
-function ProcurementViz({ year, pillarMetaData }: Props) {
-  const [data, setData] = useState<DataType[]>([]);
-
-  useEffect(() => {
-    getPillarData(pillarMetaData).then(d => {
-      setData(d);
-    });
-  }, [pillarMetaData]);
+function ProcurementViz({
+  year,
+  subPillarMetaData,
+  countryTaxonomy,
+  data,
+}: Props) {
+  const filteredData = data.filter(
+    d => d.Indicator === subPillarMetaData.id && d.Year === year,
+  );
   return (
     <>
       <div className='flex flex-col gap-6'>
         <div className='flex gap-6 flex-wrap'>
-          <GraphCard title='Overview' chips={[pillarMetaData.value, year]}>
-            {data ? (
+          <GraphCard title='Overview' chips={[subPillarMetaData.value, year]}>
+            {filteredData.length > 0 ? (
               <>
                 <ParagraphText size='sm'>
-                  Contact Modification dolor sit amet consectetur. Sit luctus
-                  feugiat faucibus dui feugiat vitae sit enim venenatis. Ut
-                  posuere consectetur id nec. Scelerisque tellus mi ac id non
-                  donec tristique purus dictum. Vitae sit aenean nisi risus ut
-                  id massa. Neque egestas elementum fringilla fermentum in.
-                  <br />
-                  <br />
-                  Contact Modification dolor sit amet consectetur. Sit luctus
-                  feugiat faucibus dui feugiat vitae sit enim venenatis. Ut
-                  posuere consectetur id nec. Scelerisque tellus mi ac id non
-                  donec tristique purus dictum. Vitae sit aenean nisi risus ut
-                  id massa. Neque egestas elementum fringilla fermentum in.
+                  {subPillarMetaData.description}
                 </ParagraphText>
                 <Spacer size='6xl' />
                 <ParagraphText
@@ -59,11 +53,17 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
                   leading='none'
                   className='text-[56px]'
                 >
-                  {[...new Set(data.map(d => d.country))].length}
+                  {
+                    [
+                      ...new Set(
+                        filteredData.map((d: IndicatorDataType) => d.ISO3_Code),
+                      ),
+                    ].length
+                  }
                 </ParagraphText>
                 <Spacer size='xl' />
                 <ParagraphText leading='none'>
-                  countries with {pillarMetaData.value.toLowerCase()} data
+                  countries with {subPillarMetaData.value.toLowerCase()} data
                 </ParagraphText>
                 <Spacer size='6xl' />
                 <ParagraphText
@@ -71,7 +71,16 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
                   leading='none'
                   className='text-[56px]'
                 >
-                  {Math.min(...new Set(data.map(d => d.value))).toFixed(2)}
+                  {Math.min(
+                    ...new Set(
+                      filteredData
+                        .filter(
+                          d =>
+                            !checkIfNullOrUndefined(d.Indicator_value_numeric),
+                        )
+                        .map(d => d.Indicator_value_numeric),
+                    ),
+                  ).toFixed(2)}
                 </ParagraphText>
                 <Spacer size='xl' />
                 <ParagraphText leading='none'>minimum value</ParagraphText>
@@ -81,7 +90,16 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
                   leading='none'
                   className='text-[56px]'
                 >
-                  {Math.max(...new Set(data.map(d => d.value))).toFixed(2)}
+                  {Math.max(
+                    ...new Set(
+                      filteredData
+                        .filter(
+                          d =>
+                            !checkIfNullOrUndefined(d.Indicator_value_numeric),
+                        )
+                        .map(d => d.Indicator_value_numeric),
+                    ),
+                  ).toFixed(2)}
                 </ParagraphText>
                 <Spacer size='xl' />
                 <ParagraphText leading='none'>maximum value</ParagraphText>
@@ -93,28 +111,28 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
           </GraphCard>
           <GraphCard
             title='Global Overview'
-            chips={[pillarMetaData.value, year]}
+            chips={[subPillarMetaData.value, year]}
           >
-            {data ? (
+            {filteredData.length > 0 ? (
               <>
                 <div className='flex flex-col gap-4 grow radialGradientMask'>
                   <ThreeDGlobe
                     showColorScale={false}
                     polygonAltitude={0.005}
                     highlightedAltitude={0.01}
-                    colors={pillarMetaData.colors}
-                    colorDomain={['Low', 'Medium', 'High']}
+                    colors={subPillarMetaData.colors}
+                    colorDomain={['LOW', 'MEDIUM', 'HIGH']}
                     scale={1.65}
                     footNote=''
                     enableZoom={false}
-                    atmosphereColor={pillarMetaData.color}
+                    atmosphereColor={subPillarMetaData.color}
                     globeMaterial={
                       new THREE.MeshBasicMaterial({
                         color: 0xfafafa,
                       })
                     }
                     fogSettings={{
-                      color: pillarMetaData.color,
+                      color: subPillarMetaData.color,
                       near: 300,
                       far: 450,
                     }}
@@ -122,7 +140,13 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
                     globeCurvatureResolution={2}
                     resetSelectionOnDoubleClick={false}
                     autoRotate={1}
-                    data={data}
+                    data={transformDataForGraph(filteredData, 'threeDGlobe', [
+                      { chartConfigId: 'id', columnId: 'ISO3_Code' },
+                      {
+                        chartConfigId: 'x',
+                        columnId: 'Indicator_value_numeric',
+                      },
+                    ])}
                   />
                 </div>
                 <ParagraphText size='xs' className='opacity-50 poppins-light '>
@@ -142,16 +166,18 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
         <div className='flex gap-6 flex-wrap'>
           <GraphCard
             title='Country-Level Overview'
-            chips={[pillarMetaData.value, year]}
+            chips={[subPillarMetaData.value, year]}
             className='basis-full'
           >
             <Spacer size='xl' />
             <div className='flex dark'>
-              {data.length > 0 ? (
-                <DataTable
-                  data={data}
-                  showFiltersAndPillars={false}
-                  colors={pillarMetaData.colors}
+              {filteredData.length > 0 ? (
+                <DataTableSimple
+                  data={filteredData.filter(
+                    d => !checkIfNullOrUndefined(d.Indicator_value_numeric),
+                  )}
+                  colors={subPillarMetaData.colors}
+                  countryTaxonomy={countryTaxonomy}
                 />
               ) : (
                 <NoData />
@@ -162,7 +188,7 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
         <div className='flex gap-6 flex-wrap'>
           <GraphCard
             title='Data Availability'
-            chips={[pillarMetaData.value, year]}
+            chips={[subPillarMetaData.value, year]}
             className='basis-full'
           >
             <div className='flex dark'>
@@ -172,15 +198,19 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
                     <ColorLegend
                       size='sm'
                       showTitle={false}
-                      colors={pillarMetaData.colors}
+                      colors={subPillarMetaData.colors}
                       keyValues={['< 33', '33 - 66', '> 66']}
                     />
                     <ChoroplethMap
-                      data={transformDataForGraph(data, 'choroplethMap', [
-                        { chartConfigId: 'id', columnId: 'id' },
-                        { chartConfigId: 'x', columnId: 'dataAvailability' },
-                      ])}
-                      colors={pillarMetaData.colors}
+                      data={transformDataForGraph(
+                        filteredData,
+                        'choroplethMap',
+                        [
+                          { chartConfigId: 'id', columnId: 'ISO3_Code' },
+                          { chartConfigId: 'x', columnId: 'Data_Availability' },
+                        ],
+                      )}
+                      colors={subPillarMetaData.colors}
                       mapBorderColor='var(--color-text-black)'
                       zoomInteraction='noZoom'
                       centerPoint={[15, 15]}
@@ -207,12 +237,14 @@ function ProcurementViz({ year, pillarMetaData }: Props) {
                   </div>
                   <div className='basis-[calc(50%-0.5rem)] flex flex-col min-w-[320px]'>
                     <BarChartTable
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      data={data.map((d: any) => ({
-                        region: d.country,
-                        value: d.dataAvailability,
+                      data={filteredData.map(d => ({
+                        region:
+                          countryTaxonomy.find(
+                            el => el['Alpha-3 code'] === d.ISO3_Code,
+                          )?.['Country or Area'] || '',
+                        value: d.Data_Availability,
                       }))}
-                      color={pillarMetaData.color}
+                      color={subPillarMetaData.color}
                       maxValue={100}
                       suffix='%'
                     />

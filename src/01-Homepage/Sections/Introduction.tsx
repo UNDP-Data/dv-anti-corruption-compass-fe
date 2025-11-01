@@ -67,7 +67,7 @@ const Introduction = (props: Props) => {
               globeOffset={[0, globeYOffSet]}
               polygonAltitude={0.005}
               colors={['#A5B3C5', '#7B9EB4', '#4A7591']}
-              colorDomain={['Low', 'Medium', 'High']}
+              colorDomain={['LOW', 'MEDIUM', 'HIGH']}
               scale={0.72}
               footNote=''
               globeMaterial={

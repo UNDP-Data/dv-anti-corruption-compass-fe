@@ -1,16 +1,18 @@
 import { Link } from '@tanstack/react-router';
 import { useInView } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
-import { cn } from '@undp/design-system-react/cn';
+import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
 
 import { HeadingText, ParagraphText } from '@/Components/Typography';
 import { Button } from '@/Components/Button';
+import { DROPDOWN_CLASSNAMES } from '@/Constants';
+import { customDropdownComponents } from '@/Utils/DropdownComponents';
 
 interface Props {
   heading: string;
   description: string;
   isLastSection?: boolean;
-  buttons?: { label: string; value: string; color: string }[];
+  buttons?: { label: string; value: string }[];
   onClick: (_d: string) => void;
   onViewChange: (_d: number) => void;
   index: number;
@@ -26,7 +28,7 @@ const GlobeControls = (props: Props) => {
     onViewChange,
     index,
   } = props;
-  const [activeButton, setActiveButton] = useState(buttons[0].label);
+  const [activeButton, setActiveButton] = useState(buttons[0]);
   const ref = useRef<HTMLDivElement | null>(null);
   const isInView = useInView(ref, { once: false, amount: 0.6 });
   useEffect(() => {
@@ -46,41 +48,21 @@ const GlobeControls = (props: Props) => {
             {description}
           </ParagraphText>
         </div>
-        <div
-          className={`hidden md:flex gap-y-5 gap-x-4 flex-wrap${buttons.length > 3 ? '' : ' flex-col'}`}
-        >
-          {buttons.map((d, i) => (
-            <button
-              type='button'
-              key={i}
-              onClick={() => {
-                setActiveButton(d.label);
-                onClick(d.label);
-              }}
-              className={cn(
-                'flex pointer items-center rounded-xl py-4 px-4 gap-4 w-[calc(50%-0.5rem)] border-1 border-[#fff] cursor-pointer bg-transparent hover:bg-[#124E6F]',
-                activeButton === d.label
-                  ? 'text-[var(--gray-700)] bg-[#fff] hover:bg-[#fff]'
-                  : 'text-[#fff]',
-              )}
-            >
-              <div
-                style={{
-                  backgroundColor: activeButton !== d.label ? '#fff' : d.color,
-                }}
-                className='w-4 h-4 rounded-full'
-              />
-              <ParagraphText
-                weight='medium'
-                size='lg'
-                className={
-                  activeButton !== d.label ? '' : 'text-[var(--color-black-bg)]'
-                }
-              >
-                {d.label}
-              </ParagraphText>
-            </button>
-          ))}
+        <div className='w-full'>
+          <DropdownSelect
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onChange={(d: any) => {
+              setActiveButton(d);
+              onClick(d.value);
+            }}
+            value={activeButton}
+            options={buttons}
+            size='base'
+            variant='normal'
+            className='poppins-regular border-0! rounded-[8px]! w-full'
+            classNames={DROPDOWN_CLASSNAMES}
+            components={customDropdownComponents('light', false)}
+          />
         </div>
         <Link
           to='/main-indicators/$indicator'

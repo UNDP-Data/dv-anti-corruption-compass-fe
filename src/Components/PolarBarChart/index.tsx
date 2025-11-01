@@ -2,10 +2,10 @@ import { useEffect, useRef, useState, useEffectEvent } from 'react';
 
 import { Graph } from './Graph';
 
-import { DataType, PillarsMetaDataType } from '@/Types';
+import { IndicatorDataType, PillarsMetaDataType } from '@/Types';
 
 interface Props {
-  data: DataType[];
+  data: IndicatorDataType[];
   innerRadiusRatio?: number;
   pillarsMetaData: PillarsMetaDataType[];
 }
