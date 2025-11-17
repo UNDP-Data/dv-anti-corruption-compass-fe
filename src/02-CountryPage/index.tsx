@@ -91,7 +91,7 @@ function CountryPageEl({ isoCode, indicatorsMetaData, countriesList }: Props) {
         )}
         <div className='container mx-auto'>
           <Spacer size='6xl' />
-          <CountryProfile />
+          <CountryProfile isoCode={isoCode} />
         </div>
         <Spacer size='7xl' />
         <Spacer size='7xl' />

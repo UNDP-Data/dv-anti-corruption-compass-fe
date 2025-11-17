@@ -8,11 +8,12 @@ interface Props {
   title: string;
   imgSrc: string;
   description: string;
+  onClick?: () => void;
 }
 
-function CountryProfileCard({ description, title, imgSrc }: Props) {
+function CountryProfileCard({ description, title, imgSrc, onClick }: Props) {
   return (
-    <Card className='pr-16 pl-6 py-8 cursor-pointer'>
+    <Card className='pr-16 pl-6 py-8 cursor-pointer' onClick={onClick}>
       <img src={imgSrc} className='w-[80px] h-[80px]' alt='icons' />
       <Spacer size='2xl' />
       <HeadingText type='h3'>{title}</HeadingText>

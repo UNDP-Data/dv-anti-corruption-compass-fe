@@ -289,7 +289,7 @@ function Viz({
                   color={indicatorMetaData.mainColor}
                 />
               ) : (
-                <div className='h-full flex align-center'>
+                <div className='h-full flex items-center'>
                   <NoData />
                 </div>
               )}
@@ -371,7 +371,7 @@ function Viz({
                   }}
                 />
               ) : (
-                <div className='h-full flex align-center justify-center w-full'>
+                <div className='h-full flex items-center justify-center w-full'>
                   <NoData />
                 </div>
               )}
