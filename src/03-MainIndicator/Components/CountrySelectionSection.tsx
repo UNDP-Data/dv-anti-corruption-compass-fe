@@ -1,14 +1,14 @@
 import { Spinner } from '@undp/design-system-react/Spinner';
 
 import { CountrySelect } from '@/Components/CountrySelect';
-import { CountryTaxonomyDataType } from '@/Types';
+import { CountriesDataType } from '@/Types';
 
 export const CountrySelectionSection = ({
-  countryTaxonomy,
+  countriesList,
   indicator,
   loading = false,
 }: {
-  countryTaxonomy: CountryTaxonomyDataType[];
+  countriesList: CountriesDataType[];
   indicator: string;
   loading?: boolean;
 }) => {
@@ -20,7 +20,7 @@ export const CountrySelectionSection = ({
         <Spinner />
       ) : (
         <CountrySelect
-          countryTaxonomy={countryTaxonomy}
+          countriesList={countriesList}
           heading={`Uncover detailed ${indicator} data for your country`}
           description='Choose a country to reveal its complete anti-corruption profile — from key indicators to institutional strategies'
         />

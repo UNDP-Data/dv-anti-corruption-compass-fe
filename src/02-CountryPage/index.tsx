@@ -1,82 +1,94 @@
 import { Spacer } from '@undp/design-system-react/Spacer';
-import { fetchAndParseJSON } from '@undp/data-viz/fetchAndParseData';
-import { useQuery } from '@tanstack/react-query';
-import { Spinner } from '@undp/design-system-react/Spinner';
+import { SegmentedControl } from '@undp/design-system-react';
+import { useState } from 'react';
 
 import CountryProfile from './Sections/CountryProfile';
-import ExploreData from './Sections/ExploreData';
-import Overview from './Sections/Overview';
+import ProcurementViz from './Sections/ProcurementViz';
+import DefaultViz from './Sections/DefaultViz';
 
-import { CountryTaxonomyDataType, PillarsMetaDataType } from '@/Types';
 import { CountrySelect } from '@/Components/CountrySelect';
-import { ErrorState } from '@/Components/ErrorState';
+import { CountriesDataType, IndicatorsMetaDataType } from '@/Types';
+import { HeadingText, ParagraphText } from '@/Components/Typography';
 
-async function fetchData(pillarId: string) {
-  return fetchAndParseJSON(`/data/${pillarId}.json`);
-}
-function useAllPillarsData(pillarsId: string[]) {
-  return useQuery({
-    queryKey: ['all-pillars'],
-    queryFn: async () => {
-      const results = await Promise.all(
-        pillarsId.map(async (d: string) => ({
-          id: d,
-          data: await fetchData(d),
-        })),
-      );
-      return results;
-    },
-  });
-}
 interface Props {
   isoCode: string;
-  pillarsMetaData: PillarsMetaDataType[];
-  countryTaxonomy: CountryTaxonomyDataType[];
+  indicatorsMetaData: IndicatorsMetaDataType[];
+  countriesList: CountriesDataType[];
 }
 
-function CountryPageEl({ isoCode, pillarsMetaData, countryTaxonomy }: Props) {
-  const countryInfo = countryTaxonomy.find(d => d['Alpha-3 code'] === isoCode);
-  const { data, isLoading, isError } = useAllPillarsData(
-    pillarsMetaData.map(d => d.id),
-  );
-
+function CountryPageEl({ isoCode, indicatorsMetaData, countriesList }: Props) {
+  const countryInfo = countriesList.find(d => d['Alpha-3 code'] === isoCode);
+  const [view, setView] = useState(indicatorsMetaData[0].mainIndicatorId);
   if (!countryInfo) {
     return (
       <div className='px-4 container mx-auto'>
         <CountrySelect
-          countryTaxonomy={countryTaxonomy}
+          countriesList={countriesList}
           heading="We don't have the data for the selected country"
           description='Please select a country from the dropdown below'
         />
       </div>
     );
   }
-  if (isLoading) return <Spinner size='lg' className='my-20 m-auto' />;
-  if (isError)
-    return (
-      <div className='px-4 container mx-auto'>
-        <ErrorState />
-      </div>
-    );
-  if (data)
-    return (
-      <div className='w-full'>
-        <Overview
-          pillarsMetaData={pillarsMetaData}
-          data={data}
-          countryInfo={countryInfo}
+  return (
+    <div className='flex flex-col container mx-auto'>
+      <div className='flex items-center justify-center gap-1 flex-col mt-16 mb-26'>
+        <img
+          alt='Country flag'
+          className='w-11 mb-2'
+          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${countryInfo?.['Alpha-2 code']}.svg`}
         />
-        <ExploreData
-          countryInfo={countryInfo}
-          pillarsMetaData={pillarsMetaData}
-          data={data.map(d => ({
-            ...d,
-            data: d.data.filter(
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (el: any) => el.ISO3_Code === countryInfo['Alpha-3 code'],
-            ),
+        <HeadingText type='h1'>
+          {countryInfo['Country or Area (official name)']}
+        </HeadingText>
+        <ParagraphText size='sm'>
+          {countryInfo?.['Group 1']} | {countryInfo?.['Group 2']}
+        </ParagraphText>
+        <Spacer size='2xl' />
+        <SegmentedControl
+          color='blue'
+          value={`${view}`}
+          onValueChange={d => {
+            setView(parseInt(d, 10));
+          }}
+          options={indicatorsMetaData.map(d => ({
+            label: d.name,
+            value: `${d.mainIndicatorId}`,
           }))}
+          size='base'
+          variant='normal'
+          className='rounded-full p-0 border-0 w-full'
+          classNames={{
+            items: 'px-16 poppins-regular py-4 rounded-full w-1/2',
+            active: 'text-primary-white',
+          }}
+          buttonStyle={{
+            active: {
+              backgroundImage: `linear-gradient(to right, ${indicatorsMetaData.find(d => d.mainIndicatorId === view)?.gradientColor.split(',')[0]}, ${indicatorsMetaData.find(d => d.mainIndicatorId === view)?.gradientColor.split(',')[1]})`,
+            },
+          }}
         />
+        {view === 1 ? (
+          <ProcurementViz
+            countryInfo={countryInfo}
+            indicatorMetaData={
+              indicatorsMetaData.find(
+                d => d.mainIndicatorId === view,
+              ) as IndicatorsMetaDataType
+            }
+            maxValue={1}
+          />
+        ) : (
+          <DefaultViz
+            countryInfo={countryInfo}
+            indicatorMetaData={
+              indicatorsMetaData.find(
+                d => d.mainIndicatorId === view,
+              ) as IndicatorsMetaDataType
+            }
+            maxValue={100}
+          />
+        )}
         <div className='container mx-auto'>
           <Spacer size='6xl' />
           <CountryProfile />
@@ -84,8 +96,8 @@ function CountryPageEl({ isoCode, pillarsMetaData, countryTaxonomy }: Props) {
         <Spacer size='7xl' />
         <Spacer size='7xl' />
       </div>
-    );
-  return;
+    </div>
+  );
 }
 
 export default CountryPageEl;

@@ -6,11 +6,18 @@ interface Props {
   radius: number;
   colors: string[];
   strokeWidth?: number;
+  maxValue?: number;
 }
 
-export const Graph = ({ data, radius, colors, strokeWidth = 8 }: Props) => {
+export const Graph = ({
+  data,
+  radius,
+  colors,
+  strokeWidth = 8,
+  maxValue = 1,
+}: Props) => {
   const x = scaleLinear()
-    .domain([0, 1])
+    .domain([0, maxValue])
     .range([-Math.PI / 2, Math.PI / 2]);
   return (
     <>
@@ -27,7 +34,7 @@ export const Graph = ({ data, radius, colors, strokeWidth = 8 }: Props) => {
                       outerRadius:
                         radius - i * 2 * strokeWidth - strokeWidth / 2 + 1,
                       startAngle: x(0),
-                      endAngle: x(1),
+                      endAngle: x(maxValue),
                     }) as string
                   }
                   fill='none'

@@ -6,6 +6,7 @@ import {
   createRouter,
   createRoute,
   createRootRoute,
+  Link,
 } from '@tanstack/react-router';
 import {
   QueryClient,
@@ -13,8 +14,9 @@ import {
   useQuery,
 } from '@tanstack/react-query';
 import { Spinner } from '@undp/design-system-react/Spinner';
-import { fetchAndParseJSON } from '@undp/data-viz/fetchAndParseData';
+import { getCountryDetailsFromISO3 } from '@undp-data/data-utils';
 import { createContext, useContext } from 'react';
+import { Spacer } from '@undp/design-system-react/Spacer';
 
 import Homepage from './01-Homepage';
 import MethodologyPage from './04-Methodology';
@@ -23,9 +25,16 @@ import { Header } from './Components/Header';
 import { Footer } from './Components/Footer';
 import CountryPageEl from './02-CountryPage';
 import { ScrollToTop } from './Utils/ScrollToTop';
-import { CountryTaxonomyDataType, PillarsMetaDataType } from './Types';
+import {
+  CountriesDataType,
+  CountriesFromApiDataType,
+  IndicatorsMetaDataType,
+} from './Types';
 import { ErrorState } from './Components/ErrorState';
 import MainIndicatorPageEl from './03-MainIndicator';
+import { getIndicatorsMetaData } from './QueryFn/getIndicatorsMetaData';
+import { getCountriesList } from './QueryFn/getCountriesList';
+import { HeadingText } from './Components/Typography';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,33 +44,38 @@ const queryClient = new QueryClient({
     },
   },
 });
-async function fetchPillarsMetaData() {
-  return fetchAndParseJSON('/data/pillarMetaData.json');
-}
-
-async function fetchCountryTaxonomyData() {
-  return fetchAndParseJSON(
-    'https://raw.githubusercontent.com/UNDP-Data/country-taxonomy-from-azure/refs/heads/main/country_territory_groups.json',
-  );
-}
 
 function useGlobalData() {
-  const pillars = useQuery({
-    queryKey: ['pillars'],
-    queryFn: fetchPillarsMetaData,
+  const indicatorsMetaData = useQuery({
+    queryKey: ['indicatorsMetaData'],
+    queryFn: getIndicatorsMetaData,
+    select: data =>
+      data.map((c: IndicatorsMetaDataType) => ({
+        ...c,
+        subIndicators: c.subIndicators.map(d => ({
+          ...d,
+          id: `${d.mainIndicatorId}_${d.subIndicatorId}`,
+        })),
+      })),
   });
-  const countryTaxonomy = useQuery({
-    queryKey: ['countryTaxonomy'],
-    queryFn: fetchCountryTaxonomyData,
+  const countriesList = useQuery({
+    queryKey: ['countriesList'],
+    queryFn: getCountriesList,
+    select: countries =>
+      countries
+        .map((c: CountriesFromApiDataType) =>
+          getCountryDetailsFromISO3(c.countryCode),
+        )
+        .filter((c?: CountriesDataType) => c !== undefined),
   });
-  return { pillars, countryTaxonomy };
+  return { indicatorsMetaData, countriesList };
 }
 
 type GlobalDataContextType = {
-  pillarsMetaData: PillarsMetaDataType[];
-  countryTaxonomyData: CountryTaxonomyDataType[];
-  countryTaxonomyLoading: boolean;
-  countryTaxonomyError: boolean;
+  indicatorsMetaData: IndicatorsMetaDataType[];
+  countriesListData: CountriesDataType[];
+  countriesListLoading: boolean;
+  countriesListError: boolean;
 };
 
 const GlobalDataContext = createContext<GlobalDataContextType | null>(null);
@@ -74,10 +88,10 @@ export function useGlobalDataContext() {
 }
 
 function RootComponent() {
-  const { pillars, countryTaxonomy } = useGlobalData();
+  const { indicatorsMetaData, countriesList } = useGlobalData();
 
-  const isLoading = pillars.isLoading;
-  const isError = pillars.isError;
+  const isLoading = indicatorsMetaData.isLoading;
+  const isError = indicatorsMetaData.isError;
 
   if (isLoading) return <Spinner size='lg' className='my-20 m-auto' />;
   if (isError)
@@ -90,26 +104,26 @@ function RootComponent() {
   return (
     <GlobalDataContext.Provider
       value={{
-        pillarsMetaData: pillars.data,
-        countryTaxonomyData: countryTaxonomy.data,
-        countryTaxonomyLoading: countryTaxonomy.isLoading,
-        countryTaxonomyError: countryTaxonomy.isError,
+        indicatorsMetaData: indicatorsMetaData.data,
+        countriesListData: countriesList.data,
+        countriesListLoading: countriesList.isLoading,
+        countriesListError: countriesList.isError,
       }}
     >
       <div className='min-h-screen flex flex-col background-inherit'>
         <Header
-          pillarsMetaData={pillars.data || []}
-          countryTaxonomyData={countryTaxonomy.data}
-          countryTaxonomyDataLoading={countryTaxonomy.isLoading}
-          countryTaxonomyDataError={countryTaxonomy.isError}
+          indicatorsMetaData={indicatorsMetaData.data || []}
+          countriesListData={countriesList.data}
+          countriesListDataLoading={countriesList.isLoading}
+          countriesListDataError={countriesList.isError}
         />
         <main className='flex-1 pt-30'>
           <ScrollToTop />
           <Outlet />
         </main>
         <Footer
-          pillarsMetaData={pillars.data}
-          pillarsMetaDataLoading={pillars.isLoading}
+          indicatorsMetaData={indicatorsMetaData.data}
+          indicatorsMetaDataLoading={indicatorsMetaData.isLoading}
         />
       </div>
     </GlobalDataContext.Provider>
@@ -124,11 +138,18 @@ const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: function Index() {
-    const { pillarsMetaData, countryTaxonomyData } = useGlobalDataContext();
+    const {
+      indicatorsMetaData,
+      countriesListData,
+      countriesListLoading,
+      countriesListError,
+    } = useGlobalDataContext();
     return (
       <Homepage
-        pillarsMetaData={pillarsMetaData}
-        countryTaxonomy={countryTaxonomyData}
+        indicatorsMetaData={indicatorsMetaData}
+        countriesList={countriesListData}
+        countriesListLoading={countriesListLoading}
+        countriesListError={countriesListError}
       />
     );
   },
@@ -153,16 +174,16 @@ const methodologyRoute = createRoute({
 function MainIndicator() {
   const { indicator } = mainIndicatorRoute.useParams();
   const {
-    pillarsMetaData,
-    countryTaxonomyData,
-    countryTaxonomyLoading,
-    countryTaxonomyError,
+    indicatorsMetaData,
+    countriesListData,
+    countriesListLoading,
+    countriesListError,
   } = useGlobalDataContext();
 
-  const pillarMetaData = pillarsMetaData.find(
-    d => d.value.replaceAll(' ', '-').toLowerCase() === indicator,
+  const indicatorMetaData = indicatorsMetaData.find(
+    d => d.name.replaceAll(' ', '-').toLowerCase() === indicator,
   );
-  if (!pillarMetaData)
+  if (!indicatorMetaData)
     return (
       <div className='px-4 container mx-auto'>
         The indicator you are trying to search does not exist
@@ -171,10 +192,10 @@ function MainIndicator() {
 
   return (
     <MainIndicatorPageEl
-      pillarMetaData={pillarMetaData}
-      countryTaxonomyDataLoading={countryTaxonomyLoading}
-      countryTaxonomyDataError={countryTaxonomyError}
-      countryTaxonomy={countryTaxonomyData || []}
+      indicatorMetaData={indicatorMetaData}
+      countriesListDataLoading={countriesListLoading}
+      countriesListDataError={countriesListError}
+      countriesList={countriesListData || []}
     />
   );
 }
@@ -188,15 +209,14 @@ const mainIndicatorRoute = createRoute({
 function Country() {
   const { isoCode } = countryRoute.useParams();
   const {
-    pillarsMetaData,
-    countryTaxonomyData,
-    countryTaxonomyLoading,
-    countryTaxonomyError,
+    indicatorsMetaData,
+    countriesListData,
+    countriesListLoading,
+    countriesListError,
   } = useGlobalDataContext();
-
-  if (countryTaxonomyLoading)
+  if (countriesListLoading)
     return <Spinner size='lg' className='my-20 m-auto' />;
-  if (countryTaxonomyError)
+  if (countriesListError)
     return (
       <div className='px-4 container mx-auto'>
         <ErrorState />
@@ -205,11 +225,67 @@ function Country() {
   return (
     <CountryPageEl
       isoCode={isoCode}
-      countryTaxonomy={countryTaxonomyData}
-      pillarsMetaData={pillarsMetaData}
+      countriesList={countriesListData}
+      indicatorsMetaData={indicatorsMetaData}
     />
   );
 }
+
+function CountriesListing() {
+  const { countriesListData, countriesListLoading, countriesListError } =
+    useGlobalDataContext();
+  if (countriesListLoading)
+    return <Spinner size='lg' className='my-20 m-auto' />;
+  if (countriesListError)
+    return (
+      <div className='px-4 container mx-auto'>
+        <ErrorState />
+      </div>
+    );
+
+  const alphabets = [
+    ...new Set(
+      countriesListData.map(d =>
+        d['Country or Area (official name)'][0].toUpperCase(),
+      ),
+    ),
+  ];
+  return (
+    <div className='container mx-auto'>
+      <HeadingText type='h2'>Country profile</HeadingText>
+      <Spacer size='6xl' />
+      {alphabets.map((d, i) => (
+        <div key={i}>
+          <HeadingText type='h2'>{d}</HeadingText>
+          <Spacer size='2xl' />
+          <div className='flex flex-wrap gap-4'>
+            {countriesListData
+              .filter(
+                el =>
+                  el['Country or Area (official name)'][0].toUpperCase() === d,
+              )
+              .map((el, j) => (
+                <Link
+                  to='/countries/$isoCode'
+                  params={{ isoCode: el['Alpha-3 code'] }}
+                  className='poppins-medium w-[calc(25%-0.75rem)] !text-[16px] text-[#fff]'
+                  key={j}
+                >
+                  {el['Country or Area (official name)']}
+                </Link>
+              ))}
+          </div>
+          <Spacer size='6xl' />
+        </div>
+      ))}
+    </div>
+  );
+}
+const countriesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/countries',
+  component: CountriesListing,
+});
 
 const countryRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -223,6 +299,7 @@ const routeTree = rootRoute.addChildren([
   methodologyRoute,
   mainIndicatorRoute,
   countryRoute,
+  countriesRoute,
 ]);
 
 const router = createRouter({ routeTree });

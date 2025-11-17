@@ -8,21 +8,17 @@ import { useState } from 'react';
 
 import DataTableWithFilters from '../../Components/DataTable';
 
-import {
-  CountryTaxonomyDataType,
-  DataType,
-  PillarsMetaDataType,
-} from '@/Types';
+import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
 import { CountrySelect } from '@/Components/CountrySelect';
 
 interface Props {
   data: DataType[];
-  countryTaxonomy: CountryTaxonomyDataType[];
-  pillarsMetaData: PillarsMetaDataType[];
+  countriesList: CountriesDataType[];
+  indicatorsMetaData: IndicatorsMetaDataType[];
 }
 
 const CountryLevelInsight = (props: Props) => {
-  const { data, countryTaxonomy, pillarsMetaData } = props;
+  const { data, countriesList, indicatorsMetaData } = props;
   const [selectedTab, setSelectedTab] = useState('tab 1');
   return (
     <div
@@ -52,7 +48,7 @@ const CountryLevelInsight = (props: Props) => {
           </TabsList>
           <TabsContent value='tab 1'>
             <CountrySelect
-              countryTaxonomy={countryTaxonomy}
+              countriesList={countriesList || []}
               heading='Uncover detailed anti-corruption data for your country'
               description='Choose a country to reveal its complete anti-corruption profile — from key indicators to institutional strategies'
             />
@@ -60,8 +56,8 @@ const CountryLevelInsight = (props: Props) => {
           <TabsContent value='tab 2'>
             <DataTableWithFilters
               data={data}
-              pillarsMetaData={pillarsMetaData}
-              countryTaxonomy={countryTaxonomy}
+              indicatorsMetaData={indicatorsMetaData}
+              countriesList={countriesList || []}
             />
           </TabsContent>
         </Tabs>

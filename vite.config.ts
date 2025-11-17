@@ -7,15 +7,10 @@ import postcssNested from 'postcss-nested';
 import tailwindcss from '@tailwindcss/postcss';
 // import { AtRule } from 'postcss';
 import { visualizer } from 'rollup-plugin-visualizer';
-import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig({
   plugins: [
-    tanstackRouter({
-      target: 'react',
-      autoCodeSplitting: true,
-    }),
     react({
       babel: {
         plugins: ['babel-plugin-react-compiler'],

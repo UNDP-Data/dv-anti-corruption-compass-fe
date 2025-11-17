@@ -13,18 +13,18 @@ import { HeadingText, ParagraphText } from '../Typography';
 
 import { CountryList } from './CountryList';
 
-import { CountryTaxonomyDataType, PillarsMetaDataType } from '@/Types';
+import { CountriesDataType, IndicatorsMetaDataType } from '@/Types';
 
 export const Header = ({
-  pillarsMetaData,
-  countryTaxonomyDataLoading,
-  countryTaxonomyDataError,
-  countryTaxonomyData,
+  indicatorsMetaData,
+  countriesListDataLoading,
+  countriesListDataError,
+  countriesListData,
 }: {
-  pillarsMetaData: PillarsMetaDataType[];
-  countryTaxonomyDataLoading: boolean;
-  countryTaxonomyDataError: boolean;
-  countryTaxonomyData: CountryTaxonomyDataType[];
+  indicatorsMetaData: IndicatorsMetaDataType[];
+  countriesListDataLoading: boolean;
+  countriesListDataError: boolean;
+  countriesListData: CountriesDataType[];
 }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [showCountrySelection, setShowCountrySelection] = useState(false);
@@ -71,7 +71,7 @@ export const Header = ({
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className='w-60 rounded-[8px] mt-2 p-0 z-1000 border-none shadow-[0_2px_4px_0_rgba(0,0,0,0.25)]'>
-              {(pillarsMetaData || []).map((d, i) => (
+              {(indicatorsMetaData || []).map((d, i) => (
                 <DropdownMenuItem
                   key={i}
                   asChild
@@ -80,7 +80,7 @@ export const Header = ({
                   <Link
                     to='/main-indicators/$indicator'
                     params={{
-                      indicator: d.value.replaceAll(' ', '-').toLowerCase(),
+                      indicator: d.name.replaceAll(' ', '-').toLowerCase(),
                     }}
                   >
                     <ParagraphText
@@ -89,13 +89,23 @@ export const Header = ({
                       weight='medium'
                       className='text-[inherit]'
                     >
-                      {d.value}
+                      {d.name}
                     </ParagraphText>
                   </Link>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+          <Link to='/countries'>
+            <ParagraphText
+              alignment='center'
+              size='lg'
+              weight='medium'
+              leading='none'
+            >
+              Country Profile
+            </ParagraphText>
+          </Link>
           <Link to='/methodology'>
             <ParagraphText
               alignment='center'
@@ -148,20 +158,25 @@ export const Header = ({
                   Main indicators
                 </ParagraphText>
                 <div className='flex flex-col justify-start items-start gap-8 pl-5'>
-                  {pillarsMetaData.map((d, i) => (
+                  {indicatorsMetaData.map((d, i) => (
                     <Link
                       key={i}
                       to='/main-indicators/$indicator'
                       params={{
-                        indicator: d.value.replaceAll(' ', '-').toLowerCase(),
+                        indicator: d.name.replaceAll(' ', '-').toLowerCase(),
                       }}
                     >
                       <ParagraphText size='sm' weight='medium' leading='none'>
-                        {d.value}
+                        {d.name}
                       </ParagraphText>
                     </Link>
                   ))}
                 </div>
+                <Link to='/countries'>
+                  <ParagraphText size='sm' weight='medium' leading='none'>
+                    Country Profile
+                  </ParagraphText>
+                </Link>
                 <Link to='/methodology'>
                   <ParagraphText size='sm' weight='medium' leading='none'>
                     Methodology
@@ -186,9 +201,9 @@ export const Header = ({
           className='bg-[#F5F5F5]! border-0! rounded-lg!'
         >
           <CountryList
-            countryTaxonomyData={countryTaxonomyData || []}
-            countryTaxonomyDataLoading={countryTaxonomyDataLoading}
-            countryTaxonomyDataError={countryTaxonomyDataError}
+            countriesListData={countriesListData || []}
+            countriesListDataLoading={countriesListDataLoading}
+            countriesListDataError={countriesListDataError}
             setShowCountrySelection={setShowCountrySelection}
             mode='light'
           />

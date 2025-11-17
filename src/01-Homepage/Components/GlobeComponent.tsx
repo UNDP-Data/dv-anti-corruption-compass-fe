@@ -6,37 +6,35 @@ import { Link } from '@tanstack/react-router';
 import { Spacer } from '@undp/design-system-react/Spacer';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
 
-import {
-  DataType,
-  PillarsMetaDataType,
-  CountryTaxonomyDataType,
-} from '@/Types';
+import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
 import { ColorLegend } from '@/Components/ColorLegend';
 import { ArcChart } from '@/Components/ArcChart';
 import { ParagraphText } from '@/Components/Typography';
 import { Button } from '@/Components/Button';
+import { BarChartList } from '@/Components/BarChartList';
 
 interface Props {
   data: DataType[];
-  selectedSubPillar: string;
-  selectedMainIndicator: string;
-  countryTaxonomy: CountryTaxonomyDataType[];
+  selectedSubIndicator: string;
+  countriesList: CountriesDataType[];
   rotate: boolean;
-  pillarsMetaData: PillarsMetaDataType[];
+  indicatorsMetaData: IndicatorsMetaDataType[];
 }
 
 function GlobeComponent({
   data,
-  selectedSubPillar,
-  countryTaxonomy,
+  selectedSubIndicator,
+  countriesList,
   rotate,
-  pillarsMetaData,
-  selectedMainIndicator,
+  indicatorsMetaData,
 }: Props) {
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const year = Math.max(
-    ...(data.find(d => d.id === selectedMainIndicator)?.data.map(d => d.Year) ??
-      []),
+    ...(data
+      .filter(
+        d => `${d.mainIndicatorId}` === selectedSubIndicator.split('_')[0],
+      )
+      .map(d => d.year) ?? []),
   );
   return (
     <>
@@ -44,10 +42,11 @@ function GlobeComponent({
         <div className='absolute left-1/2 top-0 z-10 transform -translate-x-1/2'>
           <ColorLegend
             colors={
-              pillarsMetaData
-                .map(d => d.subPillars)
+              indicatorsMetaData
+                .map(d => d.subIndicators)
                 .flat()
-                .find(d => d.id === selectedSubPillar)?.colors || []
+                .find(d => d.id === selectedSubIndicator)
+                ?.colors.split(',') || []
             }
           />
         </div>
@@ -57,12 +56,11 @@ function GlobeComponent({
               showColorScale={false}
               polygonAltitude={0.005}
               highlightedAltitude={0.01}
-              colors={
-                pillarsMetaData
-                  .map(d => d.subPillars)
-                  .flat()
-                  .find(d => d.id === selectedSubPillar)?.colors
-              }
+              colors={indicatorsMetaData
+                .map(d => d.subIndicators)
+                .flat()
+                .find(d => d.id === selectedSubIndicator)
+                ?.colors.split(',')}
               selectedId={selectedId}
               onSeriesMouseClick={d => {
                 setSelectedId(d.id);
@@ -88,10 +86,10 @@ function GlobeComponent({
               footNote=''
               enableZoom={false}
               atmosphereColor={
-                pillarsMetaData
-                  .map(d => d.subPillars)
+                indicatorsMetaData
+                  .map(d => d.subIndicators)
                   .flat()
-                  .find(d => d.id === selectedSubPillar)?.color
+                  .find(d => d.id === selectedSubIndicator)?.color
               }
               globeMaterial={
                 new THREE.MeshBasicMaterial({
@@ -100,10 +98,10 @@ function GlobeComponent({
               }
               fogSettings={{
                 color:
-                  pillarsMetaData
-                    .map(d => d.subPillars)
+                  indicatorsMetaData
+                    .map(d => d.subIndicators)
                     .flat()
-                    .find(d => d.id === selectedSubPillar)?.color || '#fff',
+                    .find(d => d.id === selectedSubIndicator)?.color || '#fff',
                 near:
                   (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
                   0.9
@@ -136,15 +134,16 @@ function GlobeComponent({
               resetSelectionOnDoubleClick={false}
               autoRotate={rotate ? 1 : false}
               data={transformDataForGraph(
-                data
-                  .find(d => d.id === selectedMainIndicator)
-                  ?.data.filter(
-                    d => d.Indicator === selectedSubPillar && d.Year === year,
-                  ),
+                data.filter(
+                  d =>
+                    d.id === selectedSubIndicator &&
+                    d.year === year &&
+                    d.contractValue === 'null',
+                ),
                 'threeDGlobe',
                 [
-                  { chartConfigId: 'id', columnId: 'ISO3_Code' },
-                  { chartConfigId: 'x', columnId: 'Indicator_value' },
+                  { chartConfigId: 'id', columnId: 'countryCode' },
+                  { chartConfigId: 'x', columnId: 'numericValue' },
                 ],
               )}
             />
@@ -171,7 +170,7 @@ function GlobeComponent({
             <img
               alt='Country flag'
               className='w-9 mb-3'
-              src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${countryTaxonomy.find(d => d['Alpha-3 code'] === selectedId)?.['Alpha-2 code']}.svg`}
+              src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${countriesList.find(d => d['Alpha-3 code'] === selectedId)?.['Alpha-2 code']}.svg`}
             />
             <ParagraphText
               className='text-[var(--color-text-black)]'
@@ -180,51 +179,78 @@ function GlobeComponent({
               size='xl'
             >
               {
-                countryTaxonomy.find(
-                  el =>
-                    el['Alpha-3 code'] ===
-                    data
-                      .find(d => d.id === selectedMainIndicator)
-                      ?.data.find(
-                        d =>
-                          d.Indicator === selectedSubPillar &&
-                          d.Year === year &&
-                          d.ISO3_Code === selectedId,
-                      )?.ISO3_Code,
-                )?.['Country or Area']
+                countriesList.find(el => el['Alpha-3 code'] === selectedId)?.[
+                  'Country or Area (official name)'
+                ]
               }
             </ParagraphText>
             <Spacer size='2xl' />
-            <div className='w-full mb-4 flex items-center text-primary-gray-500 justify-center'>
-              <ArcChart
-                data={
-                  pillarsMetaData
-                    .find(d => d.id === selectedMainIndicator)
-                    ?.subPillars.map(
-                      el =>
-                        data
-                          .find(d => d.id === selectedMainIndicator)
-                          ?.data.find(
-                            d =>
-                              d.Year === year &&
-                              d.ISO3_Code === selectedId &&
-                              d.Indicator === el.id,
-                          )?.Indicator_value_numeric || 0,
-                    ) || []
+            {(indicatorsMetaData.find(
+              d =>
+                d.mainIndicatorId ===
+                parseInt(selectedSubIndicator.split('_')[0]),
+            )?.subIndicators.length || 0) < 6 ? (
+              <div className='w-full flex items-center text-primary-gray-500 justify-center'>
+                <ArcChart
+                  data={data
+                    .filter(
+                      d =>
+                        d.year === year &&
+                        d.countryCode === selectedId &&
+                        `${d.mainIndicatorId}` ===
+                          selectedSubIndicator.split('_')[0] &&
+                        d.contractValue === 'null',
+                    )
+                    .map(d => d.numericValue || 0)}
+                  colors={
+                    indicatorsMetaData
+                      .find(
+                        d =>
+                          `${d.mainIndicatorId}` ===
+                          selectedSubIndicator.split('_')[0],
+                      )
+                      ?.subIndicators.map(d => d.color) || []
+                  }
+                  subPillars={
+                    indicatorsMetaData
+                      .map(d => d.subIndicators)
+                      .flat()
+                      .map(d => d.name) || []
+                  }
+                />
+              </div>
+            ) : (
+              <BarChartList
+                data={data
+                  .filter(
+                    d =>
+                      d.year === year &&
+                      d.countryCode === selectedId &&
+                      `${d.mainIndicatorId}` ===
+                        selectedSubIndicator.split('_')[0] &&
+                      d.contractValue === 'null',
+                  )
+                  .map(d => ({
+                    id:
+                      indicatorsMetaData
+                        .find(el => el.mainIndicatorId === d.mainIndicatorId)
+                        ?.subIndicators.find(el => el.id === d.id)?.name || '',
+                    value: d.numericValue || 0,
+                  }))}
+                suffix={selectedSubIndicator.split('_')[0] === '1' ? '' : '%'}
+                maxValue={selectedSubIndicator.split('_')[0] === '1' ? 1 : 100}
+                color={
+                  indicatorsMetaData.find(
+                    d =>
+                      `${d.mainIndicatorId}` ===
+                      selectedSubIndicator.split('_')[0],
+                  )?.mainColor || '#fff'
                 }
-                colors={
-                  pillarsMetaData
-                    .find(d => d.id === selectedMainIndicator)
-                    ?.subPillars.map(d => d.color) || []
-                }
-                subPillars={
-                  pillarsMetaData
-                    .map(d => d.subPillars)
-                    .flat()
-                    .map(d => d.value) || []
-                }
+                textClassName='text-[var(--color-text-black)]'
+                bgColor='#d6d6d6'
               />
-            </div>
+            )}
+            <Spacer size='2xl' />
             <Link to='/countries/$isoCode' params={{ isoCode: selectedId }}>
               <Button variant='primary'>View more →</Button>
             </Link>

@@ -6,24 +6,23 @@ import { Link } from '@tanstack/react-router';
 import { HeadingText } from '../Typography';
 import { ErrorState } from '../ErrorState';
 
-import { CountryTaxonomyDataType } from '@/Types';
+import { CountriesDataType } from '@/Types';
 
 export const CountryList = ({
   setShowCountrySelection,
-  countryTaxonomyData,
-  countryTaxonomyDataLoading,
-  countryTaxonomyDataError,
+  countriesListData,
+  countriesListDataLoading,
+  countriesListDataError,
   mode,
 }: {
   setShowCountrySelection: (_d: boolean) => void;
-  countryTaxonomyData: CountryTaxonomyDataType[];
-  countryTaxonomyDataLoading: boolean;
-  countryTaxonomyDataError: boolean;
+  countriesListData: CountriesDataType[];
+  countriesListDataLoading: boolean;
+  countriesListDataError: boolean;
   mode: 'dark' | 'light';
 }) => {
-  const [searchedCountries, setSearchedCountries] =
-    useState(countryTaxonomyData);
-  if (countryTaxonomyDataError) return <ErrorState />;
+  const [searchedCountries, setSearchedCountries] = useState(countriesListData);
+  if (countriesListDataError) return <ErrorState />;
   return (
     <div className='flex flex-col gap-6'>
       <HeadingText
@@ -32,7 +31,7 @@ export const CountryList = ({
       >
         Available countries
       </HeadingText>
-      {countryTaxonomyData.length > 0 && !countryTaxonomyDataLoading ? (
+      {countriesListData.length > 0 && !countriesListDataLoading ? (
         <>
           <Search
             buttonVariant='icon'
@@ -44,12 +43,12 @@ export const CountryList = ({
             onSearch={d => {
               setSearchedCountries(
                 d
-                  ? countryTaxonomyData.filter(country =>
-                      country['Country or Area']
+                  ? countriesListData.filter(country =>
+                      country['Country or Area (official name)']
                         .toLowerCase()
                         .includes(d.toLowerCase()),
                     )
-                  : countryTaxonomyData,
+                  : countriesListData,
               );
             }}
           />
@@ -64,7 +63,7 @@ export const CountryList = ({
                   setShowCountrySelection(false);
                 }}
               >
-                {country['Country or Area']}
+                {country['Country or Area (official name)']}
               </Link>
             ))}
           </div>

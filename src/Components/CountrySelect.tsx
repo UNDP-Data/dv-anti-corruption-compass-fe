@@ -4,16 +4,16 @@ import { useNavigate } from '@tanstack/react-router';
 
 import { HeadingText, ParagraphText } from './Typography';
 
-import { CountryTaxonomyDataType } from '@/Types';
+import { CountriesDataType } from '@/Types';
 import { DROPDOWN_CLASSNAMES } from '@/Constants';
 import { customDropdownComponents } from '@/Utils/DropdownComponents';
 
 export const CountrySelect = ({
-  countryTaxonomy,
+  countriesList,
   heading,
   description,
 }: {
-  countryTaxonomy: CountryTaxonomyDataType[];
+  countriesList: CountriesDataType[];
   heading: string;
   description: string;
 }) => {
@@ -24,11 +24,11 @@ export const CountrySelect = ({
         <HeadingText type='h2'>{heading}</HeadingText>
         <ParagraphText leading='snug'>{description}</ParagraphText>
       </div>
-      {countryTaxonomy.length > 0 ? (
+      {countriesList.length > 0 ? (
         <DropdownSelect
           placeholder='Select country'
-          options={countryTaxonomy.map(d => ({
-            label: d['Country or Area'],
+          options={countriesList.map(d => ({
+            label: d['Country or Area (official name)'],
             value: d['Alpha-3 code'],
           }))}
           onChange={d => {

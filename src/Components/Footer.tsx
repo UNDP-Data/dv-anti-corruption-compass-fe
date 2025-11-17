@@ -9,14 +9,14 @@ import { Spacer } from '@undp/design-system-react/Spacer';
 
 import { ParagraphText } from './Typography';
 
-import { PillarsMetaDataType } from '@/Types';
+import { IndicatorsMetaDataType } from '@/Types';
 
 export const Footer = ({
-  pillarsMetaData,
-  pillarsMetaDataLoading,
+  indicatorsMetaData,
+  indicatorsMetaDataLoading,
 }: {
-  pillarsMetaData: PillarsMetaDataType[];
-  pillarsMetaDataLoading: boolean;
+  indicatorsMetaData: IndicatorsMetaDataType[];
+  indicatorsMetaDataLoading: boolean;
 }) => {
   return (
     <footer className='bg-[#437390] px-20 py-24 relative z-10'>
@@ -38,18 +38,18 @@ export const Footer = ({
             <ParagraphText>Home</ParagraphText>
           </Link>
           <div className='flex flex-col gap-4 md:gap-8'>
-            {pillarsMetaDataLoading && (
+            {indicatorsMetaDataLoading && (
               <ParagraphText>Loading...</ParagraphText>
             )}
-            {pillarsMetaData.map((d, i) => (
+            {indicatorsMetaData.map((d, i) => (
               <Link
                 to='/main-indicators/$indicator'
                 params={{
-                  indicator: d.value.replaceAll(' ', '-').toLowerCase(),
+                  indicator: d.name.replaceAll(' ', '-').toLowerCase(),
                 }}
                 key={i}
               >
-                <ParagraphText>{d.value}</ParagraphText>
+                <ParagraphText>{d.name}</ParagraphText>
               </Link>
             ))}
           </div>

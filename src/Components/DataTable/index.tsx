@@ -20,54 +20,50 @@ import {
   DROPDOWN_CLASSNAMES_MULTI_SELECT,
   DROPDOWN_CLASSNAMES,
 } from '@/Constants';
-import {
-  CountryTaxonomyDataType,
-  DataType,
-  IndicatorDataType,
-  PillarsMetaDataType,
-} from '@/Types';
+import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
 import { customDropdownComponents } from '@/Utils/DropdownComponents';
 
 interface Props {
   data: DataType[];
-  pillarsMetaData?: PillarsMetaDataType[];
+  indicatorsMetaData?: IndicatorsMetaDataType[];
   colors?: string[];
-  countryTaxonomy: CountryTaxonomyDataType[];
+  countriesList: CountriesDataType[];
 }
 
 function DataTableWithFilters({
   data,
-  pillarsMetaData = [],
+  indicatorsMetaData = [],
   colors = [],
-  countryTaxonomy,
+  countriesList,
 }: Props) {
   const [selectedPillars, setSelectedPillars] = useState<
     { value: string; label: string }[]
   >([
     {
-      value: pillarsMetaData.map(d => d.subPillars).flat()[0].id,
-      label: pillarsMetaData.map(d => d.subPillars).flat()[0].value,
+      value: `${indicatorsMetaData.map(d => d.subIndicators).flat()[0].mainIndicatorId}_${indicatorsMetaData.map(d => d.subIndicators).flat()[0].subIndicatorId}`,
+      label: indicatorsMetaData.map(d => d.subIndicators).flat()[0].name,
     },
   ]);
-  const flatData = data.map(d => d.data).flat();
   const pageLength = 10;
-  const [filteredData, setFilteredData] = useState<IndicatorDataType[]>(
-    flatData.filter(
-      d => d.Indicator === pillarsMetaData.map(d => d.subPillars).flat()[0].id,
+  const [filteredData, setFilteredData] = useState(
+    data.filter(
+      d =>
+        d.id ===
+        `${indicatorsMetaData.map(d => d.subIndicators).flat()[0].mainIndicatorId}_${indicatorsMetaData.map(d => d.subIndicators).flat()[0].subIndicatorId}`,
     ),
   );
   const [page, setPage] = useState(1);
   const [selectedYear, setSelectedYear] = useState(2022);
-  const subPillars = pillarsMetaData.map(d => d.subPillars).flat();
+  const subIndicators = indicatorsMetaData.map(d => d.subIndicators).flat();
 
   const setFilteredDataEvent = useEffectEvent(() => {
-    const filtered = flatData.filter(
+    const filtered = data.filter(
       d =>
-        selectedPillars?.findIndex(el => el.value === d.Indicator) !== -1 &&
-        d.Year === selectedYear &&
-        d.Indicator_value &&
-        d.Indicator_value_numeric !== undefined &&
-        d.Indicator_value_numeric !== null,
+        selectedPillars?.findIndex(el => el.value === d.id) !== -1 &&
+        d.year === selectedYear &&
+        d.indicatorValue &&
+        d.numericValue !== undefined &&
+        d.numericValue !== null,
     );
     setFilteredData(filtered);
   });
@@ -90,8 +86,8 @@ function DataTableWithFilters({
                 setSelectedYear(d.value);
               }}
               placeholder='Select contract value'
-              options={flatData
-                .map(d => d.Year)
+              options={data
+                .map(d => d.year)
                 .map(d => ({
                   value: d,
                   label: d,
@@ -114,11 +110,11 @@ function DataTableWithFilters({
               onChange={(d: any) => {
                 setSelectedPillars(d);
               }}
-              options={pillarsMetaData.map(d => ({
-                label: d.value,
-                options: d.subPillars.map(el => ({
-                  value: el.id,
-                  label: el.value,
+              options={indicatorsMetaData.map(d => ({
+                label: d.name,
+                options: d.subIndicators.map(el => ({
+                  value: `${el.mainIndicatorId}_${el.subIndicatorId}`,
+                  label: el.name,
                 })),
               }))}
               size='base'
@@ -167,7 +163,7 @@ function DataTableWithFilters({
           <div className='poppins-semibold text-[16px]! text-primary-white! w-[10%] pr-4!' />
         </div>
         <div>
-          {flatData.length > 0 ? (
+          {data.length > 0 ? (
             filteredData
               .filter(
                 (_el, i) =>
@@ -177,23 +173,30 @@ function DataTableWithFilters({
                 const tagColors =
                   colors.length > 0
                     ? colors
-                    : subPillars.find(d => d.id === el.Indicator)?.colors || [];
+                    : subIndicators.find(
+                        d =>
+                          `${d.mainIndicatorId}_${d.subIndicatorId}` === el.id,
+                      )?.colors || [];
                 return (
                   <div key={i}>
                     <div className='flex w-full py-4 border-b border-b-[0.5px] border-b-primary-white items-center'>
                       <div className='poppins-light text-[16px]! text-primary-white! w-[35%] pr-4!'>
                         {
-                          countryTaxonomy.find(
-                            c => c['Alpha-3 code'] === el.ISO3_Code,
-                          )?.['Country or Area']
+                          countriesList.find(
+                            c => c['Alpha-3 code'] === el.countryCode,
+                          )?.['Country or Area (official name)']
                         }
                       </div>
                       <div className='poppins-light text-[16px]! text-primary-white! w-[25%] pr-4!'>
                         {
-                          pillarsMetaData
-                            .map(pd => pd.subPillars)
+                          indicatorsMetaData
+                            .map(pd => pd.subIndicators)
                             .flat()
-                            .find(pd => pd.id === el.Indicator)?.value
+                            .find(
+                              pd =>
+                                `${pd.mainIndicatorId}_${pd.subIndicatorId}` ===
+                                el.id,
+                            )?.name
                         }
                       </div>
                       <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
@@ -201,41 +204,45 @@ function DataTableWithFilters({
                           rounded='full'
                           className='poppins-medium py-0 text-[12px]! px-3!'
                           style={{
-                            backgroundColor:
-                              ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                el.Indicator_value,
-                              ) !== -1
+                            backgroundColor: !el.indicatorValue
+                              ? '#DADADA'
+                              : ['LOW', 'MEDIUM', 'HIGH'].indexOf(
+                                    el.indicatorValue,
+                                  ) !== -1
                                 ? tagColors[
                                     ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                      el.Indicator_value,
+                                      el.indicatorValue,
                                     )
                                   ]
                                 : '#DADADA',
-                            color: getTextColorBasedOnBgColor(
-                              ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                el.Indicator_value,
-                              ) !== -1
-                                ? tagColors[
-                                    ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                      el.Indicator_value,
-                                    )
-                                  ]
-                                : '#DADADA',
-                            ),
+                            color: !el.indicatorValue
+                              ? '#000'
+                              : getTextColorBasedOnBgColor(
+                                  ['LOW', 'MEDIUM', 'HIGH'].indexOf(
+                                    el.indicatorValue,
+                                  ) !== -1
+                                    ? tagColors[
+                                        ['LOW', 'MEDIUM', 'HIGH'].indexOf(
+                                          el.indicatorValue,
+                                        )
+                                      ]
+                                    : '#DADADA',
+                                ),
                           }}
                         >
-                          {el.Indicator_value}
+                          {el.indicatorValue}
                         </Badge>
                       </div>
                       <div className='poppins-light text-[16px]! text-primary-white! w-[10%] pr-4!'>
-                        {!el.Indicator_value_numeric
+                        {el.numericValue === null ||
+                        el.numericValue === undefined
                           ? 'NA'
-                          : el.Indicator_value_numeric.toFixed(2)}
+                          : el.numericValue.toFixed(2)}
                       </div>
                       <Link
                         to='/countries/$isoCode'
                         className='poppins-light text-[16px]! text-primary-white! w-[10%] pr-4! opacity-100 hover:opacity-80 underline underline-offset-4'
-                        params={{ isoCode: el.ISO3_Code }}
+                        params={{ isoCode: el.countryCode }}
                       >
                         View Details
                       </Link>

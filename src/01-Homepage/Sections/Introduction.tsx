@@ -80,7 +80,7 @@ const Introduction = (props: Props) => {
               globeCurvatureResolution={2}
               enableZoom={false}
               autoRotate={1}
-              data={data}
+              data={[]}
             />
           ) : null}
         </div>

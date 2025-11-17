@@ -1,16 +1,51 @@
 export type STATUS_DATA_TYPE = 'LOW' | 'MEDIUM' | 'HIGH' | 'NOT AVAILABLE';
 
-export interface CountryDataType {
-  mainIndicator: string;
-  subIndicator: string;
-  level: STATUS_DATA_TYPE;
-  value: number;
+export interface DataType {
+  factId: number;
+  countryCode: string;
+  regionId: number | null;
   year: number;
+  mainIndicatorId: number;
+  subIndicatorId: number;
+  id: string;
+  productMarketId: number | null;
+  contractValue: string;
+  indicatorValue: null | STATUS_DATA_TYPE;
+  numericValue: number;
+  totalNumberOfRiskyContracts: number;
+  allContracts: number | null;
+  totalContractValueMillionUsd: number;
+  indicatorAvailabilityFilter: string;
 }
 
-export interface CountryTaxonomyDataType {
+export interface SubIndicatorsMetaDataType {
+  subIndicatorId: number;
+  mainIndicatorId: number;
+  code: string;
+  name: string;
+  description: string;
+  color: string;
+  colors: string;
+  id: string;
+}
+
+export interface IndicatorsMetaDataType {
+  mainIndicatorId: number;
+  name: string;
+  description: string;
+  mainColor: string;
+  gradientColor: string;
+  subIndicators: SubIndicatorsMetaDataType[];
+}
+
+export interface CountriesFromApiDataType {
+  countryCode: string;
+  name: string;
+}
+
+export interface CountriesDataType {
   'Alpha-3 code': string;
-  'Country or Area': string;
+  'Country or Area (official name)': string;
   'Alpha-2 code': string;
   'Numeric code': string;
   'Latitude (average)': string;
@@ -21,55 +56,4 @@ export interface CountryTaxonomyDataType {
   LDC: boolean;
   LLDC: boolean;
   SIDS: boolean;
-  'Development classification': string;
-  'Income group': string;
-  UNDP_Region: string;
-}
-
-export interface IndicatorDataType {
-  ISO3_Code: string;
-  Year: number;
-  Indicator: string;
-  Indicator_value: STATUS_DATA_TYPE;
-  Indicator_value_numeric: number;
-  Data_Availability: number;
-}
-
-export interface DataType {
-  id: string;
-  data: IndicatorDataType[];
-}
-
-export interface SubPillarsMetaDataType {
-  value: string;
-  id: string;
-  color: string;
-  colors: string[];
-  description: string;
-}
-
-export interface PillarsMetaDataType {
-  value: string;
-  id: string;
-  description: string;
-  color: string;
-  indicatorGradientColors: string[];
-  colors: string[];
-  subPillars: SubPillarsMetaDataType[];
-}
-
-export interface RegionDataType {
-  region: string;
-  value: number;
-  dataAvailability: string;
-  level: STATUS_DATA_TYPE;
-}
-
-export interface PillarDataType {
-  id: string;
-  country: string;
-  subPillar: string;
-  value: number;
-  dataAvailability: string;
-  level: STATUS_DATA_TYPE;
 }

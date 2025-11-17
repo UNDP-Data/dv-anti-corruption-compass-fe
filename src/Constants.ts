@@ -1,21 +1,5 @@
 import { cn } from '@undp/design-system-react/cn';
 
-export const MARKET = [
-  'Architecture & Engineering',
-  'Business Services',
-  'Construction Work',
-  'Education',
-  'Healthcare',
-  'Hospitality',
-  'IT Services',
-  'Medical Equipment',
-  'Repair & Maintenance',
-];
-
-export const CONTRACT_VALUE = ['All', 'High', 'High + Medium'];
-
-export const YEARS = [2017, 2018, 2019, 2020, 2021, 2022];
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const DROPDOWN_CLASSNAMES: any = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

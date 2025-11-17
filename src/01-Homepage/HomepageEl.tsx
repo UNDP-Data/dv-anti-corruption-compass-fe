@@ -1,6 +1,7 @@
 import { motion, useInView, useScroll, useTransform } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { Spacer } from '@undp/design-system-react/Spacer';
+import { Spinner } from '@undp/design-system-react';
 
 import GlobeControls from './Components/GlobeControls';
 import Navigation from './Components/Navigation';
@@ -8,27 +9,29 @@ import GlobeComponent from './Components/GlobeComponent';
 import CountryLevelInsight from './Sections/CountryLevelInsight';
 import Introduction from './Sections/Introduction';
 
-import {
-  PillarsMetaDataType,
-  CountryTaxonomyDataType,
-  DataType,
-} from '@/Types';
+import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
 import { HeadingText, ParagraphText } from '@/Components/Typography';
-import { ProjectsSection } from '@/Components/ProjectsSection';
+import { ErrorState } from '@/Components/ErrorState';
 
 function HomepageEl({
-  pillarsMetaData,
-  countryTaxonomy,
+  indicatorsMetaData,
+  countriesList,
   data,
+  countriesListLoading,
+  countriesListError,
 }: {
-  pillarsMetaData: PillarsMetaDataType[];
-  countryTaxonomy: CountryTaxonomyDataType[];
+  indicatorsMetaData: IndicatorsMetaDataType[];
+  countriesList: CountriesDataType[];
   data: DataType[];
+  countriesListLoading: boolean;
+  countriesListError: boolean;
 }) {
   const [inViewSlide, setInViewSlide] = useState<number>(0);
-  const [selectedSubPillar, setSelectedSubPillar] = useState<string[]>(
-    [...new Set(pillarsMetaData.map(d => d.id))].map(
-      d => pillarsMetaData.find(el => el.id === d)?.subPillars[0].id || '',
+  const [selectedSubIndicator, setSelectedSubIndicator] = useState<string[]>(
+    [...new Set(indicatorsMetaData.map(d => d.mainIndicatorId))].map(
+      d =>
+        indicatorsMetaData.find(el => el.mainIndicatorId === d)
+          ?.subIndicators[0].id as string,
     ),
   );
   const [showNavigation, setShowNavigation] = useState(false);
@@ -75,11 +78,11 @@ function HomepageEl({
       {showNavigation && (
         <Navigation
           inViewSlide={
-            countryLevelInsightsInView ? pillarsMetaData.length : inViewSlide
+            countryLevelInsightsInView ? indicatorsMetaData.length : inViewSlide
           }
           globeControlsRef={globeControlsRef}
           countryLevelInsightsRef={countryLevelInsightsRef}
-          pillarsMetaData={pillarsMetaData}
+          indicatorsMetaData={indicatorsMetaData}
         />
       )}
       <div
@@ -107,7 +110,7 @@ function HomepageEl({
         }}
       >
         <div className='w-1/2 px-10'>
-          {pillarsMetaData.map((d, i) => (
+          {indicatorsMetaData.map((d, i) => (
             <div
               ref={el => {
                 globeControlsRef.current[i] = el;
@@ -118,15 +121,15 @@ function HomepageEl({
                 onViewChange={el => {
                   setInViewSlide(el);
                 }}
-                heading={d.value}
+                heading={d.name}
                 description={d.description}
-                buttons={d.subPillars.map(el => ({
-                  label: el.value,
-                  value: el.id,
+                buttons={d.subIndicators.map(el => ({
+                  label: el.name,
+                  value: `${el.mainIndicatorId}_${el.subIndicatorId}`,
                   color: el.color,
                 }))}
                 onClick={el => {
-                  setSelectedSubPillar(prev =>
+                  setSelectedSubIndicator(prev =>
                     prev.map((v, idx) => (idx === i ? el : v)),
                   );
                 }}
@@ -137,11 +140,10 @@ function HomepageEl({
         </div>
         <GlobeComponent
           data={data}
-          selectedSubPillar={selectedSubPillar[inViewSlide]}
-          countryTaxonomy={countryTaxonomy}
-          rotate={inViewSlide < pillarsMetaData.length ? true : false}
-          pillarsMetaData={pillarsMetaData}
-          selectedMainIndicator={pillarsMetaData[inViewSlide]?.id || ''}
+          selectedSubIndicator={selectedSubIndicator[inViewSlide]}
+          countriesList={countriesList}
+          rotate={inViewSlide < indicatorsMetaData.length ? true : false}
+          indicatorsMetaData={indicatorsMetaData}
         />
       </motion.div>
 
@@ -149,28 +151,19 @@ function HomepageEl({
         className='flex flex-col relative z-20'
         ref={countryLevelInsightsRef}
       >
-        <CountryLevelInsight
-          data={data}
-          countryTaxonomy={countryTaxonomy}
-          pillarsMetaData={pillarsMetaData}
-        />
-        <div className='w-full mt-20 px-20'>
-          <ProjectsSection
-            cards={[
-              {
-                img: 'https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                title: 'Global Report on Public Procurement',
-                date: 'July 2nd 2025',
-              },
-              {
-                img: 'https://plus.unsplash.com/premium_photo-1738857914575-3d3b2fb7064e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                title: 'Global Report',
-                date: 'July 2nd 2025',
-              },
-            ]}
-            heading='Recommended projects'
+        {countriesListLoading && <Spinner size='lg' className='my-20 m-auto' />}
+        {countriesListError && (
+          <div className='px-4 container mx-auto'>
+            <ErrorState />
+          </div>
+        )}
+        {!countriesListError && !countriesListLoading ? (
+          <CountryLevelInsight
+            data={data}
+            countriesList={countriesList}
+            indicatorsMetaData={indicatorsMetaData}
           />
-        </div>
+        ) : null}
         <div className='w-full my-20 px-20'>
           <HeadingText type='h2'>Partnerships</HeadingText>
           <Spacer size='xl' />

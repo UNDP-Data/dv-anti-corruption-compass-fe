@@ -1,39 +1,36 @@
-import { fetchAndParseJSON } from '@undp/data-viz/fetchAndParseData';
 import { useQuery } from '@tanstack/react-query';
 import { Spinner } from '@undp/design-system-react/Spinner';
 
 import HomepageEl from './HomepageEl';
 
-import { PillarsMetaDataType, CountryTaxonomyDataType } from '@/Types';
+import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
 import { ErrorState } from '@/Components/ErrorState';
+import { getAllCountriesAllData } from '@/QueryFn/getAllCountriesAllData';
 
-async function fetchData(pillarId: string) {
-  return fetchAndParseJSON(`/data/${pillarId}.json`);
-}
-function useAllPillarsData(pillarsId: string[]) {
+function useAllPillarsData() {
   return useQuery({
-    queryKey: ['all-pillars'],
-    queryFn: async () => {
-      const results = await Promise.all(
-        pillarsId.map(async (d: string) => ({
-          id: d,
-          data: await fetchData(d),
-        })),
-      );
-      return results;
-    },
+    queryKey: ['all-countries-all-data'],
+    queryFn: getAllCountriesAllData,
+    select: data =>
+      data.map((d: DataType) => ({
+        ...d,
+        id: `${d.mainIndicatorId}_${d.subIndicatorId}`,
+        contractValue: d.contractValue === '' ? 'null' : d.contractValue,
+      })),
   });
 }
 function Homepage({
-  pillarsMetaData,
-  countryTaxonomy,
+  indicatorsMetaData,
+  countriesList,
+  countriesListLoading,
+  countriesListError,
 }: {
-  pillarsMetaData: PillarsMetaDataType[];
-  countryTaxonomy: CountryTaxonomyDataType[];
+  indicatorsMetaData: IndicatorsMetaDataType[];
+  countriesList: CountriesDataType[];
+  countriesListLoading: boolean;
+  countriesListError: boolean;
 }) {
-  const { data, isLoading, isError } = useAllPillarsData(
-    pillarsMetaData.map(d => d.id),
-  );
+  const { data, isLoading, isError } = useAllPillarsData();
 
   if (isLoading) return <Spinner size='lg' className='my-20 m-auto' />;
   if (isError)
@@ -46,8 +43,10 @@ function Homepage({
     return (
       <HomepageEl
         data={data}
-        pillarsMetaData={pillarsMetaData}
-        countryTaxonomy={countryTaxonomy}
+        indicatorsMetaData={indicatorsMetaData}
+        countriesList={countriesList}
+        countriesListLoading={countriesListLoading}
+        countriesListError={countriesListError}
       />
     );
   return;

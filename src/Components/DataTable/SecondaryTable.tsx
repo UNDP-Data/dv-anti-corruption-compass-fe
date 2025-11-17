@@ -3,21 +3,18 @@ import { Badge } from '@undp/design-system-react/Badge';
 import { Link } from '@tanstack/react-router';
 import { Spacer } from '@undp/design-system-react/Spacer';
 import { useState } from 'react';
-import {
-  checkIfNullOrUndefined,
-  getTextColorBasedOnBgColor,
-} from '@undp/data-viz/utils';
+import { getTextColorBasedOnBgColor } from '@undp/data-viz/utils';
 import { Pagination } from '@undp/design-system-react/Pagination';
 
-import { CountryTaxonomyDataType, IndicatorDataType } from '@/Types';
+import { CountriesDataType, DataType } from '@/Types';
 
 interface Props {
-  data: IndicatorDataType[];
+  data: DataType[];
   colors: string[];
-  countryTaxonomy: CountryTaxonomyDataType[];
+  countriesList: CountriesDataType[];
 }
 
-function DataTableSimple({ data, colors = [], countryTaxonomy }: Props) {
+function DataTableSimple({ data, colors = [], countriesList }: Props) {
   const [page, setPage] = useState(1);
   const pageLength = 10;
   return (
@@ -48,9 +45,9 @@ function DataTableSimple({ data, colors = [], countryTaxonomy }: Props) {
                     <div className='flex w-full py-4 border-b border-b-[0.5px] border-b-primary-white items-center'>
                       <div className='poppins-light text-[16px]! text-primary-white! w-[45%] pr-4!'>
                         {
-                          countryTaxonomy.find(
-                            c => c['Alpha-3 code'] === el.ISO3_Code,
-                          )?.['Country or Area']
+                          countriesList.find(
+                            c => c['Alpha-3 code'] === el.countryCode,
+                          )?.['Country or Area (official name)']
                         }
                       </div>
                       <div className='poppins-light text-[16px]! text-primary-white! w-[25%] pr-4!'>
@@ -58,41 +55,45 @@ function DataTableSimple({ data, colors = [], countryTaxonomy }: Props) {
                           rounded='full'
                           className='poppins-medium py-0 text-[12px]! px-3!'
                           style={{
-                            backgroundColor:
-                              ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                el.Indicator_value,
-                              ) !== -1
+                            backgroundColor: !el.indicatorValue
+                              ? '#DADADA'
+                              : ['LOW', 'MEDIUM', 'HIGH'].indexOf(
+                                    el.indicatorValue,
+                                  ) !== -1
                                 ? colors[
                                     ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                      el.Indicator_value,
+                                      el.indicatorValue,
                                     )
                                   ]
                                 : '#DADADA',
-                            color: getTextColorBasedOnBgColor(
-                              ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                el.Indicator_value,
-                              ) !== -1
-                                ? colors[
-                                    ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                      el.Indicator_value,
-                                    )
-                                  ]
-                                : '#DADADA',
-                            ),
+                            color: !el.indicatorValue
+                              ? '#000'
+                              : getTextColorBasedOnBgColor(
+                                  ['LOW', 'MEDIUM', 'HIGH'].indexOf(
+                                    el.indicatorValue,
+                                  ) !== -1
+                                    ? colors[
+                                        ['LOW', 'MEDIUM', 'HIGH'].indexOf(
+                                          el.indicatorValue,
+                                        )
+                                      ]
+                                    : '#DADADA',
+                                ),
                           }}
                         >
-                          {el.Indicator_value}
+                          {el.indicatorValue}
                         </Badge>
                       </div>
                       <div className='poppins-light text-[16px]! text-primary-white! w-[15%] pr-4!'>
-                        {checkIfNullOrUndefined(el.Indicator_value_numeric)
+                        {el.numericValue === null ||
+                        el.numericValue === undefined
                           ? 'NA'
-                          : el.Indicator_value_numeric.toFixed(2)}
+                          : el.numericValue.toFixed(2)}
                       </div>
                       <Link
                         to='/countries/$isoCode'
                         className='poppins-light text-[16px]! text-primary-white! w-[15%] pr-4! opacity-100 hover:opacity-80 underline underline-offset-4'
-                        params={{ isoCode: el.ISO3_Code }}
+                        params={{ isoCode: el.countryCode }}
                       >
                         View Details
                       </Link>

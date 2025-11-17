@@ -3,15 +3,16 @@ import { arc } from 'd3-shape';
 
 import { ParagraphText } from '../Typography';
 
-import { IndicatorDataType, PillarsMetaDataType } from '@/Types';
+import { DataType, IndicatorsMetaDataType } from '@/Types';
 
 interface Props {
-  data: IndicatorDataType[];
+  data: DataType[];
   radius: number;
   innerRadiusRatio: number;
   marginSide: number;
   marginTop: number;
-  pillarsMetaData: PillarsMetaDataType[];
+  indicatorMetaData: IndicatorsMetaDataType;
+  maxValue: number;
 }
 
 export const Graph = ({
@@ -20,52 +21,39 @@ export const Graph = ({
   innerRadiusRatio,
   marginSide,
   marginTop,
-  pillarsMetaData,
+  indicatorMetaData,
+  maxValue,
 }: Props) => {
-  const subPillarMetaData = pillarsMetaData
-    .map(d => d.subPillars.map(el => ({ ...el, mainIndicator: d.id })))
-    .flat();
+  const subIndicatorsMetaData = indicatorMetaData.subIndicators;
   const x = scaleBand()
-    .domain([...new Set(data.map(d => d.Indicator))])
+    .domain([...new Set(subIndicatorsMetaData.map(d => d.id))])
     .range([-Math.PI / 2, Math.PI / 2]);
   const r = scaleLinear()
-    .domain([0, 1])
-    .range([0, radius * (1 - innerRadiusRatio)]);
-  const r2 = scaleLinear()
-    .domain([0, 100])
+    .domain([0, maxValue])
     .range([0, radius * (1 - innerRadiusRatio)]);
   return (
     <>
       <svg width={(radius + marginSide) * 2} height={radius + marginTop}>
         <defs>
-          {[...new Set(pillarsMetaData.map(d => d.id))].map((d, i) => (
-            <radialGradient
-              key={i}
-              id={`${d}-radial-gradient`}
-              gradientUnits='userSpaceOnUse'
-              r={radius}
-              cx={0}
-              cy={0}
-              fr={radius * innerRadiusRatio}
-              fx={0}
-              fy={0}
-            >
-              <stop
-                offset='10%'
-                stopColor={
-                  pillarsMetaData.find(el => el.id === d)
-                    ?.indicatorGradientColors[0]
-                }
-              />
-              <stop
-                offset='90%'
-                stopColor={
-                  pillarsMetaData.find(el => el.id === d)
-                    ?.indicatorGradientColors[1]
-                }
-              />
-            </radialGradient>
-          ))}
+          <radialGradient
+            id={`${indicatorMetaData.mainIndicatorId}-radial-gradient`}
+            gradientUnits='userSpaceOnUse'
+            r={radius}
+            cx={0}
+            cy={0}
+            fr={radius * innerRadiusRatio}
+            fx={0}
+            fy={0}
+          >
+            <stop
+              offset='10%'
+              stopColor={indicatorMetaData.gradientColor.split(',')[0]}
+            />
+            <stop
+              offset='90%'
+              stopColor={indicatorMetaData.gradientColor.split(',')[1]}
+            />
+          </radialGradient>
         </defs>
         <g
           transform={`translate(${radius + marginSide},${radius + marginTop})`}
@@ -82,7 +70,7 @@ export const Graph = ({
             fill='#fff'
           />
           {data.map((d, i) => {
-            const startAngle = x(d.Indicator)!;
+            const startAngle = x(d.id)!;
             const endAngle = startAngle + (x.bandwidth() as number);
             const angle = (startAngle + endAngle) / 2;
 
@@ -93,8 +81,8 @@ export const Graph = ({
                     arc()({
                       innerRadius: radius * innerRadiusRatio,
                       outerRadius: radius,
-                      startAngle: x(d.Indicator) as number,
-                      endAngle: x(d.Indicator)! + (x.bandwidth() as number),
+                      startAngle: x(d.id) as number,
+                      endAngle: x(d.id)! + (x.bandwidth() as number),
                     }) as string
                   }
                   fill='#F3F4F6'
@@ -132,13 +120,10 @@ export const Graph = ({
                       alignment='center'
                       marginBottom='none'
                     >
-                      {
-                        subPillarMetaData.find(el => el.id === d.Indicator)
-                          ?.value
-                      }
+                      {subIndicatorsMetaData.find(el => el.id === d.id)?.name}
                     </ParagraphText>
                     <ParagraphText size='xs' weight='light' leading='loose'>
-                      {d.Indicator_value || 'NA'}
+                      {d.indicatorValue || 'NA'}
                     </ParagraphText>
                   </div>
                 </foreignObject>
@@ -147,16 +132,12 @@ export const Graph = ({
                     arc()({
                       innerRadius: radius * innerRadiusRatio,
                       outerRadius:
-                        radius * innerRadiusRatio +
-                        (subPillarMetaData.find(el => el.id === d.Indicator)
-                          ?.mainIndicator === 'enterpriseSurvey'
-                          ? r2(d.Indicator_value_numeric)
-                          : r(d.Indicator_value_numeric)),
-                      startAngle: x(d.Indicator) as number,
-                      endAngle: x(d.Indicator)! + (x.bandwidth() as number),
+                        radius * innerRadiusRatio + r(d.numericValue || 0),
+                      startAngle: x(d.id) as number,
+                      endAngle: x(d.id)! + (x.bandwidth() as number),
                     }) as string
                   }
-                  fill={`url(#${subPillarMetaData.find(el => el.id === d.Indicator)?.mainIndicator}-radial-gradient)`}
+                  fill={`url(#${indicatorMetaData.mainIndicatorId}-radial-gradient)`}
                 />
               </g>
             );

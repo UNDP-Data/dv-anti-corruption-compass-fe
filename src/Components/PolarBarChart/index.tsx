@@ -1,19 +1,22 @@
 import { useEffect, useRef, useState, useEffectEvent } from 'react';
+import { Spinner } from '@undp/design-system-react/Spinner';
 
 import { Graph } from './Graph';
 
-import { IndicatorDataType, PillarsMetaDataType } from '@/Types';
+import { DataType, IndicatorsMetaDataType } from '@/Types';
 
 interface Props {
-  data: IndicatorDataType[];
+  data: DataType[];
   innerRadiusRatio?: number;
-  pillarsMetaData: PillarsMetaDataType[];
+  indicatorMetaData: IndicatorsMetaDataType;
+  maxValue?: number;
 }
 
 export const PolarBarChart = ({
   data,
   innerRadiusRatio = 0.6,
-  pillarsMetaData,
+  indicatorMetaData,
+  maxValue = 100,
 }: Props) => {
   const [radius, setRadius] = useState(0);
   const marginSide = 100;
@@ -43,9 +46,11 @@ export const PolarBarChart = ({
           innerRadiusRatio={innerRadiusRatio}
           marginSide={marginSide}
           marginTop={marginTop}
-          pillarsMetaData={pillarsMetaData}
+          indicatorMetaData={indicatorMetaData}
+          maxValue={maxValue}
         />
       )}
+      {radius === 0 && <Spinner size='lg' className='my-20 m-auto' />}
     </div>
   );
 };
