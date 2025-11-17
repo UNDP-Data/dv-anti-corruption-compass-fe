@@ -109,7 +109,9 @@ function UncacReviewStatus({ isoCode }: Props) {
           </a>
         </>
       ) : (
-        <NoData isBgWhite />
+        <div className='my-8'>
+          <NoData isBgWhite />
+        </div>
       )}
     </div>
   );

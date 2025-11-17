@@ -97,7 +97,9 @@ function FATF({ isoCode }: Props) {
           ))}
         </>
       ) : (
-        <NoData isBgWhite />
+        <div className='my-8'>
+          <NoData isBgWhite />
+        </div>
       )}
       <Spacer size='2xl' />
       <div className='p-6 bg-[#4B6E911A] border border-[#4B6E9180]'>

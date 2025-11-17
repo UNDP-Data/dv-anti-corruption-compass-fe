@@ -91,7 +91,7 @@ function AntiCorruptionStrategies({ isoCode }: Props) {
                 marginBottom='none'
                 className='text-[var(--color-text-black)]  w-[25%]'
               >
-                {d['Coverage period']}
+                {d['Coverage period'] || '-'}
               </ParagraphText>
               <ParagraphText
                 weight='regular'
@@ -117,7 +117,9 @@ function AntiCorruptionStrategies({ isoCode }: Props) {
           ))}
         </>
       ) : (
-        <NoData isBgWhite />
+        <div className='my-8'>
+          <NoData isBgWhite />
+        </div>
       )}
     </div>
   );

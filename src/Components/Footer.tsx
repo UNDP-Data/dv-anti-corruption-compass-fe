@@ -56,6 +56,9 @@ export const Footer = ({
           <Link to='/methodology'>
             <ParagraphText>Methodology</ParagraphText>
           </Link>
+          <Link to='/countries'>
+            <ParagraphText>Country Profile</ParagraphText>
+          </Link>
           <Link to='/about'>
             <ParagraphText>About Us</ParagraphText>
           </Link>

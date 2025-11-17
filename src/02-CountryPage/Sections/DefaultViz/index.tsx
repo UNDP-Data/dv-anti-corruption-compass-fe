@@ -32,7 +32,12 @@ function DefaultViz({ countryInfo, indicatorMetaData, maxValue }: Props) {
     indicatorMetaData.mainIndicatorId,
   );
 
-  if (isLoading) return <Spinner size='lg' className='my-20 m-auto' />;
+  if (isLoading)
+    return (
+      <div className='my-8'>
+        <Spinner size='lg' className='my-20 m-auto' />
+      </div>
+    );
   if (isError)
     return (
       <div className='px-4 container mx-auto'>

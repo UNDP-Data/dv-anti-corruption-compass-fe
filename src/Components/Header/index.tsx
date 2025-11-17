@@ -172,14 +172,14 @@ export const Header = ({
                     </Link>
                   ))}
                 </div>
-                <Link to='/countries'>
-                  <ParagraphText size='sm' weight='medium' leading='none'>
-                    Country Profile
-                  </ParagraphText>
-                </Link>
                 <Link to='/methodology'>
                   <ParagraphText size='sm' weight='medium' leading='none'>
                     Methodology
+                  </ParagraphText>
+                </Link>
+                <Link to='/countries'>
+                  <ParagraphText size='sm' weight='medium' leading='none'>
+                    Country Profile
                   </ParagraphText>
                 </Link>
                 <Link to='/about'>

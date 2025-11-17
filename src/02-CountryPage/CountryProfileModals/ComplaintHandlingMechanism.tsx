@@ -78,7 +78,9 @@ function ComplaintHandlingMechanism({ isoCode }: Props) {
           </div>
         ))
       ) : (
-        <NoData isBgWhite />
+        <div className='my-8'>
+          <NoData isBgWhite />
+        </div>
       )}
     </div>
   );

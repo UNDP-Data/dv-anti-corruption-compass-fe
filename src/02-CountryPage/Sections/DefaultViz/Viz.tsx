@@ -40,7 +40,7 @@ function Viz({ data, indicatorMetaData, maxValue }: Props) {
         data={data.filter(d => d.year === latestYear)}
         maxValue={maxValue}
       />
-      <Spacer size='4xl' />
+      <Spacer size='8xl' />
       <div className='flex items-center gap-4 w-full'>
         <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
           <Label className='text-primary-white'>Sub-pillar</Label>

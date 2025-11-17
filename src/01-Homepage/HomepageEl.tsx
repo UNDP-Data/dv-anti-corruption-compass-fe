@@ -146,7 +146,6 @@ function HomepageEl({
           indicatorsMetaData={indicatorsMetaData}
         />
       </motion.div>
-
       <div
         className='flex flex-col relative z-20'
         ref={countryLevelInsightsRef}

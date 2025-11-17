@@ -108,7 +108,7 @@ function AntiCorruptionLaws({ isoCode }: Props) {
                 marginBottom='none'
                 className='text-[var(--color-text-black)] w-[15%]'
               >
-                {d.Year}
+                {d.Year || '-'}
               </ParagraphText>
               <ParagraphText
                 weight='regular'
@@ -116,7 +116,7 @@ function AntiCorruptionLaws({ isoCode }: Props) {
                 marginBottom='none'
                 className='text-[var(--color-text-black)] w-[15%]'
               >
-                {d['Revision Year']}
+                {d['Revision Year'] || '-'}
               </ParagraphText>
               <a
                 href={d.Link}
@@ -134,7 +134,9 @@ function AntiCorruptionLaws({ isoCode }: Props) {
           ))}
         </>
       ) : (
-        <NoData isBgWhite />
+        <div className='my-8'>
+          <NoData isBgWhite />
+        </div>
       )}
     </div>
   );
