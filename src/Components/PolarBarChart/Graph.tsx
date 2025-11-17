@@ -69,11 +69,12 @@ export const Graph = ({
             }
             fill='#fff'
           />
-          {data.map((d, i) => {
+          {subIndicatorsMetaData.map((d, i) => {
             const startAngle = x(d.id)!;
             const endAngle = startAngle + (x.bandwidth() as number);
             const angle = (startAngle + endAngle) / 2;
-
+            const val = data.find(el => el.id === d.id)?.numericValue || 0;
+            const cat = data.find(el => el.id === d.id)?.indicatorValue || 'NA';
             return (
               <g key={i}>
                 <path
@@ -120,10 +121,10 @@ export const Graph = ({
                       alignment='center'
                       marginBottom='none'
                     >
-                      {subIndicatorsMetaData.find(el => el.id === d.id)?.name}
+                      {d.name}
                     </ParagraphText>
                     <ParagraphText size='xs' weight='light' leading='loose'>
-                      {d.indicatorValue || 'NA'}
+                      {cat}
                     </ParagraphText>
                   </div>
                 </foreignObject>
@@ -131,8 +132,7 @@ export const Graph = ({
                   d={
                     arc()({
                       innerRadius: radius * innerRadiusRatio,
-                      outerRadius:
-                        radius * innerRadiusRatio + r(d.numericValue || 0),
+                      outerRadius: radius * innerRadiusRatio + r(val),
                       startAngle: x(d.id) as number,
                       endAngle: x(d.id)! + (x.bandwidth() as number),
                     }) as string

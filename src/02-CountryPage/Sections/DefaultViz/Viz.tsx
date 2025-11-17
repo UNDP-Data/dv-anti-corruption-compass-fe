@@ -4,7 +4,7 @@ import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
 import { DonutChart } from '@undp/data-viz/DonutChart';
 import { SimpleLineChart } from '@undp/data-viz/SimpleLineChart';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { DROPDOWN_CLASSNAMES } from '@/Constants';
 import { GraphCard } from '@/Components/GraphCard';
@@ -22,18 +22,22 @@ interface Props {
 
 function Viz({ data, indicatorMetaData, maxValue }: Props) {
   const yearList = [...new Set(data.map(d => d.year))].sort((a, b) => b - a);
-  const [selectedYear, setSelectedYear] = useState(yearList[0]);
+  const latestYear = yearList[0];
+  const [selectedYear, setSelectedYear] = useState(latestYear);
   const [selectedSubIndicator, setSelectedSubIndicator] = useState({
     value: indicatorMetaData.subIndicators[0].id,
     label: indicatorMetaData.subIndicators[0].name,
   });
+  useEffect(() => {
+    setSelectedYear(latestYear);
+  }, [latestYear]);
   return (
     <div className='w-full'>
       <Spacer size='4xl' />
       <PolarBarChart
         innerRadiusRatio={0.6}
         indicatorMetaData={indicatorMetaData}
-        data={data.filter(d => d.year === yearList[0])}
+        data={data.filter(d => d.year === latestYear)}
         maxValue={maxValue}
       />
       <Spacer size='4xl' />
