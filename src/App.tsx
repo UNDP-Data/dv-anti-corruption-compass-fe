@@ -34,7 +34,8 @@ import { ErrorState } from './Components/ErrorState';
 import MainIndicatorPageEl from './03-MainIndicator';
 import { getIndicatorsMetaData } from './QueryFn/getIndicatorsMetaData';
 import { getCountriesList } from './QueryFn/getCountriesList';
-import { HeadingText } from './Components/Typography';
+import { HeadingText, ParagraphText } from './Components/Typography';
+import { Button } from './Components/Button';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -120,7 +121,25 @@ function RootComponent() {
         <main className='flex-1 pt-30'>
           <ScrollToTop />
           <Outlet />
+          <div className='container z-[1000] relative'>
+            <div
+              style={{
+                background:
+                  'linear-gradient(97.48deg, #17232B -5.56%, #4E7691 156.23%)',
+              }}
+              className='px-8 !py-[80px] flex items-center justify-center flex-col gap-8 w-full mt-16'
+            >
+              <HeadingText type='h2'>Have feedback for us?</HeadingText>
+              <ParagraphText>
+                Send us an email at anti-corruption@undp.org
+              </ParagraphText>
+              <a href='mailto:anti-corruption@undp.org'>
+                <Button variant='secondary'>Send email</Button>
+              </a>
+            </div>
+          </div>
         </main>
+        <Spacer size='7xl' />
         <Footer
           indicatorsMetaData={indicatorsMetaData.data}
           indicatorsMetaDataLoading={indicatorsMetaData.isLoading}

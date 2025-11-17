@@ -9,8 +9,6 @@ import Viz from './Viz';
 import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
 import { ErrorState } from '@/Components/ErrorState';
 import { getIndicatorData } from '@/QueryFn/getIndicatorData';
-import { HeadingText } from '@/Components/Typography';
-import { Button } from '@/Components/Button';
 
 interface Props {
   indicatorMetaData: IndicatorsMetaDataType;
@@ -42,7 +40,7 @@ function MainIndicatorPageEl({
   );
   return (
     <>
-      <div className='w-full mb-16'>
+      <div className='w-full mb-0'>
         <Overview
           title={indicatorMetaData.name}
           description={indicatorMetaData.description}
@@ -69,23 +67,6 @@ function MainIndicatorPageEl({
           />
         )}
       </div>
-      <div className='container'>
-        <div
-          style={{
-            background:
-              'linear-gradient(97.48deg, #17232B -5.56%, #4E7691 156.23%)',
-          }}
-          className='px-8 !py-[80px] flex items-center justify-center flex-col gap-8 w-full'
-        >
-          <HeadingText type='h2'>Have feedback for us?</HeadingText>
-          <a href='mailto:anti-corruption@undp.org'>
-            <Button variant='secondary'>
-              Send us an email: anti-corruption@undp.org
-            </Button>
-          </a>
-        </div>
-      </div>
-      <Spacer size='7xl' />
     </>
   );
 }

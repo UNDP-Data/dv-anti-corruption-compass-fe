@@ -9,7 +9,6 @@ import DefaultViz from './Sections/DefaultViz';
 import { CountrySelect } from '@/Components/CountrySelect';
 import { CountriesDataType, IndicatorsMetaDataType } from '@/Types';
 import { HeadingText, ParagraphText } from '@/Components/Typography';
-import { Button } from '@/Components/Button';
 
 interface Props {
   isoCode: string;
@@ -33,7 +32,7 @@ function CountryPageEl({ isoCode, indicatorsMetaData, countriesList }: Props) {
   }
   return (
     <div className='flex flex-col container mx-auto'>
-      <div className='flex items-center justify-center gap-1 flex-col mt-16 mb-16'>
+      <div className='flex items-center justify-center gap-1 flex-col mt-16 mb-0'>
         <img
           alt='Country flag'
           className='w-11 mb-2'
@@ -96,23 +95,7 @@ function CountryPageEl({ isoCode, indicatorsMetaData, countriesList }: Props) {
           <Spacer size='6xl' />
           <CountryProfile isoCode={isoCode} />
         </div>
-        <Spacer size='3xl' />
       </div>
-      <div
-        style={{
-          background:
-            'linear-gradient(97.48deg, #17232B -5.56%, #4E7691 156.23%)',
-        }}
-        className='px-8 !py-[80px] flex items-center justify-center flex-col gap-8 w-full'
-      >
-        <HeadingText type='h2'>Have feedback for us?</HeadingText>
-        <a href='mailto:anti-corruption@undp.org'>
-          <Button variant='secondary'>
-            Send us an email: anti-corruption@undp.org
-          </Button>
-        </a>
-      </div>
-      <Spacer size='7xl' />
     </div>
   );
 }

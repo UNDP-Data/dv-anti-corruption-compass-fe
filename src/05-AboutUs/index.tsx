@@ -1,94 +1,76 @@
 import { Spacer } from '@undp/design-system-react/Spacer';
 
 import { HeadingText, ParagraphText } from '@/Components/Typography';
-import { Button } from '@/Components/Button';
+
 function AboutUsPage() {
   return (
     <div className='relative container mx-auto'>
-      <div className='mb-16'>
-        <Spacer size='7xl' />
-        <HeadingText type='h2'>
-          About the Global Corruption Measurement Digital Dashboard
-        </HeadingText>
-        <Spacer size='xl' />
-        <ParagraphText>
-          UNDP’s Global Corruption Measurement Data Dashboard is a central
-          repository that brings together anti-corruption indicators and
-          methodologies to provide reliable data to inform dialogue, support
-          collaboration, and guide evidence-based policymaking
-          <br />
-          <br />
-          Our approach respects national contexts and ownership, and is grounded
-          in partnership, aligning with countries’ own development priorities
-          and institutional realities. The Global Corruption Measurement Data
-          Dashboard is designed to be adaptive, supportive, and non-punitive;
-          focussing on learning, capacity-building, and progress over time.
-        </ParagraphText>
-        <Spacer size='6xl' />
-        <HeadingText type='h2'>
-          About the Global Initiative on Corruption Measurement
-        </HeadingText>
-        <Spacer size='xl' />
-        <div className='flex gap-10 items-center flex-wrap'>
-          <div className='w-full md:w-[calc(60%-20px)] shrink-0'>
-            <ParagraphText>
-              The Global Initiative for Measuring Corruption is part of UNDP’s
-              Global Anti-Corruption Programme, which serves as the
-              organization’s main platform for providing policy and programmatic
-              support on anti-corruption.
-              <br />
-              <br />
-              The Global Initiative on Measuring Corruption, led by UNDP
-              alongside UNODC and IACA, and supported by Nazaha (Saudi Arabia's
-              Oversight and Anti-Corruption Authority), is spearheading efforts
-              for corruption measurement across different sectors by developing
-              new evidence-based methodologies and tools for measuring
-              corruption that can be used to assess countries’ performance and
-              progress in combating corruption.
-              <br />
-              <br />
-              Measuring corruption is critical to understanding its drivers,
-              impacts, and trends – and to designing effective responses. By
-              developing reliable, comparable indicators and actionable data, we
-              can strengthen transparency, accountability, and evidence-based
-              policymaking in the fight against corruption.
-              <br />
-              <br />
-              Through initiatives such as the Global Initiative on Measuring
-              Corruption and the development of innovative data-driven tools
-              such as this dashboard, UNDP is setting international standards,
-              shaping policy agendas, and supporting countries to move from
-              fragmented efforts to coordinated, evidence-based action against
-              corruption.
-              <br />
-              <br />
-              Find out more on UNDP Anti-Corruption Web Portal here.
-            </ParagraphText>
-          </div>
-          <div className='w-full md:w-[calc(40%-20px)]'>
-            <img
-              src='/imgs/GlobalInitiativeLogo.png'
-              alt='Logo'
-              className='inset-0 w-full h-full object-cover'
-            />
-          </div>
+      <Spacer size='7xl' />
+      <HeadingText type='h2'>
+        About the Global Corruption Measurement Digital Dashboard
+      </HeadingText>
+      <Spacer size='xl' />
+      <ParagraphText>
+        UNDP’s Global Corruption Measurement Data Dashboard is a central
+        repository that brings together anti-corruption indicators and
+        methodologies to provide reliable data to inform dialogue, support
+        collaboration, and guide evidence-based policymaking
+        <br />
+        <br />
+        Our approach respects national contexts and ownership, and is grounded
+        in partnership, aligning with countries’ own development priorities and
+        institutional realities. The Global Corruption Measurement Data
+        Dashboard is designed to be adaptive, supportive, and non-punitive;
+        focussing on learning, capacity-building, and progress over time.
+      </ParagraphText>
+      <Spacer size='6xl' />
+      <HeadingText type='h2'>
+        About the Global Initiative on Corruption Measurement
+      </HeadingText>
+      <Spacer size='xl' />
+      <div className='flex gap-10 items-center flex-wrap'>
+        <div className='w-full md:w-[calc(60%-20px)] shrink-0'>
+          <ParagraphText>
+            The Global Initiative for Measuring Corruption is part of UNDP’s
+            Global Anti-Corruption Programme, which serves as the organization’s
+            main platform for providing policy and programmatic support on
+            anti-corruption.
+            <br />
+            <br />
+            The Global Initiative on Measuring Corruption, led by UNDP alongside
+            UNODC and IACA, and supported by Nazaha (Saudi Arabia's Oversight
+            and Anti-Corruption Authority), is spearheading efforts for
+            corruption measurement across different sectors by developing new
+            evidence-based methodologies and tools for measuring corruption that
+            can be used to assess countries’ performance and progress in
+            combating corruption.
+            <br />
+            <br />
+            Measuring corruption is critical to understanding its drivers,
+            impacts, and trends – and to designing effective responses. By
+            developing reliable, comparable indicators and actionable data, we
+            can strengthen transparency, accountability, and evidence-based
+            policymaking in the fight against corruption.
+            <br />
+            <br />
+            Through initiatives such as the Global Initiative on Measuring
+            Corruption and the development of innovative data-driven tools such
+            as this dashboard, UNDP is setting international standards, shaping
+            policy agendas, and supporting countries to move from fragmented
+            efforts to coordinated, evidence-based action against corruption.
+            <br />
+            <br />
+            Find out more on UNDP Anti-Corruption Web Portal here.
+          </ParagraphText>
+        </div>
+        <div className='w-full md:w-[calc(40%-20px)]'>
+          <img
+            src='/imgs/GlobalInitiativeLogo.png'
+            alt='Logo'
+            className='inset-0 w-full h-full object-cover'
+          />
         </div>
       </div>
-      <div
-        style={{
-          background:
-            'linear-gradient(97.48deg, #17232B -5.56%, #4E7691 156.23%)',
-        }}
-        className='px-8 !py-[80px] flex items-center justify-center flex-col gap-8 w-full'
-      >
-        <HeadingText type='h2'>Have feedback for us?</HeadingText>
-        <a href='mailto:anti-corruption@undp.org'>
-          <Button variant='secondary'>
-            Send us an email: anti-corruption@undp.org
-          </Button>
-        </a>
-      </div>
-      <Spacer size='7xl' />
     </div>
   );
 }
