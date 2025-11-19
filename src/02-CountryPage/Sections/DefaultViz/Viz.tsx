@@ -23,6 +23,7 @@ interface Props {
 function Viz({ data, indicatorMetaData, maxValue }: Props) {
   const yearList = [...new Set(data.map(d => d.year))].sort((a, b) => b - a);
   const latestYear = yearList[0];
+  const firstSubIndicator = indicatorMetaData.subIndicators[0];
   const [selectedYear, setSelectedYear] = useState(latestYear);
   const [selectedSubIndicator, setSelectedSubIndicator] = useState({
     value: indicatorMetaData.subIndicators[0].id,
@@ -31,6 +32,12 @@ function Viz({ data, indicatorMetaData, maxValue }: Props) {
   useEffect(() => {
     setSelectedYear(latestYear);
   }, [latestYear]);
+  useEffect(() => {
+    setSelectedSubIndicator({
+      value: firstSubIndicator.id,
+      label: firstSubIndicator.name,
+    });
+  }, [firstSubIndicator]);
   return (
     <div className='w-full'>
       <Spacer size='4xl' />

@@ -2,7 +2,7 @@ import { Spacer } from '@undp/design-system-react/Spacer';
 import { Label } from '@undp/design-system-react/Label';
 import * as THREE from 'three';
 import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowDownToLine } from 'lucide-react';
 import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
@@ -26,11 +26,22 @@ interface Props {
 
 function Viz({ data, countriesList, indicatorMetaData }: Props) {
   const yearList = [...new Set(data.map(d => d.year))].sort((a, b) => b - a);
-  const [selectedYear, setSelectedYear] = useState(yearList[0]);
+  const latestYear = yearList[0];
+  const firstSubIndicator = indicatorMetaData.subIndicators[0];
+  const [selectedYear, setSelectedYear] = useState(latestYear);
   const [selectedSubIndicator, setSelectedSubIndicator] = useState({
     value: indicatorMetaData.subIndicators[0].id,
     label: indicatorMetaData.subIndicators[0].name,
   });
+  useEffect(() => {
+    setSelectedYear(latestYear);
+  }, [latestYear]);
+  useEffect(() => {
+    setSelectedSubIndicator({
+      value: firstSubIndicator.id,
+      label: firstSubIndicator.name,
+    });
+  }, [firstSubIndicator]);
   return (
     <div className='container mx-auto'>
       <div className='flex items-center gap-4 w-full'>
@@ -93,9 +104,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                 d.year === selectedYear &&
                 d.id === selectedSubIndicator.value &&
                 d.contractValue === null &&
-                d.numericValue !== null &&
-                d.indicatorValue !== null &&
-                d.indicatorValue !== undefined,
+                d.numericValue !== null,
             ).length > 0 ? (
               <>
                 <ParagraphText size='sm'>
@@ -144,9 +153,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                             d.year === selectedYear &&
                             d.id === selectedSubIndicator.value &&
                             d.contractValue === null &&
-                            d.numericValue !== null &&
-                            d.indicatorValue !== null &&
-                            d.indicatorValue !== undefined,
+                            d.numericValue !== null,
                         )
                         .map(d => d.numericValue),
                     ),
@@ -168,9 +175,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                             d.year === selectedYear &&
                             d.id === selectedSubIndicator.value &&
                             d.contractValue === null &&
-                            d.numericValue !== null &&
-                            d.indicatorValue !== null &&
-                            d.indicatorValue !== undefined,
+                            d.numericValue !== null,
                         )
                         .map(d => d.numericValue),
                     ),
@@ -193,9 +198,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                 d.year === selectedYear &&
                 d.id === selectedSubIndicator.value &&
                 d.contractValue === null &&
-                d.numericValue !== null &&
-                d.indicatorValue !== null &&
-                d.indicatorValue !== undefined,
+                d.numericValue !== null,
             ).length > 0 ? (
               <>
                 <div className='flex flex-col gap-4 grow radialGradientMask'>
@@ -283,9 +286,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                       d.year === selectedYear &&
                       d.id === selectedSubIndicator.value &&
                       d.contractValue === null &&
-                      d.numericValue !== null &&
-                      d.indicatorValue !== null &&
-                      d.indicatorValue !== undefined,
+                      d.numericValue !== null,
                   )}
                   colors={
                     indicatorMetaData.subIndicators

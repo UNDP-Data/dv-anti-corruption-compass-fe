@@ -81,7 +81,7 @@ function DataTableSimple({ data, colors = [], countriesList }: Props) {
                                 ),
                           }}
                         >
-                          {el.indicatorValue}
+                          {el.indicatorValue || 'NA'}
                         </Badge>
                       </div>
                       <div className='poppins-light text-[16px]! text-primary-white! w-[15%] pr-4!'>
