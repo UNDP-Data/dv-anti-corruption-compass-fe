@@ -1,5 +1,14 @@
 export type STATUS_DATA_TYPE = 'LOW' | 'MEDIUM' | 'HIGH' | 'NOT AVAILABLE';
 
+export interface DataAvailabilityDataType {
+  Country_code_ISO_3: string;
+  Year: number;
+  Product_market?: string;
+  Indicator: string;
+  Contract_value?: string;
+  Indicator_availability: number;
+}
+
 export interface DataType {
   factId: number;
   countryCode: string;

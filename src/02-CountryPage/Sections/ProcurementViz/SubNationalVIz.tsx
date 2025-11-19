@@ -23,6 +23,7 @@ function useRegionalDataForCountry(
       'indicator-data',
       countryCode,
       mainIndicatorId,
+      subIndicatorId,
       year,
       productMarketId,
     ],

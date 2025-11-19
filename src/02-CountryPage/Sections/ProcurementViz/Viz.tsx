@@ -5,17 +5,25 @@ import { DonutChart } from '@undp/data-viz/DonutChart';
 import { SimpleLineChart } from '@undp/data-viz/SimpleLineChart';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
 import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Spinner } from '@undp/design-system-react';
 
 import SubNationalVIz from './SubNationalVIz';
 
 import { DROPDOWN_CLASSNAMES } from '@/Constants';
 import { GraphCard } from '@/Components/GraphCard';
-import { DataType, IndicatorsMetaDataType } from '@/Types';
+import {
+  DataAvailabilityDataType,
+  DataType,
+  IndicatorsMetaDataType,
+} from '@/Types';
 import { NoData } from '@/Components/NoData';
 import { ParagraphText } from '@/Components/Typography';
 import { customDropdownComponents } from '@/Utils/DropdownComponents';
 import { PolarBarChart } from '@/Components/PolarBarChart';
 import { BarChartList } from '@/Components/BarChartList';
+import { getDataAvailability } from '@/QueryFn/getDataAvailability';
+import { ErrorState } from '@/Components/ErrorState';
 
 interface MarketListDataType {
   productMarketId: number;
@@ -43,6 +51,19 @@ const CONTRACT_VALUE = [
   'High + Medium',
 ];
 
+function useDataDataAvailability() {
+  return useQuery({
+    queryKey: ['data-availability-data'],
+    queryFn: getDataAvailability,
+    select: data =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (data as any).map((d: any) => ({
+        ...d,
+        Indicator_availability: d.Indicator_availability * 100,
+      })),
+  });
+}
+
 function Viz({
   data,
   indicatorMetaData,
@@ -51,6 +72,7 @@ function Viz({
   regionList,
   countryCode,
 }: Props) {
+  const dataAvailabilityData = useDataDataAvailability();
   const yearList = [...new Set(data.map(d => d.year))].sort((a, b) => b - a);
   const latestYear = yearList[0];
   const marketListForCountry = [...new Set(data.map(d => d.productMarketId))]
@@ -63,8 +85,9 @@ function Viz({
     value: indicatorMetaData.subIndicators[0].id,
     label: indicatorMetaData.subIndicators[0].name,
   });
-  const [selectedMarket, setSelectedMarket] =
-    useState<null | MarketListDataType>(null);
+  const [selectedMarket, setSelectedMarket] = useState<
+    undefined | MarketListDataType
+  >(undefined);
   const [selectedContractValue, setSelectedContractValue] = useState({
     value: null,
     label: 'No contract type selected',
@@ -131,10 +154,13 @@ function Viz({
           <DropdownSelect
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onChange={(d: any) => {
-              setSelectedMarket({
-                name: d.label,
-                productMarketId: d.value,
-              });
+              const opt = d
+                ? {
+                    name: d.label,
+                    productMarketId: d.value,
+                  }
+                : undefined;
+              setSelectedMarket(opt);
             }}
             value={
               selectedMarket
@@ -149,6 +175,7 @@ function Viz({
               value: d.productMarketId,
               label: d.name,
             }))}
+            isClearable
             size='base'
             variant='normal'
             className='poppins-regular border-0! rounded-[8px]!'
@@ -190,7 +217,8 @@ function Viz({
                 d.year === selectedYear &&
                 d.productMarketId ===
                   (selectedMarket ? selectedMarket.productMarketId : null) &&
-                d.contractValue === (selectedContractValue.value || null),
+                d.contractValue === (selectedContractValue.value || null) &&
+                d.numericValue !== null,
             ).length !== 0 ? (
               <>
                 <ParagraphText size='sm'>
@@ -358,7 +386,7 @@ function Viz({
                     ],
                   )}
                   lineColor={indicatorMetaData.mainColor || '#fff'}
-                  showDots={false}
+                  showDots
                   animate
                   classNames={{
                     xAxis: {
@@ -374,6 +402,79 @@ function Viz({
                   <NoData />
                 </div>
               )}
+            </div>
+          </GraphCard>
+          <GraphCard
+            title='Data availability over time'
+            chips={[selectedSubIndicator.label]}
+          >
+            <div className='flex h-[360px] dark w-full'>
+              {dataAvailabilityData.isLoading ? (
+                <Spinner size='lg' className='my-20 m-auto' />
+              ) : dataAvailabilityData.isError ? (
+                <div className='px-4 container mx-auto'>
+                  <ErrorState />
+                </div>
+              ) : dataAvailabilityData.data ? (
+                (
+                  dataAvailabilityData.data as DataAvailabilityDataType[]
+                ).filter(
+                  d =>
+                    d.Country_code_ISO_3 === countryCode &&
+                    d.Contract_value ===
+                      (selectedContractValue.value || undefined) &&
+                    d.Indicator ===
+                      indicatorMetaData.subIndicators.find(
+                        el => el.id === selectedSubIndicator.value,
+                      )?.code &&
+                    d.Product_market ===
+                      (selectedMarket ? selectedMarket.name : undefined),
+                ).length > 0 ? (
+                  <SimpleLineChart
+                    data={transformDataForGraph(
+                      (
+                        dataAvailabilityData.data as DataAvailabilityDataType[]
+                      ).filter(
+                        d =>
+                          d.Country_code_ISO_3 === countryCode &&
+                          d.Contract_value ===
+                            (selectedContractValue.value || undefined) &&
+                          d.Indicator ===
+                            indicatorMetaData.subIndicators.find(
+                              el => el.id === selectedSubIndicator.value,
+                            )?.code &&
+                          d.Product_market ===
+                            (selectedMarket ? selectedMarket.name : undefined),
+                      ),
+                      'lineChart',
+                      [
+                        { chartConfigId: 'date', columnId: 'Year' },
+                        {
+                          chartConfigId: 'y',
+                          columnId: 'Indicator_availability',
+                        },
+                      ],
+                    )}
+                    lineColor={indicatorMetaData.mainColor || '#fff'}
+                    showDots
+                    maxValue={100}
+                    animate
+                    suffix=' %'
+                    classNames={{
+                      xAxis: {
+                        labels: 'poppins-regular',
+                      },
+                      yAxis: {
+                        labels: 'poppins-regular',
+                      },
+                    }}
+                  />
+                ) : (
+                  <div className='h-full flex items-center justify-center w-full'>
+                    <NoData />
+                  </div>
+                )
+              ) : null}
             </div>
           </GraphCard>
         </div>
