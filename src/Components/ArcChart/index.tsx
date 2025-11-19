@@ -1,3 +1,4 @@
+import { NoData } from '../NoData';
 import { ParagraphText } from '../Typography';
 
 import { Graph } from './Graph';
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export const ArcChart = ({ data, colors, subPillars }: Props) => {
+  if (data.length === 0) return <NoData isBgWhite />;
   return (
     <div className='bg-transparent w-full mx-auto'>
       <Graph data={data} radius={125} colors={colors} />

@@ -78,7 +78,7 @@ export const Header = ({
                   className='poppins-medium !text-[14px] py-4 px-3 hover:!bg-[#4B6E91] text-[var(--color-black-bg)] hover:!text-[var(--color-text-white)]'
                 >
                   <Link
-                    to='/main-indicators/$indicator'
+                    to='/main-indicators/{-$indicator}'
                     params={{
                       indicator: d.name.replaceAll(' ', '-').toLowerCase(),
                     }}
@@ -161,7 +161,7 @@ export const Header = ({
                   {indicatorsMetaData.map((d, i) => (
                     <Link
                       key={i}
-                      to='/main-indicators/$indicator'
+                      to='/main-indicators/{-$indicator}'
                       params={{
                         indicator: d.name.replaceAll(' ', '-').toLowerCase(),
                       }}

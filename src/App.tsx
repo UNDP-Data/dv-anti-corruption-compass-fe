@@ -121,24 +121,24 @@ function RootComponent() {
         <main className='flex-1 pt-30'>
           <ScrollToTop />
           <Outlet />
-          <div className='container z-[1000] relative'>
-            <div
-              style={{
-                background:
-                  'linear-gradient(97.48deg, #17232B -5.56%, #4E7691 156.23%)',
-              }}
-              className='px-8 !py-[80px] flex items-center justify-center flex-col gap-8 w-full mt-16'
-            >
-              <HeadingText type='h2'>Have feedback for us?</HeadingText>
-              <ParagraphText>
-                Send us an email at anti-corruption@undp.org
-              </ParagraphText>
-              <a href='mailto:anti-corruption@undp.org'>
-                <Button variant='secondary'>Send email</Button>
-              </a>
-            </div>
-          </div>
         </main>
+        <div className='relative z-10 px-20'>
+          <div
+            style={{
+              background:
+                'linear-gradient(97.48deg, #17232B -5.56%, #4E7691 156.23%)',
+            }}
+            className='px-8 !py-[80px] flex items-center justify-center flex-col gap-8 w-full mt-16'
+          >
+            <HeadingText type='h2'>Have feedback for us?</HeadingText>
+            <ParagraphText>
+              Send us an email at anti-corruption@undp.org
+            </ParagraphText>
+            <a href='mailto:anti-corruption@undp.org'>
+              <Button variant='secondary'>Send email</Button>
+            </a>
+          </div>
+        </div>
         <Spacer size='7xl' />
         <Footer
           indicatorsMetaData={indicatorsMetaData.data}
@@ -191,7 +191,42 @@ const methodologyRoute = createRoute({
 });
 
 function MainIndicator() {
+  const {
+    indicatorsMetaData,
+    countriesListData,
+    countriesListLoading,
+    countriesListError,
+  } = useGlobalDataContext();
   const { indicator } = mainIndicatorRoute.useParams();
+
+  const indicatorMetaData = indicatorsMetaData.find(
+    d => d.name.replaceAll(' ', '-').toLowerCase() === indicator,
+  );
+  if (!indicatorMetaData && indicator)
+    return (
+      <div className='px-4 container mx-auto'>
+        The indicator you are trying to search does not exist
+      </div>
+    );
+
+  return (
+    <MainIndicatorPageEl
+      indicatorMetaData={indicatorMetaData || indicatorsMetaData[0]}
+      countriesListDataLoading={countriesListLoading}
+      countriesListDataError={countriesListError}
+      countriesList={countriesListData || []}
+    />
+  );
+}
+
+const mainIndicatorRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/main-indicators/{-$indicator}',
+  component: MainIndicator,
+});
+
+function Country() {
+  const { isoCode, indicator } = countryRoute.useParams();
   const {
     indicatorsMetaData,
     countriesListData,
@@ -202,37 +237,6 @@ function MainIndicator() {
   const indicatorMetaData = indicatorsMetaData.find(
     d => d.name.replaceAll(' ', '-').toLowerCase() === indicator,
   );
-  if (!indicatorMetaData)
-    return (
-      <div className='px-4 container mx-auto'>
-        The indicator you are trying to search does not exist
-      </div>
-    );
-
-  return (
-    <MainIndicatorPageEl
-      indicatorMetaData={indicatorMetaData}
-      countriesListDataLoading={countriesListLoading}
-      countriesListDataError={countriesListError}
-      countriesList={countriesListData || []}
-    />
-  );
-}
-
-const mainIndicatorRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/main-indicators/$indicator',
-  component: MainIndicator,
-});
-
-function Country() {
-  const { isoCode } = countryRoute.useParams();
-  const {
-    indicatorsMetaData,
-    countriesListData,
-    countriesListLoading,
-    countriesListError,
-  } = useGlobalDataContext();
   if (countriesListLoading)
     return <Spinner size='lg' className='my-20 m-auto' />;
   if (countriesListError)
@@ -246,6 +250,7 @@ function Country() {
       isoCode={isoCode}
       countriesList={countriesListData}
       indicatorsMetaData={indicatorsMetaData}
+      selectedIndicator={indicatorMetaData || indicatorsMetaData[0]}
     />
   );
 }
@@ -285,7 +290,7 @@ function CountriesListing() {
               )
               .map((el, j) => (
                 <Link
-                  to='/countries/$isoCode'
+                  to='/countries/$isoCode/{-$indicator}'
                   params={{ isoCode: el['Alpha-3 code'] }}
                   className='poppins-medium w-[calc(25%-0.75rem)] !text-[16px] text-[#fff]'
                   key={j}
@@ -308,7 +313,7 @@ const countriesRoute = createRoute({
 
 const countryRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/countries/$isoCode',
+  path: '/countries/$isoCode/{-$indicator}',
   component: Country,
 });
 

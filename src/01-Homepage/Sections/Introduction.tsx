@@ -1,21 +1,29 @@
 import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import * as THREE from 'three';
 import { ArrowDown } from 'lucide-react';
-import { useEffect, useRef, useState, useEffectEvent } from 'react';
+import { useEffect, useRef, useState, useEffectEvent, RefObject } from 'react';
 
-import { DataType } from '@/Types';
+import { DataType, IndicatorsMetaDataType } from '@/Types';
 import { ScrollToObj } from '@/Utils/ScrollToObj';
 import { HeadingText, ParagraphText } from '@/Components/Typography';
 import { Button } from '@/Components/Button';
 
 interface Props {
   data: DataType[];
-  pillarVisualizationRef: React.RefObject<HTMLDivElement | null>;
-  countryLevelInsightsRef: React.RefObject<HTMLDivElement | null>;
+  pillarVisualizationRef: RefObject<HTMLDivElement | null>;
+  countryLevelInsightsRef: RefObject<HTMLDivElement | null>;
+  indicatorsMetaData: IndicatorsMetaDataType[];
+  globeControlsRef: RefObject<(HTMLDivElement | null)[]>;
 }
 
 const Introduction = (props: Props) => {
-  const { data, pillarVisualizationRef, countryLevelInsightsRef } = props;
+  const {
+    data,
+    pillarVisualizationRef,
+    countryLevelInsightsRef,
+    indicatorsMetaData,
+    globeControlsRef,
+  } = props;
   const [globeYOffSet, setGlobeYOffSet] = useState(0);
   const globeDiv = useRef<HTMLDivElement>(null);
   const setOffset = useEffectEvent(() => {
@@ -46,6 +54,17 @@ const Introduction = (props: Props) => {
             efforts.
           </ParagraphText>
           <div className='flex gap-x-10 gap-y-4 flex-wrap'>
+            {indicatorsMetaData.map((d, i) => (
+              <Button
+                key={i}
+                variant='primary'
+                onClick={() => {
+                  ScrollToObj(globeControlsRef.current[i]);
+                }}
+              >
+                {d.name} →
+              </Button>
+            ))}
             <Button
               variant='primary'
               onClick={() => {

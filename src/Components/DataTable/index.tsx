@@ -240,7 +240,7 @@ function DataTableWithFilters({
                           : el.numericValue.toFixed(2)}
                       </div>
                       <Link
-                        to='/countries/$isoCode'
+                        to='/countries/$isoCode/{-$indicator}'
                         className='poppins-light text-[16px]! text-primary-white! w-[10%] pr-4! opacity-100 hover:opacity-80 underline underline-offset-4'
                         params={{ isoCode: el.countryCode }}
                       >

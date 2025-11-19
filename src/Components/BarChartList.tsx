@@ -1,3 +1,4 @@
+import { NoData } from './NoData';
 import { ParagraphText } from './Typography';
 
 interface Props {
@@ -6,7 +7,8 @@ interface Props {
   maxValue?: number;
   suffix?: string;
   textClassName?: string;
-  bgColor?: string;
+  barBgColor?: string;
+  isCardBgWhite?: boolean;
 }
 
 export const BarChartList = ({
@@ -15,8 +17,10 @@ export const BarChartList = ({
   maxValue = 1,
   suffix = '',
   textClassName,
-  bgColor = '#fff',
+  barBgColor = '#fff',
+  isCardBgWhite = false,
 }: Props) => {
+  if (data.length === 0) return <NoData isBgWhite={isCardBgWhite} />;
   return (
     <div className='flex flex-col gap-4'>
       {data.map((d, i) => (
@@ -34,7 +38,7 @@ export const BarChartList = ({
           </ParagraphText>
           <div
             className='w-full rounded-full h-2'
-            style={{ backgroundColor: bgColor }}
+            style={{ backgroundColor: barBgColor }}
           />
           <div
             className='rounded-full h-2 mt-[-8px]'

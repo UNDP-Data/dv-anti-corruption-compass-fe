@@ -18,6 +18,7 @@ interface Props {
   selectedSubIndicator: string;
   countriesList: CountriesDataType[];
   rotate: boolean;
+  selectedIndicator: IndicatorsMetaDataType;
   indicatorsMetaData: IndicatorsMetaDataType[];
 }
 
@@ -26,6 +27,7 @@ function GlobeComponent({
   selectedSubIndicator,
   countriesList,
   rotate,
+  selectedIndicator,
   indicatorsMetaData,
 }: Props) {
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
@@ -138,7 +140,7 @@ function GlobeComponent({
                   d =>
                     d.id === selectedSubIndicator &&
                     d.year === year &&
-                    d.contractValue === 'null',
+                    d.contractValue === null,
                 ),
                 'threeDGlobe',
                 [
@@ -199,7 +201,7 @@ function GlobeComponent({
                         d.countryCode === selectedId &&
                         `${d.mainIndicatorId}` ===
                           selectedSubIndicator.split('_')[0] &&
-                        d.contractValue === 'null',
+                        d.contractValue === null,
                     )
                     .map(d => d.numericValue || 0)}
                   colors={
@@ -228,7 +230,7 @@ function GlobeComponent({
                       d.countryCode === selectedId &&
                       `${d.mainIndicatorId}` ===
                         selectedSubIndicator.split('_')[0] &&
-                      d.contractValue === 'null',
+                      d.contractValue === null,
                   )
                   .map(d => ({
                     id:
@@ -247,11 +249,20 @@ function GlobeComponent({
                   )?.mainColor || '#fff'
                 }
                 textClassName='text-[var(--color-text-black)]'
-                bgColor='#d6d6d6'
+                barBgColor='#d6d6d6'
+                isCardBgWhite
               />
             )}
             <Spacer size='2xl' />
-            <Link to='/countries/$isoCode' params={{ isoCode: selectedId }}>
+            <Link
+              to='/countries/$isoCode/{-$indicator}'
+              params={{
+                isoCode: selectedId,
+                indicator: selectedIndicator.name
+                  .replaceAll(' ', '-')
+                  .toLowerCase(),
+              }}
+            >
               <Button variant='primary'>View more →</Button>
             </Link>
           </div>

@@ -1,6 +1,5 @@
 import { Spacer } from '@undp/design-system-react/Spacer';
-import { SegmentedControl } from '@undp/design-system-react';
-import { useState } from 'react';
+import { Link } from '@tanstack/react-router';
 
 import CountryProfile from './Sections/CountryProfile';
 import ProcurementViz from './Sections/ProcurementViz';
@@ -9,16 +8,22 @@ import DefaultViz from './Sections/DefaultViz';
 import { CountrySelect } from '@/Components/CountrySelect';
 import { CountriesDataType, IndicatorsMetaDataType } from '@/Types';
 import { HeadingText, ParagraphText } from '@/Components/Typography';
+import { Card } from '@/Components/Card';
 
 interface Props {
   isoCode: string;
   indicatorsMetaData: IndicatorsMetaDataType[];
   countriesList: CountriesDataType[];
+  selectedIndicator: IndicatorsMetaDataType;
 }
 
-function CountryPageEl({ isoCode, indicatorsMetaData, countriesList }: Props) {
+function CountryPageEl({
+  isoCode,
+  indicatorsMetaData,
+  countriesList,
+  selectedIndicator,
+}: Props) {
   const countryInfo = countriesList.find(d => d['Alpha-3 code'] === isoCode);
-  const [view, setView] = useState(indicatorsMetaData[0].mainIndicatorId);
   if (!countryInfo) {
     return (
       <div className='px-4 container mx-auto'>
@@ -45,55 +50,56 @@ function CountryPageEl({ isoCode, indicatorsMetaData, countriesList }: Props) {
           {countryInfo?.['Group 1']} | {countryInfo?.['Group 2']}
         </ParagraphText>
         <Spacer size='2xl' />
-        <div className='w-full sm:w-[600px]'>
-          <SegmentedControl
-            color='blue'
-            value={`${view}`}
-            onValueChange={d => {
-              setView(parseInt(d, 10));
-            }}
-            options={indicatorsMetaData.map(d => ({
-              label: d.name,
-              value: `${d.mainIndicatorId}`,
-            }))}
-            size='base'
-            variant='normal'
-            className='rounded-full p-0 border-0 w-full'
-            classNames={{
-              items: 'px-8 poppins-regular py-4 rounded-full w-1/2',
-              active: 'text-primary-white',
-            }}
-            buttonStyle={{
-              active: {
-                backgroundImage: `linear-gradient(to right, ${indicatorsMetaData.find(d => d.mainIndicatorId === view)?.gradientColor.split(',')[0]}, ${indicatorsMetaData.find(d => d.mainIndicatorId === view)?.gradientColor.split(',')[1]})`,
-              },
-            }}
-          />
-        </div>
-        {view === 1 ? (
+        <HeadingText type='h2'>{selectedIndicator.name}</HeadingText>
+        {selectedIndicator.mainIndicatorId === 1 ? (
           <ProcurementViz
             countryInfo={countryInfo}
-            indicatorMetaData={
-              indicatorsMetaData.find(
-                d => d.mainIndicatorId === view,
-              ) as IndicatorsMetaDataType
-            }
+            indicatorMetaData={selectedIndicator}
             maxValue={1}
           />
         ) : (
           <DefaultViz
             countryInfo={countryInfo}
-            indicatorMetaData={
-              indicatorsMetaData.find(
-                d => d.mainIndicatorId === view,
-              ) as IndicatorsMetaDataType
-            }
+            indicatorMetaData={selectedIndicator}
             maxValue={100}
           />
         )}
         <div className='container mx-auto'>
           <Spacer size='6xl' />
           <CountryProfile isoCode={isoCode} />
+          <Spacer size='6xl' />
+          <div className='w-full'>
+            <HeadingText type='h2'>Learn more</HeadingText>
+            <Spacer size='2xl' />
+            <div className='flex flex-wrap gap-4'>
+              {indicatorsMetaData
+                .filter(
+                  d => d.mainIndicatorId !== selectedIndicator.mainIndicatorId,
+                )
+                .map((d, i) => (
+                  <div
+                    key={i}
+                    className='w-[calc(33.333%-0.67rem)] grow-1 min-w-[320px]'
+                  >
+                    <Link
+                      to='/countries/$isoCode/{-$indicator}'
+                      params={{
+                        isoCode,
+                        indicator: d.name.replaceAll(' ', '-').toLowerCase(),
+                      }}
+                    >
+                      <Card className='pr-16 pl-6 py-8 cursor-pointer'>
+                        <HeadingText type='h3'>{d.name}</HeadingText>
+                        <Spacer size='2xl' />
+                        <ParagraphText weight='semibold'>
+                          Learn More →
+                        </ParagraphText>
+                      </Card>
+                    </Link>
+                  </div>
+                ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>

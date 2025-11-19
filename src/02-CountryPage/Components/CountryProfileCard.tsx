@@ -1,5 +1,4 @@
 import { Spacer } from '@undp/design-system-react/Spacer';
-import React from 'react';
 
 import { Card } from '@/Components/Card';
 import { HeadingText, ParagraphText } from '@/Components/Typography';

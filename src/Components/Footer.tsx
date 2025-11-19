@@ -43,7 +43,7 @@ export const Footer = ({
             )}
             {indicatorsMetaData.map((d, i) => (
               <Link
-                to='/main-indicators/$indicator'
+                to='/main-indicators/{-$indicator}'
                 params={{
                   indicator: d.name.replaceAll(' ', '-').toLowerCase(),
                 }}

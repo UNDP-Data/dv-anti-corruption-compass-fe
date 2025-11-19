@@ -56,8 +56,11 @@ export const CountryList = ({
             {searchedCountries.map((country, i) => (
               <Link
                 key={i}
-                to='/countries/$isoCode'
-                params={{ isoCode: country['Alpha-3 code'] }}
+                to='/countries/$isoCode/{-$indicator}'
+                params={{
+                  isoCode: country['Alpha-3 code'],
+                  indicator: undefined,
+                }}
                 className={`poppins-medium w-[calc(33.33%-0.67rem)] !text-[16px] ${mode === 'light' ? 'text-[#545463]' : 'text-[#fff]'}`}
                 onClick={() => {
                   setShowCountrySelection(false);

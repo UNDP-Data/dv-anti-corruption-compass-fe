@@ -4,7 +4,7 @@ import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
 import { DonutChart } from '@undp/data-viz/DonutChart';
 import { SimpleLineChart } from '@undp/data-viz/SimpleLineChart';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import SubNationalVIz from './SubNationalVIz';
 
@@ -52,6 +52,7 @@ function Viz({
   countryCode,
 }: Props) {
   const yearList = [...new Set(data.map(d => d.year))].sort((a, b) => b - a);
+  const latestYear = yearList[0];
   const marketListForCountry = [...new Set(data.map(d => d.productMarketId))]
     .filter(d => d !== null)
     .map(d => marketList.find(m => m.productMarketId === d))
@@ -65,9 +66,12 @@ function Viz({
   const [selectedMarket, setSelectedMarket] =
     useState<null | MarketListDataType>(null);
   const [selectedContractValue, setSelectedContractValue] = useState({
-    value: 'null',
+    value: null,
     label: 'No contract type selected',
   });
+  useEffect(() => {
+    setSelectedYear(latestYear);
+  }, [latestYear]);
   return (
     <div className='w-full'>
       <Spacer size='4xl' />
@@ -76,8 +80,8 @@ function Viz({
         indicatorMetaData={indicatorMetaData}
         data={data.filter(
           d =>
-            d.year === yearList[0] &&
-            d.contractValue === (selectedContractValue.value || '') &&
+            d.year === latestYear &&
+            d.contractValue === null &&
             d.productMarketId === null,
         )}
         maxValue={maxValue}
@@ -162,8 +166,7 @@ function Viz({
             placeholder='Select contract value'
             value={selectedContractValue}
             options={CONTRACT_VALUE.map(d => ({
-              value:
-                d === 'No contract type selected' ? 'null' : d.toUpperCase(),
+              value: d === 'No contract type selected' ? null : d.toUpperCase(),
               label: d,
             }))}
             size='base'
@@ -187,7 +190,7 @@ function Viz({
                 d.year === selectedYear &&
                 d.productMarketId ===
                   (selectedMarket ? selectedMarket.productMarketId : null) &&
-                d.contractValue === (selectedContractValue.value || ''),
+                d.contractValue === (selectedContractValue.value || null),
             ).length !== 0 ? (
               <>
                 <ParagraphText size='sm'>
@@ -212,8 +215,7 @@ function Viz({
                                 (selectedMarket
                                   ? selectedMarket.productMarketId
                                   : null) &&
-                              d.contractValue ===
-                                (selectedContractValue.value || ''),
+                              d.contractValue === selectedContractValue.value,
                           )?.numericValue || 0,
                       },
                       {
@@ -246,8 +248,7 @@ function Viz({
                               (selectedMarket
                                 ? selectedMarket.productMarketId
                                 : null) &&
-                            d.contractValue ===
-                              (selectedContractValue.value || ''),
+                            d.contractValue === selectedContractValue.value,
                         )
                         ?.numericValue?.toFixed(2) ?? 'NA'
                     }
@@ -266,7 +267,7 @@ function Viz({
               {data.filter(
                 d =>
                   d.year === selectedYear &&
-                  d.contractValue === (selectedContractValue.value || '') &&
+                  d.contractValue === selectedContractValue.value &&
                   d.id === selectedSubIndicator.value &&
                   d.productMarketId !== null,
               ).length > 0 ? (
@@ -275,8 +276,7 @@ function Viz({
                     .filter(
                       d =>
                         d.year === selectedYear &&
-                        d.contractValue ===
-                          (selectedContractValue.value || '') &&
+                        d.contractValue === selectedContractValue.value &&
                         d.id === selectedSubIndicator.value &&
                         d.productMarketId !== null,
                     )
@@ -342,8 +342,7 @@ function Viz({
                       d =>
                         d.regionId === null &&
                         d.id === selectedSubIndicator.value &&
-                        d.contractValue ===
-                          (selectedContractValue.value || '') &&
+                        d.contractValue === selectedContractValue.value &&
                         d.productMarketId ===
                           (selectedMarket
                             ? selectedMarket.productMarketId

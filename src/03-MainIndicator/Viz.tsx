@@ -92,7 +92,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
               d =>
                 d.year === selectedYear &&
                 d.id === selectedSubIndicator.value &&
-                d.contractValue === 'null' &&
+                d.contractValue === null &&
                 d.numericValue !== null &&
                 d.indicatorValue !== null &&
                 d.indicatorValue !== undefined,
@@ -143,7 +143,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                           d =>
                             d.year === selectedYear &&
                             d.id === selectedSubIndicator.value &&
-                            d.contractValue === 'null' &&
+                            d.contractValue === null &&
                             d.numericValue !== null &&
                             d.indicatorValue !== null &&
                             d.indicatorValue !== undefined,
@@ -167,7 +167,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                           d =>
                             d.year === selectedYear &&
                             d.id === selectedSubIndicator.value &&
-                            d.contractValue === 'null' &&
+                            d.contractValue === null &&
                             d.numericValue !== null &&
                             d.indicatorValue !== null &&
                             d.indicatorValue !== undefined,
@@ -192,7 +192,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
               d =>
                 d.year === selectedYear &&
                 d.id === selectedSubIndicator.value &&
-                d.contractValue === 'null' &&
+                d.contractValue === null &&
                 d.numericValue !== null &&
                 d.indicatorValue !== null &&
                 d.indicatorValue !== undefined,
@@ -282,7 +282,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                     d =>
                       d.year === selectedYear &&
                       d.id === selectedSubIndicator.value &&
-                      d.contractValue === 'null' &&
+                      d.contractValue === null &&
                       d.numericValue !== null &&
                       d.indicatorValue !== null &&
                       d.indicatorValue !== undefined,

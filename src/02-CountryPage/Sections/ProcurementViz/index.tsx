@@ -17,7 +17,7 @@ function useDataForCountry(countryCode: string, mainIndicatorId: number) {
       data.map((d: DataType) => ({
         ...d,
         id: `${d.mainIndicatorId}_${d.subIndicatorId}`,
-        contractValue: d.contractValue === '' ? 'null' : d.contractValue,
+        contractValue: d.contractValue === '' ? null : d.contractValue,
       })),
   });
   const marketList = useQuery({

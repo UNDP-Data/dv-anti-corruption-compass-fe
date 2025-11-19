@@ -100,11 +100,13 @@ function HomepageEl({
           data={data}
           pillarVisualizationRef={pillarVisualizationRef}
           countryLevelInsightsRef={countryLevelInsightsRef}
+          indicatorsMetaData={indicatorsMetaData}
+          globeControlsRef={globeControlsRef}
         />
       </motion.div>
       <motion.div
         ref={pillarVisualizationRef}
-        className='flex z-10 relative top-[120px] pb-60'
+        className='flex z-5 relative top-[120px] pb-60'
         style={{
           opacity: pillarVisualizationOpacity,
         }}
@@ -144,10 +146,11 @@ function HomepageEl({
           countriesList={countriesList}
           rotate={inViewSlide < indicatorsMetaData.length ? true : false}
           indicatorsMetaData={indicatorsMetaData}
+          selectedIndicator={indicatorsMetaData[inViewSlide]}
         />
       </motion.div>
       <div
-        className='flex flex-col relative z-20'
+        className='flex flex-col relative z-10'
         ref={countryLevelInsightsRef}
       >
         {countriesListLoading && <Spinner size='lg' className='my-20 m-auto' />}

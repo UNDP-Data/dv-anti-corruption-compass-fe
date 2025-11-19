@@ -38,7 +38,7 @@ function useRegionalDataForCountry(
       data.map((d: DataType) => ({
         ...d,
         id: `${d.mainIndicatorId}_${d.subIndicatorId}`,
-        contractValue: d.contractValue === '' ? 'null' : d.contractValue,
+        contractValue: d.contractValue === '' ? null : d.contractValue,
       })),
   });
 }
@@ -55,7 +55,7 @@ interface Props {
   subIndicatorId: string;
   colors: string;
   mainColor: string;
-  contractValue: string;
+  contractValue: string | null;
 }
 
 function SubNationalVIz({

@@ -91,7 +91,7 @@ function DataTableSimple({ data, colors = [], countriesList }: Props) {
                           : el.numericValue.toFixed(2)}
                       </div>
                       <Link
-                        to='/countries/$isoCode'
+                        to='/countries/$isoCode/{-$indicator}'
                         className='poppins-light text-[16px]! text-primary-white! w-[15%] pr-4! opacity-100 hover:opacity-80 underline underline-offset-4'
                         params={{ isoCode: el.countryCode }}
                       >
