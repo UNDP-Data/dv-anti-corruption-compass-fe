@@ -65,7 +65,7 @@ const GlobeControls = (props: Props) => {
           />
         </div>
         <Link
-          to='/main-indicators/$indicator'
+          to='/main-indicators/{-$indicator}'
           params={{ indicator: heading.replaceAll(' ', '-').toLowerCase() }}
         >
           <Button variant='tertiary'>View more →</Button>
