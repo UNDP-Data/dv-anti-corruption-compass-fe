@@ -44,6 +44,8 @@ export interface IndicatorsMetaDataType {
   description: string;
   mainColor: string;
   gradientColor: string;
+  comingSoon?: boolean;
+  maxValue?: number;
   subIndicators: SubIndicatorsMetaDataType[];
 }
 

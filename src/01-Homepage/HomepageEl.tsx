@@ -82,7 +82,7 @@ function HomepageEl({
           }
           globeControlsRef={globeControlsRef}
           countryLevelInsightsRef={countryLevelInsightsRef}
-          indicatorsMetaData={indicatorsMetaData}
+          indicatorsMetaData={indicatorsMetaData.filter(d => !d.comingSoon)}
         />
       )}
       <div
@@ -100,7 +100,7 @@ function HomepageEl({
           data={data}
           pillarVisualizationRef={pillarVisualizationRef}
           countryLevelInsightsRef={countryLevelInsightsRef}
-          indicatorsMetaData={indicatorsMetaData}
+          indicatorsMetaData={indicatorsMetaData.filter(d => !d.comingSoon)}
           globeControlsRef={globeControlsRef}
         />
       </motion.div>

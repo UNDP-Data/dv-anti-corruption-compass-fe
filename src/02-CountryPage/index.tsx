@@ -4,6 +4,7 @@ import { Link } from '@tanstack/react-router';
 import CountryProfile from './Sections/CountryProfile';
 import ProcurementViz from './Sections/ProcurementViz';
 import DefaultViz from './Sections/DefaultViz';
+import ComingSoon from './Sections/ComingSoon';
 
 import { CountrySelect } from '@/Components/CountrySelect';
 import { CountriesDataType, IndicatorsMetaDataType } from '@/Types';
@@ -53,22 +54,27 @@ function CountryPageEl({
         {selectedIndicator !== 'country-profile' ? (
           <>
             <HeadingText type='h2'>{selectedIndicator.name}</HeadingText>
-            {selectedIndicator.mainIndicatorId === 1 ? (
+            {selectedIndicator.comingSoon === true ? (
+              <ComingSoon />
+            ) : selectedIndicator.mainIndicatorId === 1 ? (
               <ProcurementViz
                 countryInfo={countryInfo}
                 indicatorMetaData={selectedIndicator}
-                maxValue={1}
+                maxValue={selectedIndicator.maxValue || 1}
               />
             ) : (
               <DefaultViz
                 countryInfo={countryInfo}
                 indicatorMetaData={selectedIndicator}
-                maxValue={100}
+                maxValue={selectedIndicator.maxValue || 100}
               />
             )}
           </>
         ) : (
           <div className='container mx-auto'>
+            <HeadingText type='h2' alignment='center'>
+              Country profile
+            </HeadingText>
             <Spacer size='6xl' />
             <CountryProfile isoCode={isoCode} />
           </div>
@@ -80,7 +86,7 @@ function CountryPageEl({
             <Spacer size='2xl' />
             <div className='flex flex-wrap gap-4'>
               {selectedIndicator !== 'country-profile' && (
-                <div className='w-[calc(50%-0.5rem)] grow-1 min-w-[320px]'>
+                <div className='w-[calc(33.33%-0.67rem)] grow-1 min-w-[320px]'>
                   <Link
                     to='/countries/$isoCode/{-$indicator}'
                     params={{
@@ -107,7 +113,7 @@ function CountryPageEl({
                 .map((d, i) => (
                   <div
                     key={i}
-                    className='w-[calc(50%-0.5rem)] grow-1 min-w-[320px]'
+                    className='w-[calc(33.33%-0.67rem)] grow-1 min-w-[320px]'
                   >
                     <Link
                       to='/countries/$isoCode/{-$indicator}'

@@ -165,7 +165,7 @@ const indexRoute = createRoute({
     } = useGlobalDataContext();
     return (
       <Homepage
-        indicatorsMetaData={indicatorsMetaData}
+        indicatorsMetaData={indicatorsMetaData.filter(d => !d.comingSoon)}
         countriesList={countriesListData}
         countriesListLoading={countriesListLoading}
         countriesListError={countriesListError}

@@ -1,4 +1,3 @@
-import { Spacer } from '@undp/design-system-react/Spacer';
 import { useState } from 'react';
 import { Modal } from '@undp/design-system-react/Modal';
 
@@ -12,14 +11,10 @@ import CountryLevelSurveys from '../CountryProfileModals/CountryLevelSurveys';
 import FATF from '../CountryProfileModals/FATF';
 import GloballyAvailableData from '../CountryProfileModals/GloballyAvailableData';
 
-import { HeadingText } from '@/Components/Typography';
-
 function CountryProfile({ isoCode }: { isoCode: string }) {
   const [cardClicked, setCardClicked] = useState<undefined | string>(undefined);
   return (
-    <div className='w-full'>
-      <HeadingText type='h2'>Country profile</HeadingText>
-      <Spacer size='2xl' />
+    <>
       <div className='flex items-stretch gap-6 w-full flex-wrap'>
         <CountryProfileCard
           title='Anti-corruption laws'
@@ -118,7 +113,7 @@ function CountryProfile({ isoCode }: { isoCode: string }) {
           )}
         </Modal>
       )}
-    </div>
+    </>
   );
 }
 
