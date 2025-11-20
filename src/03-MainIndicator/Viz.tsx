@@ -17,6 +17,7 @@ import { Button } from '@/Components/Button';
 import { GraphCard } from '@/Components/GraphCard';
 import { NoData } from '@/Components/NoData';
 import DataTableSimple from '@/Components/DataTable/SecondaryTable';
+import { quantile } from '@/Utils/getQuantile';
 
 interface Props {
   indicatorMetaData: IndicatorsMetaDataType;
@@ -145,44 +146,63 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                   leading='none'
                   className='text-[56px]'
                 >
-                  {Math.min(
-                    ...new Set(
-                      data
-                        .filter(
-                          d =>
-                            d.year === selectedYear &&
-                            d.id === selectedSubIndicator.value &&
-                            d.contractValue === null &&
-                            d.numericValue !== null,
-                        )
-                        .map(d => d.numericValue),
-                    ),
+                  {quantile(
+                    data
+                      .filter(
+                        d =>
+                          d.year === selectedYear &&
+                          d.id === selectedSubIndicator.value &&
+                          d.contractValue === null &&
+                          d.numericValue !== null,
+                      )
+                      .map(d => d.numericValue),
+                    0.25,
                   ).toFixed(2)}
                 </ParagraphText>
                 <Spacer size='xl' />
-                <ParagraphText leading='none'>minimum value</ParagraphText>
+                <ParagraphText leading='none'>25 percentile</ParagraphText>
                 <Spacer size='6xl' />
                 <ParagraphText
                   weight='light'
                   leading='none'
                   className='text-[56px]'
                 >
-                  {Math.max(
-                    ...new Set(
-                      data
-                        .filter(
-                          d =>
-                            d.year === selectedYear &&
-                            d.id === selectedSubIndicator.value &&
-                            d.contractValue === null &&
-                            d.numericValue !== null,
-                        )
-                        .map(d => d.numericValue),
-                    ),
+                  {quantile(
+                    data
+                      .filter(
+                        d =>
+                          d.year === selectedYear &&
+                          d.id === selectedSubIndicator.value &&
+                          d.contractValue === null &&
+                          d.numericValue !== null,
+                      )
+                      .map(d => d.numericValue),
+                    0.5,
                   ).toFixed(2)}
                 </ParagraphText>
                 <Spacer size='xl' />
-                <ParagraphText leading='none'>maximum value</ParagraphText>
+                <ParagraphText leading='none'>Median</ParagraphText>
+                <Spacer size='6xl' />
+                <ParagraphText
+                  weight='light'
+                  leading='none'
+                  className='text-[56px]'
+                >
+                  {quantile(
+                    data
+                      .filter(
+                        d =>
+                          d.year === selectedYear &&
+                          d.id === selectedSubIndicator.value &&
+                          d.contractValue === null &&
+                          d.numericValue !== null,
+                      )
+                      .map(d => d.numericValue),
+                    0.75,
+                  ).toFixed(2)}
+                </ParagraphText>
+                <Spacer size='xl' />
+                <ParagraphText leading='none'>75 percentile</ParagraphText>
                 <Spacer size='6xl' />
               </>
             ) : (
