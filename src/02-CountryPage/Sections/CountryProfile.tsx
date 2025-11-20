@@ -10,6 +10,7 @@ import UncacReviewStatus from '../CountryProfileModals/UncacReviewStatus';
 import ComplaintHandlingMechanism from '../CountryProfileModals/ComplaintHandlingMechanism';
 import CountryLevelSurveys from '../CountryProfileModals/CountryLevelSurveys';
 import FATF from '../CountryProfileModals/FATF';
+import GloballyAvailableData from '../CountryProfileModals/GloballyAvailableData';
 
 import { HeadingText } from '@/Components/Typography';
 
@@ -40,6 +41,9 @@ function CountryProfile({ isoCode }: { isoCode: string }) {
           title='Globally Available Indicators'
           imgSrc='/imgs/CountryProfileCardsIcons/03.png'
           description='Lorem ipsum dolor sit amet consectetur. Nec risus ipsum ipsum augue at in molestie sed vulputate.'
+          onClick={() => {
+            setCardClicked('globallyAvailableData');
+          }}
         />
         <CountryProfileCard
           title='UNCAC review status'
@@ -109,6 +113,9 @@ function CountryProfile({ isoCode }: { isoCode: string }) {
             <CountryLevelSurveys isoCode={isoCode} />
           )}
           {cardClicked === 'fatf' && <FATF isoCode={isoCode} />}
+          {cardClicked === 'globallyAvailableData' && (
+            <GloballyAvailableData isoCode={isoCode} />
+          )}
         </Modal>
       )}
     </div>
