@@ -250,7 +250,7 @@ function Country() {
       isoCode={isoCode}
       countriesList={countriesListData}
       indicatorsMetaData={indicatorsMetaData}
-      selectedIndicator={indicatorMetaData || indicatorsMetaData[0]}
+      selectedIndicator={indicatorMetaData || 'country-profile'}
     />
   );
 }

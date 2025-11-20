@@ -14,7 +14,7 @@ interface Props {
   isoCode: string;
   indicatorsMetaData: IndicatorsMetaDataType[];
   countriesList: CountriesDataType[];
-  selectedIndicator: IndicatorsMetaDataType;
+  selectedIndicator: IndicatorsMetaDataType | 'country-profile';
 }
 
 function CountryPageEl({
@@ -50,36 +50,64 @@ function CountryPageEl({
           {countryInfo?.['Group 1']} | {countryInfo?.['Group 2']}
         </ParagraphText>
         <Spacer size='2xl' />
-        <HeadingText type='h2'>{selectedIndicator.name}</HeadingText>
-        {selectedIndicator.mainIndicatorId === 1 ? (
-          <ProcurementViz
-            countryInfo={countryInfo}
-            indicatorMetaData={selectedIndicator}
-            maxValue={1}
-          />
+        {selectedIndicator !== 'country-profile' ? (
+          <>
+            <HeadingText type='h2'>{selectedIndicator.name}</HeadingText>
+            {selectedIndicator.mainIndicatorId === 1 ? (
+              <ProcurementViz
+                countryInfo={countryInfo}
+                indicatorMetaData={selectedIndicator}
+                maxValue={1}
+              />
+            ) : (
+              <DefaultViz
+                countryInfo={countryInfo}
+                indicatorMetaData={selectedIndicator}
+                maxValue={100}
+              />
+            )}
+          </>
         ) : (
-          <DefaultViz
-            countryInfo={countryInfo}
-            indicatorMetaData={selectedIndicator}
-            maxValue={100}
-          />
+          <div className='container mx-auto'>
+            <Spacer size='6xl' />
+            <CountryProfile isoCode={isoCode} />
+          </div>
         )}
         <div className='container mx-auto'>
-          <Spacer size='6xl' />
-          <CountryProfile isoCode={isoCode} />
           <Spacer size='6xl' />
           <div className='w-full'>
             <HeadingText type='h2'>Learn more</HeadingText>
             <Spacer size='2xl' />
             <div className='flex flex-wrap gap-4'>
+              {selectedIndicator !== 'country-profile' && (
+                <div className='w-[calc(50%-0.5rem)] grow-1 min-w-[320px]'>
+                  <Link
+                    to='/countries/$isoCode/{-$indicator}'
+                    params={{
+                      isoCode,
+                      indicator: 'country-profile',
+                    }}
+                  >
+                    <Card className='pr-16 pl-6 py-8 cursor-pointer'>
+                      <HeadingText type='h3'>Country profile</HeadingText>
+                      <Spacer size='2xl' />
+                      <ParagraphText weight='semibold'>
+                        Learn More →
+                      </ParagraphText>
+                    </Card>
+                  </Link>
+                </div>
+              )}
               {indicatorsMetaData
-                .filter(
-                  d => d.mainIndicatorId !== selectedIndicator.mainIndicatorId,
+                .filter(d =>
+                  selectedIndicator === 'country-profile'
+                    ? true
+                    : d.mainIndicatorId !== selectedIndicator.mainIndicatorId,
                 )
                 .map((d, i) => (
                   <div
                     key={i}
-                    className='w-[calc(33.333%-0.67rem)] grow-1 min-w-[320px]'
+                    className='w-[calc(50%-0.5rem)] grow-1 min-w-[320px]'
                   >
                     <Link
                       to='/countries/$isoCode/{-$indicator}'

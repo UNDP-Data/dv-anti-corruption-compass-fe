@@ -369,6 +369,7 @@ function Viz({
                     data.filter(
                       d =>
                         d.regionId === null &&
+                        d.numericValue !== null &&
                         d.id === selectedSubIndicator.value &&
                         d.contractValue === selectedContractValue.value &&
                         d.productMarketId ===
