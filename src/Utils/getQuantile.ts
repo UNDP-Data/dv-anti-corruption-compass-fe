@@ -1,5 +1,4 @@
 export function quantile(arr: number[], q: number): number {
-  console.log(arr);
   const sorted = [...arr].sort((a, b) => a - b);
   const pos = (sorted.length - 1) * q;
   const base = Math.floor(pos);
