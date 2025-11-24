@@ -1,6 +1,6 @@
 import { ParagraphText } from '@/Components/Typography';
 
-function PublicProcurement() {
+function PublicProcurementMethodology() {
   return (
     <ParagraphText>
       Our public procurement integrity methodology uses a systemic approach to
@@ -43,4 +43,4 @@ function PublicProcurement() {
   );
 }
 
-export default PublicProcurement;
+export default PublicProcurementMethodology;
