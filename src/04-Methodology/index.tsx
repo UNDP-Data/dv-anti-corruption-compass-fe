@@ -1,40 +1,22 @@
 import { Spacer } from '@undp/design-system-react/Spacer';
 
-import { HeadingText, ParagraphText } from '@/Components/Typography';
+import { HeadingText } from '@/Components/Typography';
+import PublicProcurementMethodology from '@/Components/MethodologyBlocks/PublicProcurementMethodology';
+import EnterpriseSurveyMethodology from '@/Components/MethodologyBlocks/EnterpriseSurveyMethodology';
 
 function MethodologyPage() {
   return (
     <div className='relative container mx-auto'>
       <Spacer size='7xl' />
       <HeadingText type='h2'>Methodology</HeadingText>
+      <Spacer size='4xl' />
+      <HeadingText type='h3'>Public Procurement</HeadingText>
       <Spacer size='xl' />
-      <ParagraphText>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
-        <br />
-        <br />
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
-        <br />
-        <br />
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
-      </ParagraphText>
+      <PublicProcurementMethodology />
+      <Spacer size='4xl' />
+      <HeadingText type='h3'>World Bank's Enterprise Survey</HeadingText>
+      <Spacer size='xl' />
+      <EnterpriseSurveyMethodology />
     </div>
   );
 }

@@ -7,6 +7,8 @@ import { transformDataForGraph } from '@undp/data-viz/transformData';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Spinner } from '@undp/design-system-react';
+import { Badge } from '@undp/design-system-react/Badge';
+import { getTextColorBasedOnBgColor } from '@undp/data-viz/utils';
 
 import SubNationalVIz from './SubNationalVIz';
 
@@ -18,9 +20,8 @@ import {
   IndicatorsMetaDataType,
 } from '@/Types';
 import { NoData } from '@/Components/NoData';
-import { ParagraphText } from '@/Components/Typography';
+import { HeadingText, ParagraphText } from '@/Components/Typography';
 import { customDropdownComponents } from '@/Utils/DropdownComponents';
-import { PolarBarChart } from '@/Components/PolarBarChart';
 import { BarChartList } from '@/Components/BarChartList';
 import { getDataAvailability } from '@/QueryFn/getDataAvailability';
 import { ErrorState } from '@/Components/ErrorState';
@@ -95,20 +96,92 @@ function Viz({
   useEffect(() => {
     setSelectedYear(latestYear);
   }, [latestYear]);
+  const latestCountryData = data.filter(
+    d =>
+      d.year === latestYear &&
+      d.regionId === null &&
+      d.productMarketId === null,
+  );
   return (
     <div className='w-full'>
+      <HeadingText type='h3' alignment='center'>
+        {latestYear}
+      </HeadingText>
       <Spacer size='4xl' />
-      <PolarBarChart
-        innerRadiusRatio={0.6}
-        indicatorMetaData={indicatorMetaData}
-        data={data.filter(
-          d =>
-            d.year === latestYear &&
-            d.contractValue === null &&
-            d.productMarketId === null,
-        )}
-        maxValue={maxValue}
-      />
+      <div className='dark'>
+        <div className='flex w-full pb-2 border-b border-b-primary-white'>
+          <div className='poppins-semibold text-[16px]! text-primary-white! w-[50%] pr-4!'>
+            Indicator name
+          </div>
+          <div className='poppins-semibold text-[16px]! text-primary-white! w-[25%] pr-4!'>
+            Indicator value
+          </div>
+          <div className='poppins-semibold text-[16px]! text-primary-white! w-[25%] pr-4!'>
+            Status
+          </div>
+        </div>
+        <div>
+          {indicatorMetaData.subIndicators.map((el, i) => {
+            const tagColors = el.colors.split(',');
+            return (
+              <div key={i}>
+                <div className='flex w-full py-4 border-b border-b-[0.5px] border-b-primary-white items-center'>
+                  <div className='poppins-light text-[16px]! text-primary-white! w-[50%] pr-4!'>
+                    {el.name}
+                  </div>
+                  <div className='poppins-light text-[16px]! text-primary-white! w-[25%] pr-4!'>
+                    {latestCountryData.find(d => d.id === el.id)
+                      ?.numericValue || 'NA'}
+                  </div>
+                  <div className='poppins-light text-[16px]! text-primary-white! w-[25%] pr-4!'>
+                    <Badge
+                      rounded='full'
+                      className='poppins-medium py-0 text-[12px]! px-3!'
+                      style={{
+                        backgroundColor: !latestCountryData.find(
+                          d => d.id === el.id,
+                        )?.indicatorValue
+                          ? '#DADADA'
+                          : ['LOW', 'MEDIUM', 'HIGH'].indexOf(
+                                latestCountryData.find(d => d.id === el.id)
+                                  ?.indicatorValue || 'NA',
+                              ) !== -1
+                            ? tagColors[
+                                ['LOW', 'MEDIUM', 'HIGH'].indexOf(
+                                  latestCountryData.find(d => d.id === el.id)
+                                    ?.indicatorValue || 'NA',
+                                )
+                              ]
+                            : '#DADADA',
+                        color: !latestCountryData.find(d => d.id === el.id)
+                          ?.indicatorValue
+                          ? '#000'
+                          : getTextColorBasedOnBgColor(
+                              ['LOW', 'MEDIUM', 'HIGH'].indexOf(
+                                latestCountryData.find(d => d.id === el.id)
+                                  ?.indicatorValue || 'NA',
+                              ) !== -1
+                                ? tagColors[
+                                    ['LOW', 'MEDIUM', 'HIGH'].indexOf(
+                                      latestCountryData.find(
+                                        d => d.id === el.id,
+                                      )?.indicatorValue || 'NA',
+                                    )
+                                  ]
+                                : '#DADADA',
+                            ),
+                      }}
+                    >
+                      {latestCountryData.find(d => d.id === el.id)
+                        ?.indicatorValue || 'NA'}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
       <Spacer size='8xl' />
       <div className='flex items-center gap-4 w-full'>
         <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
@@ -350,7 +423,7 @@ function Viz({
         </div>
         <div className='flex gap-6 flex-wrap'>
           <GraphCard
-            title='Comparison to global average'
+            title='Trend over time'
             chips={[selectedSubIndicator.label]}
           >
             <div className='flex h-[360px] dark w-full'>
@@ -396,6 +469,49 @@ function Viz({
                     yAxis: {
                       labels: 'poppins-regular',
                     },
+                    tooltip:
+                      'poppins-regular bg-[var(--color-text-black)] p-4 border-0',
+                  }}
+                  tooltip={d => {
+                    return (
+                      <div className='flex flex-col bg-[var(--color-text-black)]'>
+                        <ParagraphText size='sm' weight='bold'>
+                          {d.data.year}
+                        </ParagraphText>
+                        <div className='flex gap-8 justify-between py-4 border-b border-b-[#ffffff40]'>
+                          <ParagraphText size='sm'>
+                            {selectedSubIndicator.label}
+                          </ParagraphText>
+                          <ParagraphText size='sm'>
+                            {d.data.numericValue ?? 'NA'}
+                          </ParagraphText>
+                        </div>
+                        <div className='flex gap-8 justify-between py-4 border-b border-b-[#ffffff40]'>
+                          <ParagraphText size='sm'>
+                            No. of contracts
+                          </ParagraphText>
+                          <ParagraphText size='sm'>
+                            {d.data.contractValue || 'NA'}
+                          </ParagraphText>
+                        </div>
+                        <div className='flex gap-8 justify-between py-4 border-b border-b-[#ffffff40]'>
+                          <ParagraphText size='sm'>
+                            No. of risky contracts
+                          </ParagraphText>
+                          <ParagraphText size='sm'>
+                            {d.data.totalNumberOfRiskyContracts ?? 'NA'}
+                          </ParagraphText>
+                        </div>
+                        <div className='flex gap-8 justify-between pt-4'>
+                          <ParagraphText size='sm'>
+                            Total contract value (USD)
+                          </ParagraphText>
+                          <ParagraphText size='sm'>
+                            {d.data.totalContractValueMillionUsd || 'NA'}
+                          </ParagraphText>
+                        </div>
+                      </div>
+                    );
                   }}
                 />
               ) : (
@@ -468,6 +584,47 @@ function Viz({
                       yAxis: {
                         labels: 'poppins-regular',
                       },
+                    }}
+                    tooltip={d => {
+                      return (
+                        <div className='flex flex-col bg-[var(--color-text-black)]'>
+                          <ParagraphText size='sm' weight='bold'>
+                            {d.data.year}
+                          </ParagraphText>
+                          <div className='flex gap-8 justify-between py-4 border-b border-b-[#ffffff40]'>
+                            <ParagraphText size='sm'>
+                              Data availability
+                            </ParagraphText>
+                            <ParagraphText size='sm'>
+                              {d.data.contractValue || 'NA'}
+                            </ParagraphText>
+                          </div>
+                          <div className='flex gap-8 justify-between py-4 border-b border-b-[#ffffff40]'>
+                            <ParagraphText size='sm'>
+                              No. of contracts
+                            </ParagraphText>
+                            <ParagraphText size='sm'>
+                              {d.data.contractValue || 'NA'}
+                            </ParagraphText>
+                          </div>
+                          <div className='flex gap-8 justify-between py-4 border-b border-b-[#ffffff40]'>
+                            <ParagraphText size='sm'>
+                              No. of risky contracts
+                            </ParagraphText>
+                            <ParagraphText size='sm'>
+                              {d.data.totalNumberOfRiskyContracts ?? 'NA'}
+                            </ParagraphText>
+                          </div>
+                          <div className='flex gap-8 justify-between pt-4'>
+                            <ParagraphText size='sm'>
+                              Total contract value (USD)
+                            </ParagraphText>
+                            <ParagraphText size='sm'>
+                              {d.data.totalContractValueMillionUsd || 'NA'}
+                            </ParagraphText>
+                          </div>
+                        </div>
+                      );
                     }}
                   />
                 ) : (

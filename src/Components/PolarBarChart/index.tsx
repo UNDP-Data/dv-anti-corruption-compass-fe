@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState, useEffectEvent } from 'react';
 import { Spinner } from '@undp/design-system-react/Spinner';
+import { Spacer } from '@undp/design-system-react/Spacer';
+
+import { HeadingText } from '../Typography';
 
 import { Graph } from './Graph';
 
@@ -10,6 +13,7 @@ interface Props {
   innerRadiusRatio?: number;
   indicatorMetaData: IndicatorsMetaDataType;
   maxValue?: number;
+  year: number;
 }
 
 export const PolarBarChart = ({
@@ -17,6 +21,7 @@ export const PolarBarChart = ({
   innerRadiusRatio = 0.6,
   indicatorMetaData,
   maxValue = 100,
+  year,
 }: Props) => {
   const [radius, setRadius] = useState(0);
   const marginSide = 100;
@@ -38,19 +43,26 @@ export const PolarBarChart = ({
     return () => resizeObserver.disconnect();
   }, []);
   return (
-    <div className='bg-transparent container-sm' ref={graphDiv}>
-      {radius > 0 && (
-        <Graph
-          data={data}
-          radius={radius - marginSide}
-          innerRadiusRatio={innerRadiusRatio}
-          marginSide={marginSide}
-          marginTop={marginTop}
-          indicatorMetaData={indicatorMetaData}
-          maxValue={maxValue}
-        />
-      )}
-      {radius === 0 && <Spinner size='lg' className='my-20 m-auto' />}
-    </div>
+    <>
+      <Spacer size='base' />
+      <HeadingText type='h3' alignment='center'>
+        {year}
+      </HeadingText>
+      <Spacer size='4xl' />
+      <div className='bg-transparent container-sm' ref={graphDiv}>
+        {radius > 0 && (
+          <Graph
+            data={data}
+            radius={radius - marginSide}
+            innerRadiusRatio={innerRadiusRatio}
+            marginSide={marginSide}
+            marginTop={marginTop}
+            indicatorMetaData={indicatorMetaData}
+            maxValue={maxValue}
+          />
+        )}
+        {radius === 0 && <Spinner size='lg' className='my-20 m-auto' />}
+      </div>
+    </>
   );
 };

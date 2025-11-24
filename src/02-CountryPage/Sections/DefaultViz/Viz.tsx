@@ -40,12 +40,12 @@ function Viz({ data, indicatorMetaData, maxValue }: Props) {
   }, [firstSubIndicator]);
   return (
     <div className='w-full'>
-      <Spacer size='4xl' />
       <PolarBarChart
         innerRadiusRatio={0.6}
         indicatorMetaData={indicatorMetaData}
         data={data.filter(d => d.year === latestYear)}
         maxValue={maxValue}
+        year={latestYear}
       />
       <Spacer size='8xl' />
       <div className='flex items-center gap-4 w-full'>
@@ -151,7 +151,7 @@ function Viz({ data, indicatorMetaData, maxValue }: Props) {
             )}
           </GraphCard>
           <GraphCard
-            title='Comparison to global average'
+            title='Trend over time'
             chips={[selectedSubIndicator.label]}
           >
             <div className='flex h-[360px] dark'>
@@ -182,6 +182,25 @@ function Viz({ data, indicatorMetaData, maxValue }: Props) {
                     yAxis: {
                       labels: 'poppins-regular',
                     },
+                    tooltip:
+                      'poppins-regular bg-[var(--color-text-black)] p-4 border-0',
+                  }}
+                  tooltip={d => {
+                    return (
+                      <div className='flex flex-col bg-[var(--color-text-black)]'>
+                        <ParagraphText size='sm' weight='bold'>
+                          {d.data.year}
+                        </ParagraphText>
+                        <div className='flex gap-8 justify-between pt-4'>
+                          <ParagraphText size='sm'>
+                            {selectedSubIndicator.label}
+                          </ParagraphText>
+                          <ParagraphText size='sm'>
+                            {d.data.numericValue ?? 'NA'}
+                          </ParagraphText>
+                        </div>
+                      </div>
+                    );
                   }}
                 />
               ) : (

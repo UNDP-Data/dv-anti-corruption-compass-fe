@@ -74,7 +74,8 @@ export const Graph = ({
             const endAngle = startAngle + (x.bandwidth() as number);
             const angle = (startAngle + endAngle) / 2;
             const val = data.find(el => el.id === d.id)?.numericValue || 0;
-            const cat = data.find(el => el.id === d.id)?.indicatorValue || 'NA';
+            const valueText =
+              data.find(el => el.id === d.id)?.numericValue ?? 'NA';
             return (
               <g key={i}>
                 <path
@@ -124,7 +125,7 @@ export const Graph = ({
                       {d.name}
                     </ParagraphText>
                     <ParagraphText size='xs' weight='light' leading='loose'>
-                      {cat}
+                      {valueText === 'NA' ? 'NA' : `${valueText}%`}
                     </ParagraphText>
                   </div>
                 </foreignObject>

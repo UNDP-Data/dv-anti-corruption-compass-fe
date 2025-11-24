@@ -18,6 +18,8 @@ import { GraphCard } from '@/Components/GraphCard';
 import { NoData } from '@/Components/NoData';
 import DataTableSimple from '@/Components/DataTable/SecondaryTable';
 import { quantile } from '@/Utils/getQuantile';
+import EnterpriseSurveyMethodology from '@/Components/MethodologyBlocks/EnterpriseSurveyMethodology';
+import PublicProcurementMethodology from '@/Components/MethodologyBlocks/PublicProcurementMethodology';
 
 interface Props {
   indicatorMetaData: IndicatorsMetaDataType;
@@ -326,34 +328,21 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
           <ArrowDownToLine size={16} strokeWidth={3} />
         </Button>
       </div>
-      <Spacer size='6xl' />
-      <MethodologySection
-        description={
-          <ParagraphText>
-            Lorem ipsum dolor sit amet consectetur. Sit luctus feugiat faucibus
-            dui feugiat vitae sit enim venenatis. Ut posuere consectetur id nec.
-            Scelerisque tellus mi ac id non donec tristique purus dictum. Vitae
-            sit aenean nisi risus ut id massa. Neque egestas elementum fringilla
-            fermentum in. Bibendum massa at hac lectus malesuada. Cras vulputate
-            neque morbi nulla. Quis mauris urna dictum vulputate consectetur.
-            Faucibus sit velit amet urna. Auctor pharetra fringilla pharetra est
-            non egestas tempus vitae blandit. Egestas purus magna risus laoreet
-            lobortis sagittis.
-            <br />
-            <br />
-            Accumsan vitae blandit odio est Lorem ipsum dolor sit amet
-            consectetur. Sit luctus feugiat faucibus dui feugiat vitae sit enim
-            venenatis. Ut posuere consectetur id nec. Scelerisque tellus mi ac
-            id non donec tristique purus dictum. Vitae sit aenean nisi risus ut
-            id massa. Neque egestas elementum fringilla fermentum in. Bibendum
-            massa at hac lectus malesuada. Cras vulputate neque morbi nulla.
-            Quis mauris urna dictum vulputate consectetur. Faucibus sit velit
-            amet urna. Auctor pharetra fringilla pharetra est non egestas tempus
-            vitae blandit. Egestas purus magna risus laoreet lobortis sagittis.
-            Accumsan vitae blandit odio est
-          </ParagraphText>
-        }
-      />
+      {indicatorMetaData.mainIndicatorId === 1 ||
+      indicatorMetaData.mainIndicatorId === 2 ? (
+        <>
+          <Spacer size='6xl' />
+          <MethodologySection
+            description={
+              indicatorMetaData.mainIndicatorId === 1 ? (
+                <PublicProcurementMethodology />
+              ) : (
+                <EnterpriseSurveyMethodology />
+              )
+            }
+          />
+        </>
+      ) : null}
     </div>
   );
 }
