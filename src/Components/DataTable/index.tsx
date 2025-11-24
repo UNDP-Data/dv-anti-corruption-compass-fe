@@ -141,7 +141,11 @@ function DataTableWithFilters({
             </div>
           </HoverCardTrigger>
           <HoverCardContent className='rounded text-[12px] poppins-regular !leading-[150%] p-3 rounded-[8px] text-[#4D4D4D] w-60'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Use the filters to see a list of countries with data for the chosen
+            corruption-related indicator(s) and year. Public procurement
+            indicators are available for the years 2017 to 2024. World Bank
+            Enterprise Survey data is available for the years 2006 to 2025.
+            Countries are listed in alphabetical order.
           </HoverCardContent>
         </HoverCard>
       </div>
