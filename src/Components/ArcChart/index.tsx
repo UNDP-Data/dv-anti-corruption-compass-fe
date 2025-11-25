@@ -29,7 +29,8 @@ export const ArcChart = ({ data, colors, subPillars }: Props) => {
                 size='xs'
                 className='text-[var(--color-text-black)]'
               >
-                {subPillars[i]}: <strong>{data[i].toFixed(2)}</strong>
+                {subPillars[i]}:{' '}
+                <strong>{data[i] !== null ? data[i].toFixed(2) : 'NA'}</strong>
               </ParagraphText>
             </div>
           ))}

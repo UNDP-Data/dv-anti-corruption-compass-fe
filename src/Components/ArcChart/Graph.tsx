@@ -42,22 +42,24 @@ export const Graph = ({
                   strokeWidth={strokeWidth}
                   strokeLinejoin='round'
                 />
-                <path
-                  d={
-                    arc()({
-                      innerRadius:
-                        radius - i * 2 * strokeWidth - strokeWidth / 2,
-                      outerRadius:
-                        radius - i * 2 * strokeWidth - strokeWidth / 2 + 1,
-                      startAngle: x(0),
-                      endAngle: x(d) as number,
-                    }) as string
-                  }
-                  fill='none'
-                  stroke={colors[i % colors.length]}
-                  strokeWidth={strokeWidth}
-                  strokeLinejoin='round'
-                />
+                {d !== null && (
+                  <path
+                    d={
+                      arc()({
+                        innerRadius:
+                          radius - i * 2 * strokeWidth - strokeWidth / 2,
+                        outerRadius:
+                          radius - i * 2 * strokeWidth - strokeWidth / 2 + 1,
+                        startAngle: x(0),
+                        endAngle: x(d) as number,
+                      }) as string
+                    }
+                    fill='none'
+                    stroke={colors[i % colors.length]}
+                    strokeWidth={strokeWidth}
+                    strokeLinejoin='round'
+                  />
+                )}
               </g>
             );
           })}

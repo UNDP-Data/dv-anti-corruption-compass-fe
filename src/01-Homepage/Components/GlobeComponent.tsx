@@ -7,13 +7,17 @@ import { Spacer } from '@undp/design-system-react/Spacer';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
 
 import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
-import { ColorLegend } from '@/Components/ColorLegend';
 import { ArcChart } from '@/Components/ArcChart';
 import { ParagraphText } from '@/Components/Typography';
 import { Button } from '@/Components/Button';
 import { BarChartList } from '@/Components/BarChartList';
 
 interface Props {
+  globeData: {
+    countryCode: string;
+    indicatorId: string;
+    year: number;
+  }[];
   data: DataType[];
   selectedSubIndicator: string;
   countriesList: CountriesDataType[];
@@ -23,6 +27,7 @@ interface Props {
 }
 
 function GlobeComponent({
+  globeData,
   data,
   selectedSubIndicator,
   countriesList,
@@ -31,43 +36,31 @@ function GlobeComponent({
   indicatorsMetaData,
 }: Props) {
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
-  const year = Math.max(
-    ...(data
-      .filter(
-        d => `${d.mainIndicatorId}` === selectedSubIndicator.split('_')[0],
-      )
-      .map(d => d.year) ?? []),
+  const [selectedYear, setSelectedYear] = useState<number | undefined>(
+    undefined,
   );
   return (
     <>
       <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col py-24 pl-10 pr-30'>
-        <div className='absolute left-1/2 top-0 z-10 transform -translate-x-1/2'>
-          <ColorLegend
-            colors={
-              indicatorsMetaData
-                .map(d => d.subIndicators)
-                .flat()
-                .find(d => d.id === selectedSubIndicator)
-                ?.colors.split(',') || []
-            }
-          />
-        </div>
         <div className='w-full grow flex radialGradientMask'>
           {data.length !== 0 ? (
             <ThreeDGlobe
               showColorScale={false}
               polygonAltitude={0.005}
               highlightedAltitude={0.01}
-              colors={indicatorsMetaData
-                .map(d => d.subIndicators)
-                .flat()
-                .find(d => d.id === selectedSubIndicator)
-                ?.colors.split(',')}
+              colors={[
+                indicatorsMetaData
+                  .map(d => d.subIndicators)
+                  .flat()
+                  .find(d => d.id === selectedSubIndicator)
+                  ?.colors.split(',')[0] as string,
+              ]}
               selectedId={selectedId}
               onSeriesMouseClick={d => {
                 setSelectedId(d.id);
+                setSelectedYear(d.data.year);
               }}
-              colorDomain={['LOW', 'MEDIUM', 'HIGH']}
+              colorDomain={['Yes']}
               scale={
                 (window.innerWidth / 2 - 160) / (window.innerHeight - 200) >
                 0.95
@@ -136,16 +129,17 @@ function GlobeComponent({
               resetSelectionOnDoubleClick={false}
               autoRotate={rotate ? 1 : false}
               data={transformDataForGraph(
-                data.filter(
-                  d =>
-                    d.id === selectedSubIndicator &&
-                    d.year === year &&
-                    d.contractValue === null,
-                ),
+                globeData
+                  .filter(d => d.indicatorId === selectedSubIndicator)
+                  .map(d => ({
+                    countryCode: d.countryCode,
+                    x: 'Yes',
+                    year: d.year,
+                  })),
                 'threeDGlobe',
                 [
                   { chartConfigId: 'id', columnId: 'countryCode' },
-                  { chartConfigId: 'x', columnId: 'numericValue' },
+                  { chartConfigId: 'x', columnId: 'x' },
                 ],
               )}
             />
@@ -153,11 +147,10 @@ function GlobeComponent({
         </div>
       </div>
       {selectedId && data.length !== 0 && (
-        <div className='fixed bottom-8 right-20 z-15 bg-[#fff] p-6 lg:w-[300px] sm:w-[360px] rounded-[8px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] z-999'>
+        <div className='fixed bottom-8 right-20 bg-[#fff] p-6 lg:w-[300px] sm:w-[360px] rounded-[8px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] z-[999]'>
           <div
             style={{
               cursor: 'pointer',
-              zIndex: 10,
               position: 'absolute',
               right: '0.5rem',
               top: '0.5rem',
@@ -186,6 +179,15 @@ function GlobeComponent({
                 ]
               }
             </ParagraphText>
+            <Spacer size='base' />
+            <ParagraphText
+              className='text-[var(--color-text-black)]'
+              alignment='center'
+              weight='regular'
+              size='sm'
+            >
+              {selectedYear}
+            </ParagraphText>
             <Spacer size='2xl' />
             {(indicatorsMetaData.find(
               d =>
@@ -197,13 +199,13 @@ function GlobeComponent({
                   data={data
                     .filter(
                       d =>
-                        d.year === year &&
+                        d.year === selectedYear &&
                         d.countryCode === selectedId &&
                         `${d.mainIndicatorId}` ===
                           selectedSubIndicator.split('_')[0] &&
                         d.contractValue === null,
                     )
-                    .map(d => d.numericValue || 0)}
+                    .map(d => d.numericValue)}
                   colors={
                     indicatorsMetaData
                       .find(
@@ -226,7 +228,7 @@ function GlobeComponent({
                 data={data
                   .filter(
                     d =>
-                      d.year === year &&
+                      d.year === selectedYear &&
                       d.countryCode === selectedId &&
                       `${d.mainIndicatorId}` ===
                         selectedSubIndicator.split('_')[0] &&

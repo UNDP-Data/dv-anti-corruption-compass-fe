@@ -13,6 +13,37 @@ import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
 import { HeadingText, ParagraphText } from '@/Components/Typography';
 import { ErrorState } from '@/Components/ErrorState';
 
+const getGlobeData = (data: DataType[]) => {
+  const uniqueCountryCodes = [...new Set(data.map(d => d.countryCode))];
+  const availabilityData = uniqueCountryCodes
+    .map(countryCode => {
+      const countryData = data.filter(
+        d =>
+          d.countryCode === countryCode &&
+          d.numericValue !== null &&
+          d.numericValue !== undefined,
+      );
+      const uniqueIndicatorIds = [
+        ...new Set(
+          countryData.map(d => `${d.mainIndicatorId}_${d.subIndicatorId}`),
+        ),
+      ].map(d => {
+        const indicatorDataYears = countryData
+          .filter(
+            el =>
+              `${el.mainIndicatorId}` === d.split('_')[0] &&
+              `${el.subIndicatorId}` === d.split('_')[1],
+          )
+          .map(el => el.year);
+        const latestYear = indicatorDataYears.sort((a, b) => b - a)[0];
+        return { countryCode, indicatorId: d, year: latestYear };
+      });
+      return uniqueIndicatorIds;
+    })
+    .flat();
+  return availabilityData;
+};
+
 function HomepageEl({
   indicatorsMetaData,
   countriesList,
@@ -72,6 +103,8 @@ function HomepageEl({
 
     return () => unsubscribe();
   }, [introductionOpacity]);
+
+  const globeData = getGlobeData(data);
 
   return (
     <div className='relative'>
@@ -141,6 +174,7 @@ function HomepageEl({
           ))}
         </div>
         <GlobeComponent
+          globeData={globeData}
           data={data}
           selectedSubIndicator={selectedSubIndicator[inViewSlide]}
           countriesList={countriesList}

@@ -35,14 +35,19 @@ export const Header = ({
         <Link to='/'>
           <div className='flex items-center gap-4'>
             <img src='/imgs/Logo.svg' alt='Example' className='w-7.5 h-auto' />
-            <HeadingText
-              type='h3'
-              weight='bold'
-              alignment='center'
-              marginBottom='none'
-            >
-              Anti Corruption Compass
-            </HeadingText>
+            <div className='flex items-center gap-2'>
+              <HeadingText
+                type='h3'
+                weight='bold'
+                alignment='center'
+                marginBottom='none'
+              >
+                Anti Corruption Compass
+              </HeadingText>
+              <div className='bg-[#4B6E91] text-[var(--color-text-white)] px-2 py-1 rounded-[4px] poppins-semibold text-xs'>
+                beta
+              </div>
+            </div>
           </div>
         </Link>
         <div className='items-center gap-16 hidden lg:flex'>

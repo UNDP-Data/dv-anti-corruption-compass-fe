@@ -174,13 +174,21 @@ function DataTableWithFilters({
                   i < page * pageLength && i >= (page - 1) * pageLength,
               )
               .map((el, i) => {
+                console.log(
+                  subIndicators.find(
+                    d => `${d.mainIndicatorId}_${d.subIndicatorId}` === el.id,
+                  )?.colors,
+                );
                 const tagColors =
                   colors.length > 0
                     ? colors
-                    : subIndicators.find(
-                        d =>
-                          `${d.mainIndicatorId}_${d.subIndicatorId}` === el.id,
-                      )?.colors || [];
+                    : subIndicators
+                        .find(
+                          d =>
+                            `${d.mainIndicatorId}_${d.subIndicatorId}` ===
+                            el.id,
+                        )
+                        ?.colors.split(',') || [];
                 return (
                   <div key={i}>
                     <div className='flex w-full py-4 border-b border-b-[0.5px] border-b-primary-white items-center'>
@@ -208,30 +216,32 @@ function DataTableWithFilters({
                           rounded='full'
                           className='poppins-medium py-0 text-[12px]! px-3!'
                           style={{
-                            backgroundColor: !el.indicatorValue
-                              ? '#DADADA'
-                              : ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                    el.indicatorValue,
-                                  ) !== -1
-                                ? tagColors[
+                            backgroundColor:
+                              el.indicatorValue === null
+                                ? '#DADADA'
+                                : ['LOW', 'MEDIUM', 'HIGH'].indexOf(
+                                      el.indicatorValue,
+                                    ) !== -1
+                                  ? tagColors[
+                                      ['LOW', 'MEDIUM', 'HIGH'].indexOf(
+                                        el.indicatorValue,
+                                      )
+                                    ]
+                                  : '#DADADA',
+                            color:
+                              el.indicatorValue === null
+                                ? '#000'
+                                : getTextColorBasedOnBgColor(
                                     ['LOW', 'MEDIUM', 'HIGH'].indexOf(
                                       el.indicatorValue,
-                                    )
-                                  ]
-                                : '#DADADA',
-                            color: !el.indicatorValue
-                              ? '#000'
-                              : getTextColorBasedOnBgColor(
-                                  ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                    el.indicatorValue,
-                                  ) !== -1
-                                    ? tagColors[
-                                        ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                          el.indicatorValue,
-                                        )
-                                      ]
-                                    : '#DADADA',
-                                ),
+                                    ) !== -1
+                                      ? tagColors[
+                                          ['LOW', 'MEDIUM', 'HIGH'].indexOf(
+                                            el.indicatorValue,
+                                          )
+                                        ]
+                                      : '#DADADA',
+                                  ),
                           }}
                         >
                           {el.indicatorValue}
