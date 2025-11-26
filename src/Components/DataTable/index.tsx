@@ -174,11 +174,6 @@ function DataTableWithFilters({
                   i < page * pageLength && i >= (page - 1) * pageLength,
               )
               .map((el, i) => {
-                console.log(
-                  subIndicators.find(
-                    d => `${d.mainIndicatorId}_${d.subIndicatorId}` === el.id,
-                  )?.colors,
-                );
                 const tagColors =
                   colors.length > 0
                     ? colors
