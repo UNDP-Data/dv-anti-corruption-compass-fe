@@ -1,7 +1,10 @@
 import { motion, useInView, useScroll, useTransform } from 'motion/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { Spacer } from '@undp/design-system-react/Spacer';
 import { Spinner } from '@undp/design-system-react';
+import { X } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { Link } from '@tanstack/react-router';
 
 import GlobeControls from './Components/GlobeControls';
 import Navigation from './Components/Navigation';
@@ -12,6 +15,9 @@ import Introduction from './Sections/Introduction';
 import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
 import { HeadingText, ParagraphText } from '@/Components/Typography';
 import { ErrorState } from '@/Components/ErrorState';
+import { ArcChart } from '@/Components/ArcChart';
+import { BarChartList } from '@/Components/BarChartList';
+import { Button } from '@/Components/Button';
 
 const getGlobeData = (data: DataType[]) => {
   const uniqueCountryCodes = [...new Set(data.map(d => d.countryCode))];
@@ -57,6 +63,10 @@ function HomepageEl({
   countriesListLoading: boolean;
   countriesListError: boolean;
 }) {
+  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+  const [selectedYear, setSelectedYear] = useState<number | undefined>(
+    undefined,
+  );
   const [inViewSlide, setInViewSlide] = useState<number>(0);
   const [selectedSubIndicator, setSelectedSubIndicator] = useState<string[]>(
     [...new Set(indicatorsMetaData.map(d => d.mainIndicatorId))].map(
@@ -99,12 +109,44 @@ function HomepageEl({
   useEffect(() => {
     const unsubscribe = introductionOpacity.on('change', latest => {
       setShowNavigation(latest < 0.25);
+      if (latest > 0.5) {
+        setSelectedId(undefined);
+        setSelectedYear(undefined);
+      }
     });
 
     return () => unsubscribe();
   }, [introductionOpacity]);
 
+  useEffect(() => {
+    const unsubscribe = pillarVisualizationOpacity.on('change', latest => {
+      if (latest < 0.25) {
+        setSelectedId(undefined);
+        setSelectedYear(undefined);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [pillarVisualizationOpacity]);
+
   const globeData = getGlobeData(data);
+
+  const updateYear = useEffectEvent(
+    (inViewSlide: number, selectedId?: string) => {
+      if (!selectedId) return;
+      setSelectedYear(
+        globeData.find(
+          d =>
+            d.indicatorId === selectedSubIndicator[inViewSlide] &&
+            d.countryCode === selectedId,
+        )?.year,
+      );
+    },
+  );
+
+  useEffect(() => {
+    updateYear(inViewSlide, selectedId);
+  }, [inViewSlide, selectedId]);
 
   return (
     <div className='relative'>
@@ -130,7 +172,10 @@ function HomepageEl({
         className='sticky top-[184px] h-[calc(100vh-120px)] flex flex-col'
       >
         <Introduction
-          data={data}
+          data={[...new Set(data.map(d => d.countryCode))].map(d => ({
+            id: d,
+            x: 'Yes',
+          }))}
           pillarVisualizationRef={pillarVisualizationRef}
           countryLevelInsightsRef={countryLevelInsightsRef}
           indicatorsMetaData={indicatorsMetaData.filter(d => !d.comingSoon)}
@@ -178,9 +223,13 @@ function HomepageEl({
           data={data}
           selectedSubIndicator={selectedSubIndicator[inViewSlide]}
           countriesList={countriesList}
+          inViewSlide={inViewSlide}
           rotate={inViewSlide < indicatorsMetaData.length ? true : false}
           indicatorsMetaData={indicatorsMetaData}
           selectedIndicator={indicatorsMetaData[inViewSlide]}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+          setSelectedYear={setSelectedYear}
         />
       </motion.div>
       <div
@@ -212,6 +261,142 @@ function HomepageEl({
           </ParagraphText>
         </div>
       </div>
+      {selectedId &&
+        data.length !== 0 &&
+        createPortal(
+          <div className='fixed bottom-8 right-20 bg-[#fff] p-6 lg:w-[300px] sm:w-[360px] rounded-[8px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] z-[999] max-h-[80vh] overflow-y-auto'>
+            <div
+              style={{
+                cursor: 'pointer',
+                position: 'absolute',
+                right: '0.5rem',
+                top: '0.5rem',
+              }}
+              onClick={() => {
+                setSelectedId(undefined);
+              }}
+            >
+              <X color='#2D4858' size={32} strokeWidth={1} />
+            </div>
+            <div className='w-full flex flex-col items-center'>
+              <img
+                alt='Country flag'
+                className='w-9 mb-3'
+                src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${countriesList.find(d => d['Alpha-3 code'] === selectedId)?.['Alpha-2 code']}.svg`}
+              />
+              <ParagraphText
+                className='text-[var(--color-text-black)]'
+                alignment='center'
+                weight='semibold'
+                size='xl'
+              >
+                {
+                  countriesList.find(el => el['Alpha-3 code'] === selectedId)?.[
+                    'Country or Area (official name)'
+                  ]
+                }
+              </ParagraphText>
+              <Spacer size='base' />
+              <ParagraphText
+                className='text-[var(--color-text-black)]'
+                alignment='center'
+                weight='regular'
+                size='sm'
+              >
+                {selectedYear}
+              </ParagraphText>
+              <Spacer size='2xl' />
+              {(indicatorsMetaData.find(
+                d =>
+                  d.mainIndicatorId ===
+                  parseInt(selectedSubIndicator[inViewSlide].split('_')[0]),
+              )?.subIndicators.length || 0) < 6 ? (
+                <div className='w-full flex items-center text-primary-gray-500 justify-center'>
+                  <ArcChart
+                    data={data
+                      .filter(
+                        d =>
+                          d.year === selectedYear &&
+                          d.countryCode === selectedId &&
+                          `${d.mainIndicatorId}` ===
+                            selectedSubIndicator[inViewSlide].split('_')[0] &&
+                          d.contractValue === null,
+                      )
+                      .map(d => d.numericValue)}
+                    colors={
+                      indicatorsMetaData
+                        .find(
+                          d =>
+                            `${d.mainIndicatorId}` ===
+                            selectedSubIndicator[inViewSlide].split('_')[0],
+                        )
+                        ?.subIndicators.map(d => d.color) || []
+                    }
+                    subPillars={
+                      indicatorsMetaData
+                        .map(d => d.subIndicators)
+                        .flat()
+                        .map(d => d.name) || []
+                    }
+                  />
+                </div>
+              ) : (
+                <BarChartList
+                  data={data
+                    .filter(
+                      d =>
+                        d.year === selectedYear &&
+                        d.countryCode === selectedId &&
+                        `${d.mainIndicatorId}` ===
+                          selectedSubIndicator[inViewSlide].split('_')[0] &&
+                        d.contractValue === null,
+                    )
+                    .map(d => ({
+                      id:
+                        indicatorsMetaData
+                          .find(el => el.mainIndicatorId === d.mainIndicatorId)
+                          ?.subIndicators.find(el => el.id === d.id)?.name ||
+                        '',
+                      value: d.numericValue || 0,
+                    }))}
+                  suffix={
+                    selectedSubIndicator[inViewSlide].split('_')[0] === '1'
+                      ? ''
+                      : '%'
+                  }
+                  maxValue={
+                    selectedSubIndicator[inViewSlide].split('_')[0] === '1'
+                      ? 1
+                      : 100
+                  }
+                  color={
+                    indicatorsMetaData.find(
+                      d =>
+                        `${d.mainIndicatorId}` ===
+                        selectedSubIndicator[inViewSlide].split('_')[0],
+                    )?.mainColor || '#fff'
+                  }
+                  textClassName='text-[var(--color-text-black)]'
+                  barBgColor='#d6d6d6'
+                  isCardBgWhite
+                />
+              )}
+              <Spacer size='2xl' />
+              <Link
+                to='/countries/$isoCode/{-$indicator}'
+                params={{
+                  isoCode: selectedId,
+                  indicator: indicatorsMetaData[inViewSlide].name
+                    .replaceAll(' ', '-')
+                    .toLowerCase(),
+                }}
+              >
+                <Button variant='primary'>View more →</Button>
+              </Link>
+            </div>
+          </div>,
+          document.getElementById('root') as HTMLElement,
+        )}
     </div>
   );
 }

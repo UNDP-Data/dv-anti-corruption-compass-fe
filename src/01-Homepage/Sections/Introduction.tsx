@@ -3,13 +3,13 @@ import * as THREE from 'three';
 import { ArrowDown } from 'lucide-react';
 import { useEffect, useRef, useState, useEffectEvent, RefObject } from 'react';
 
-import { DataType, IndicatorsMetaDataType } from '@/Types';
+import { IndicatorsMetaDataType } from '@/Types';
 import { ScrollToObj } from '@/Utils/ScrollToObj';
 import { HeadingText, ParagraphText } from '@/Components/Typography';
 import { Button } from '@/Components/Button';
 
 interface Props {
-  data: DataType[];
+  data: { id: string; x: string }[];
   pillarVisualizationRef: RefObject<HTMLDivElement | null>;
   countryLevelInsightsRef: RefObject<HTMLDivElement | null>;
   indicatorsMetaData: IndicatorsMetaDataType[];
@@ -82,11 +82,11 @@ const Introduction = (props: Props) => {
           {data.length !== 0 ? (
             <ThreeDGlobe
               showColorScale={false}
-              highlightedAltitude={0.01}
+              highlightedAltitude={0.005}
               globeOffset={[0, globeYOffSet]}
               polygonAltitude={0.005}
-              colors={['#A5B3C5', '#7B9EB4', '#4A7591']}
-              colorDomain={['LOW', 'MEDIUM', 'HIGH']}
+              colors={['#A5B3C5', '#4A7591']}
+              colorDomain={['No', 'Yes']}
               scale={0.72}
               footNote=''
               globeMaterial={
@@ -99,7 +99,7 @@ const Introduction = (props: Props) => {
               globeCurvatureResolution={2}
               enableZoom={false}
               autoRotate={1}
-              data={[]}
+              data={data}
             />
           ) : null}
         </div>
