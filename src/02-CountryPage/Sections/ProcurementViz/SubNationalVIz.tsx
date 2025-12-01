@@ -57,6 +57,7 @@ interface Props {
   colors: string;
   mainColor: string;
   contractValue: string | null;
+  suffix: string;
 }
 
 function SubNationalVIz({
@@ -69,6 +70,7 @@ function SubNationalVIz({
   colors,
   mainColor,
   contractValue,
+  suffix,
 }: Props) {
   const { data, isLoading, isError } = useRegionalDataForCountry(
     countryCode,
@@ -154,6 +156,7 @@ function SubNationalVIz({
                   value: d.numericValue || 0,
                 }))}
               color={mainColor}
+              suffix={suffix}
             />
           </div>
         </div>

@@ -12,9 +12,10 @@ interface Props {
   data: DataType[];
   colors: string[];
   countriesList: CountriesDataType[];
+  suffix: string;
 }
 
-function DataTableSimple({ data, colors = [], countriesList }: Props) {
+function DataTableSimple({ data, colors = [], countriesList, suffix }: Props) {
   const [page, setPage] = useState(1);
   const pageLength = 10;
   return (
@@ -88,7 +89,7 @@ function DataTableSimple({ data, colors = [], countriesList }: Props) {
                         {el.numericValue === null ||
                         el.numericValue === undefined
                           ? 'NA'
-                          : el.numericValue.toFixed(2)}
+                          : el.numericValue.toFixed(2) + suffix}
                       </div>
                       <Link
                         to='/countries/$isoCode/{-$indicator}'

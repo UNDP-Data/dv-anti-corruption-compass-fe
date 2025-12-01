@@ -7,13 +7,21 @@ interface Props {
   data: number[];
   colors: string[];
   subPillars: string[];
+  suffix: string;
+  maxValue: number;
 }
 
-export const ArcChart = ({ data, colors, subPillars }: Props) => {
+export const ArcChart = ({
+  data,
+  colors,
+  subPillars,
+  suffix,
+  maxValue,
+}: Props) => {
   if (data.length === 0) return <NoData isBgWhite />;
   return (
     <div className='bg-transparent w-full mx-auto'>
-      <Graph data={data} radius={125} colors={colors} />
+      <Graph data={data} radius={125} colors={colors} maxValue={maxValue} />
       <div className='mt-4'>
         <div className='flex gap-x-6 gap-y-4 poppins-regular flex-wrap'>
           {colors.map((d, i) => (
@@ -30,7 +38,9 @@ export const ArcChart = ({ data, colors, subPillars }: Props) => {
                 className='text-[var(--color-text-black)]'
               >
                 {subPillars[i]}:{' '}
-                <strong>{data[i] !== null ? data[i].toFixed(2) : 'NA'}</strong>
+                <strong>
+                  {data[i] !== null ? `${data[i].toFixed(2)}${suffix}` : 'NA'}
+                </strong>
               </ParagraphText>
             </div>
           ))}

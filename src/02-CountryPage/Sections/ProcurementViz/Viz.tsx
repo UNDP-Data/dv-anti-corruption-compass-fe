@@ -41,8 +41,8 @@ interface Props {
   indicatorMetaData: IndicatorsMetaDataType;
   marketList: MarketListDataType[];
   regionList: RegionListDataType[];
-  maxValue: number;
   countryCode: string;
+  suffix: string;
 }
 
 const CONTRACT_VALUE = [
@@ -69,9 +69,9 @@ function Viz({
   data,
   indicatorMetaData,
   marketList,
-  maxValue,
   regionList,
   countryCode,
+  suffix,
 }: Props) {
   const dataAvailabilityData = useDataDataAvailability();
   const yearList = [...new Set(data.map(d => d.year))].sort((a, b) => b - a);
@@ -136,7 +136,7 @@ function Viz({
                       ?.numericValue !== null ||
                     latestCountryData.find(d => d.id === el.id)
                       ?.numericValue !== undefined
-                      ? '%'
+                      ? suffix
                       : ''}
                   </div>
                   <div className='poppins-light text-[16px]! text-primary-white! w-[25%] pr-4!'>
@@ -187,6 +187,15 @@ function Viz({
             );
           })}
         </div>
+        <Spacer size='xl' />
+        <ParagraphText size='sm' className='italic! opacity-50'>
+          *Indicator values are categorized as High, Medium, Low, or Not
+          Available based on each country's relative position in a given year.
+          Countries in the top third of the distribution are classified as High,
+          those in the middle third as Medium, and those in the bottom third as
+          Low, while missing values are labeled Not Available. Consequently, the
+          thresholds defining each category vary by year.
+        </ParagraphText>
       </div>
       <Spacer size='8xl' />
       <div className='flex items-center gap-4 w-full'>
@@ -328,7 +337,7 @@ function Viz({
                       {
                         label: 'Rest',
                         size:
-                          maxValue -
+                          (indicatorMetaData.maxValue ?? 100) -
                           (data.find(
                             d =>
                               d.id === selectedSubIndicator.value &&
@@ -346,18 +355,39 @@ function Viz({
                     showColorScale={false}
                     colors={[indicatorMetaData.mainColor || '#fff', '#fff']}
                     mainText={
-                      data
-                        .find(
-                          d =>
-                            d.id === selectedSubIndicator.value &&
-                            d.year === selectedYear &&
-                            d.productMarketId ===
-                              (selectedMarket
-                                ? selectedMarket.productMarketId
-                                : null) &&
-                            d.contractValue === selectedContractValue.value,
-                        )
-                        ?.numericValue?.toFixed(2) ?? 'NA'
+                      data.find(
+                        d =>
+                          d.id === selectedSubIndicator.value &&
+                          d.year === selectedYear &&
+                          d.productMarketId ===
+                            (selectedMarket
+                              ? selectedMarket.productMarketId
+                              : null) &&
+                          d.contractValue === selectedContractValue.value,
+                      )?.numericValue !== null &&
+                      data.find(
+                        d =>
+                          d.id === selectedSubIndicator.value &&
+                          d.year === selectedYear &&
+                          d.productMarketId ===
+                            (selectedMarket
+                              ? selectedMarket.productMarketId
+                              : null) &&
+                          d.contractValue === selectedContractValue.value,
+                      )?.numericValue !== undefined
+                        ? `${data
+                            .find(
+                              d =>
+                                d.id === selectedSubIndicator.value &&
+                                d.year === selectedYear &&
+                                d.productMarketId ===
+                                  (selectedMarket
+                                    ? selectedMarket.productMarketId
+                                    : null) &&
+                                d.contractValue === selectedContractValue.value,
+                            )
+                            ?.numericValue?.toFixed(2)}${suffix}`
+                        : 'NA'
                     }
                   />
                 </div>
@@ -394,6 +424,8 @@ function Viz({
                       value: d.numericValue,
                     }))}
                   color={indicatorMetaData.mainColor}
+                  maxValue={indicatorMetaData.maxValue ?? 100}
+                  suffix={indicatorMetaData.suffix || ''}
                 />
               ) : (
                 <div className='h-full flex items-center'>
@@ -424,6 +456,7 @@ function Viz({
                 )?.colors || ''
               }
               contractValue={selectedContractValue.value}
+              suffix={suffix}
             />
           </GraphCard>
         </div>
@@ -468,6 +501,7 @@ function Viz({
                   lineColor={indicatorMetaData.mainColor || '#fff'}
                   showDots
                   animate
+                  suffix={suffix}
                   classNames={{
                     xAxis: {
                       labels: 'poppins-regular',
@@ -490,6 +524,7 @@ function Viz({
                           </ParagraphText>
                           <ParagraphText size='sm'>
                             {d.data.numericValue ?? 'NA'}
+                            {d.data.numericValue != null && suffix}
                           </ParagraphText>
                         </div>
                         <div className='flex gap-8 justify-between py-4 border-b border-b-[#ffffff40]'>
@@ -497,7 +532,7 @@ function Viz({
                             No. of contracts
                           </ParagraphText>
                           <ParagraphText size='sm'>
-                            {d.data.contractValue || 'NA'}
+                            {d.data.contractValue ?? 'NA'}
                           </ParagraphText>
                         </div>
                         <div className='flex gap-8 justify-between py-4 border-b border-b-[#ffffff40]'>
@@ -513,7 +548,7 @@ function Viz({
                             Total contract value (USD)
                           </ParagraphText>
                           <ParagraphText size='sm'>
-                            {d.data.totalContractValueMillionUsd || 'NA'}
+                            {d.data.totalContractValueMillionUsd ?? 'NA'}
                           </ParagraphText>
                         </div>
                       </div>
@@ -580,9 +615,9 @@ function Viz({
                     )}
                     lineColor={indicatorMetaData.mainColor || '#fff'}
                     showDots
-                    maxValue={100}
+                    maxValue={indicatorMetaData.maxValue ?? 100}
                     animate
-                    suffix=' %'
+                    suffix={indicatorMetaData.suffix || ''}
                     classNames={{
                       xAxis: {
                         labels: 'poppins-regular',

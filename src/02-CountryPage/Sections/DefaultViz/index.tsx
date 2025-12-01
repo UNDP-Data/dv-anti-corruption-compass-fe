@@ -23,10 +23,10 @@ function useDataForCountry(countryCode: string, mainIndicatorId: number) {
 interface Props {
   countryInfo: CountriesDataType;
   indicatorMetaData: IndicatorsMetaDataType;
-  maxValue: number;
+  suffix: string;
 }
 
-function DefaultViz({ countryInfo, indicatorMetaData, maxValue }: Props) {
+function DefaultViz({ countryInfo, indicatorMetaData, suffix }: Props) {
   const { data, isLoading, isError } = useDataForCountry(
     countryInfo['Alpha-3 code'],
     indicatorMetaData.mainIndicatorId,
@@ -46,11 +46,7 @@ function DefaultViz({ countryInfo, indicatorMetaData, maxValue }: Props) {
     );
   if (data)
     return (
-      <Viz
-        data={data}
-        indicatorMetaData={indicatorMetaData}
-        maxValue={maxValue}
-      />
+      <Viz data={data} indicatorMetaData={indicatorMetaData} suffix={suffix} />
     );
   return;
 }

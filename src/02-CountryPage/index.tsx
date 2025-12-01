@@ -60,13 +60,13 @@ function CountryPageEl({
               <ProcurementViz
                 countryInfo={countryInfo}
                 indicatorMetaData={selectedIndicator}
-                maxValue={selectedIndicator.maxValue || 1}
+                suffix={selectedIndicator.suffix || ''}
               />
             ) : (
               <DefaultViz
                 countryInfo={countryInfo}
                 indicatorMetaData={selectedIndicator}
-                maxValue={selectedIndicator.maxValue || 100}
+                suffix={selectedIndicator.suffix || ''}
               />
             )}
           </>

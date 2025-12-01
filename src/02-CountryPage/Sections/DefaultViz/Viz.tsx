@@ -17,10 +17,10 @@ import { PolarBarChart } from '@/Components/PolarBarChart';
 interface Props {
   data: DataType[];
   indicatorMetaData: IndicatorsMetaDataType;
-  maxValue: number;
+  suffix: string;
 }
 
-function Viz({ data, indicatorMetaData, maxValue }: Props) {
+function Viz({ data, indicatorMetaData, suffix }: Props) {
   const yearList = [...new Set(data.map(d => d.year))].sort((a, b) => b - a);
   const latestYear = yearList[0];
   const firstSubIndicator = indicatorMetaData.subIndicators[0];
@@ -44,7 +44,7 @@ function Viz({ data, indicatorMetaData, maxValue }: Props) {
         innerRadiusRatio={0.6}
         indicatorMetaData={indicatorMetaData}
         data={data.filter(d => d.year === latestYear)}
-        maxValue={maxValue}
+        maxValue={indicatorMetaData.maxValue ?? 100}
         year={latestYear}
       />
       <Spacer size='8xl' />
@@ -123,7 +123,7 @@ function Viz({ data, indicatorMetaData, maxValue }: Props) {
                       {
                         label: 'Rest',
                         size:
-                          maxValue -
+                          (indicatorMetaData.maxValue ?? 100) -
                           (data.find(
                             d =>
                               d.id === selectedSubIndicator.value &&
@@ -135,13 +135,24 @@ function Viz({ data, indicatorMetaData, maxValue }: Props) {
                     showColorScale={false}
                     colors={[indicatorMetaData.mainColor || '#fff', '#fff']}
                     mainText={
-                      data
-                        .find(
-                          d =>
-                            d.id === selectedSubIndicator.value &&
-                            d.year === selectedYear,
-                        )
-                        ?.numericValue?.toFixed(2) ?? 'NA'
+                      data.find(
+                        d =>
+                          d.id === selectedSubIndicator.value &&
+                          d.year === selectedYear,
+                      )?.numericValue !== null &&
+                      data.find(
+                        d =>
+                          d.id === selectedSubIndicator.value &&
+                          d.year === selectedYear,
+                      )?.numericValue !== undefined
+                        ? `${data
+                            .find(
+                              d =>
+                                d.id === selectedSubIndicator.value &&
+                                d.year === selectedYear,
+                            )
+                            ?.numericValue?.toFixed(2)}${suffix}`
+                        : 'NA'
                     }
                   />
                 </div>
@@ -175,6 +186,7 @@ function Viz({ data, indicatorMetaData, maxValue }: Props) {
                   lineColor={indicatorMetaData.mainColor || '#fff'}
                   showDots
                   animate
+                  suffix={suffix}
                   classNames={{
                     xAxis: {
                       labels: 'poppins-regular',
@@ -197,6 +209,7 @@ function Viz({ data, indicatorMetaData, maxValue }: Props) {
                           </ParagraphText>
                           <ParagraphText size='sm'>
                             {d.data.numericValue ?? 'NA'}
+                            {d.data.numericValue ? suffix : ''}
                           </ParagraphText>
                         </div>
                       </div>

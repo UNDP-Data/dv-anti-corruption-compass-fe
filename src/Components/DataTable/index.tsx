@@ -246,7 +246,10 @@ function DataTableWithFilters({
                         {el.numericValue === null ||
                         el.numericValue === undefined
                           ? 'NA'
-                          : el.numericValue.toFixed(2)}
+                          : el.numericValue.toFixed(2) +
+                              indicatorsMetaData.find(
+                                d => d.mainIndicatorId === el.mainIndicatorId,
+                              )?.suffix || ''}
                       </div>
                       <Link
                         to='/countries/$isoCode/{-$indicator}'

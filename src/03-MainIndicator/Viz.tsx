@@ -160,6 +160,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                       .map(d => d.numericValue),
                     0.25,
                   ).toFixed(2)}
+                  {indicatorMetaData.suffix || ''}
                 </ParagraphText>
                 <Spacer size='xl' />
                 <ParagraphText leading='none'>25 percentile</ParagraphText>
@@ -181,6 +182,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                       .map(d => d.numericValue),
                     0.5,
                   ).toFixed(2)}
+                  {indicatorMetaData.suffix || ''}
                 </ParagraphText>
                 <Spacer size='xl' />
                 <ParagraphText leading='none'>Median</ParagraphText>
@@ -202,6 +204,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                       .map(d => d.numericValue),
                     0.75,
                   ).toFixed(2)}
+                  {indicatorMetaData.suffix || ''}
                 </ParagraphText>
                 <Spacer size='xl' />
                 <ParagraphText leading='none'>75 percentile</ParagraphText>
@@ -316,6 +319,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                       ?.colors.split(',') || []
                   }
                   countriesList={countriesList}
+                  suffix={indicatorMetaData.suffix || ''}
                 />
               ) : (
                 <NoData />

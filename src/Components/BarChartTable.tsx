@@ -4,7 +4,7 @@ interface Props {
   data: { region: string; value: number }[];
   color: string;
   maxValue?: number;
-  suffix?: string;
+  suffix: string;
 }
 
 export const BarChartTable = ({

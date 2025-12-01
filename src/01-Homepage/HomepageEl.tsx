@@ -338,6 +338,20 @@ function HomepageEl({
                         .flat()
                         .map(d => d.name) || []
                     }
+                    suffix={
+                      indicatorsMetaData.find(
+                        d =>
+                          `${d.mainIndicatorId}` ===
+                          selectedSubIndicator[inViewSlide].split('_')[0],
+                      )?.suffix || ''
+                    }
+                    maxValue={
+                      indicatorsMetaData.find(
+                        d =>
+                          `${d.mainIndicatorId}` ===
+                          selectedSubIndicator[inViewSlide].split('_')[0],
+                      )?.maxValue ?? 100
+                    }
                   />
                 </div>
               ) : (
@@ -360,14 +374,18 @@ function HomepageEl({
                       value: d.numericValue || 0,
                     }))}
                   suffix={
-                    selectedSubIndicator[inViewSlide].split('_')[0] === '1'
-                      ? ''
-                      : '%'
+                    indicatorsMetaData.find(
+                      d =>
+                        `${d.mainIndicatorId}` ===
+                        selectedSubIndicator[inViewSlide].split('_')[0],
+                    )?.suffix || ''
                   }
                   maxValue={
-                    selectedSubIndicator[inViewSlide].split('_')[0] === '1'
-                      ? 1
-                      : 100
+                    indicatorsMetaData.find(
+                      d =>
+                        `${d.mainIndicatorId}` ===
+                        selectedSubIndicator[inViewSlide].split('_')[0],
+                    )?.maxValue ?? 100
                   }
                   color={
                     indicatorsMetaData.find(

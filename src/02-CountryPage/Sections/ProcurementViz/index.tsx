@@ -34,10 +34,10 @@ function useDataForCountry(countryCode: string, mainIndicatorId: number) {
 interface Props {
   countryInfo: CountriesDataType;
   indicatorMetaData: IndicatorsMetaDataType;
-  maxValue: number;
+  suffix: string;
 }
 
-function ProcurementViz({ countryInfo, indicatorMetaData, maxValue }: Props) {
+function ProcurementViz({ countryInfo, indicatorMetaData, suffix }: Props) {
   const { countryData, marketList, regionList } = useDataForCountry(
     countryInfo['Alpha-3 code'],
     indicatorMetaData.mainIndicatorId,
@@ -66,7 +66,7 @@ function ProcurementViz({ countryInfo, indicatorMetaData, maxValue }: Props) {
         marketList={marketList.data}
         regionList={regionList.data}
         indicatorMetaData={indicatorMetaData}
-        maxValue={maxValue}
+        suffix={suffix}
         countryCode={countryInfo['Alpha-3 code']}
       />
     );
