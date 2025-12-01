@@ -127,11 +127,17 @@ function Viz({
               <div key={i}>
                 <div className='flex w-full py-4 border-b border-b-[0.5px] border-b-primary-white items-center'>
                   <div className='poppins-light text-[16px]! text-primary-white! w-[50%] pr-4!'>
-                    {el.name}
+                    {el.name} ({el.description})
                   </div>
                   <div className='poppins-light text-[16px]! text-primary-white! w-[25%] pr-4!'>
                     {latestCountryData.find(d => d.id === el.id)
-                      ?.numericValue || 'NA'}
+                      ?.numericValue ?? 'NA'}{' '}
+                    {latestCountryData.find(d => d.id === el.id)
+                      ?.numericValue !== null ||
+                    latestCountryData.find(d => d.id === el.id)
+                      ?.numericValue !== undefined
+                      ? '%'
+                      : ''}
                   </div>
                   <div className='poppins-light text-[16px]! text-primary-white! w-[25%] pr-4!'>
                     <Badge
