@@ -85,7 +85,7 @@ function Viz({
     undefined | MarketListDataType
   >(undefined);
   const [selectedContractValue, setSelectedContractValue] = useState({
-    value: 'All',
+    value: 'ALL',
     label: 'All',
   });
   useEffect(() => {
@@ -300,7 +300,7 @@ function Viz({
                 d.year === selectedYear &&
                 d.productMarketId ===
                   (selectedMarket ? selectedMarket.productMarketId : null) &&
-                d.contractValue === (selectedContractValue.value || null) &&
+                d.contractValue === selectedContractValue.value &&
                 d.numericValue !== null,
             ).length !== 0 ? (
               <>
@@ -341,8 +341,7 @@ function Viz({
                                 (selectedMarket
                                   ? selectedMarket.productMarketId
                                   : null) &&
-                              d.contractValue ===
-                                (selectedContractValue.value || ''),
+                              d.contractValue === selectedContractValue.value,
                           )?.numericValue || 0),
                       },
                     ]}
@@ -575,8 +574,7 @@ function Viz({
                 ).filter(
                   d =>
                     d.Country_code_ISO_3 === countryCode &&
-                    d.Contract_value ===
-                      (selectedContractValue.value || undefined) &&
+                    d.Contract_value === selectedContractValue.value &&
                     d.Indicator ===
                       indicatorMetaData.subIndicators.find(
                         el => el.id === selectedSubIndicator.value,
@@ -591,8 +589,7 @@ function Viz({
                       ).filter(
                         d =>
                           d.Country_code_ISO_3 === countryCode &&
-                          d.Contract_value ===
-                            (selectedContractValue.value || undefined) &&
+                          d.Contract_value === selectedContractValue.value &&
                           d.Indicator ===
                             indicatorMetaData.subIndicators.find(
                               el => el.id === selectedSubIndicator.value,

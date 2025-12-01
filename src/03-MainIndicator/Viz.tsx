@@ -106,7 +106,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
               d =>
                 d.year === selectedYear &&
                 d.id === selectedSubIndicator.value &&
-                d.contractValue === null &&
+                d.contractValue === 'ALL' &&
                 d.numericValue !== null,
             ).length > 0 ? (
               <>
@@ -154,7 +154,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                         d =>
                           d.year === selectedYear &&
                           d.id === selectedSubIndicator.value &&
-                          d.contractValue === null &&
+                          d.contractValue === 'ALL' &&
                           d.numericValue !== null,
                       )
                       .map(d => d.numericValue),
@@ -176,7 +176,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                         d =>
                           d.year === selectedYear &&
                           d.id === selectedSubIndicator.value &&
-                          d.contractValue === null &&
+                          d.contractValue === 'ALL' &&
                           d.numericValue !== null,
                       )
                       .map(d => d.numericValue),
@@ -198,7 +198,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                         d =>
                           d.year === selectedYear &&
                           d.id === selectedSubIndicator.value &&
-                          d.contractValue === null &&
+                          d.contractValue === 'ALL' &&
                           d.numericValue !== null,
                       )
                       .map(d => d.numericValue),
@@ -222,7 +222,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
               d =>
                 d.year === selectedYear &&
                 d.id === selectedSubIndicator.value &&
-                d.contractValue === null &&
+                d.contractValue === 'ALL' &&
                 d.numericValue !== null,
             ).length > 0 ? (
               <>
@@ -310,7 +310,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                     d =>
                       d.year === selectedYear &&
                       d.id === selectedSubIndicator.value &&
-                      d.contractValue === null &&
+                      d.contractValue === 'ALL' &&
                       d.numericValue !== null,
                   )}
                   colors={

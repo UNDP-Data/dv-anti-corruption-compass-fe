@@ -320,7 +320,7 @@ function HomepageEl({
                           d.countryCode === selectedId &&
                           `${d.mainIndicatorId}` ===
                             selectedSubIndicator[inViewSlide].split('_')[0] &&
-                          d.contractValue === null,
+                          d.contractValue === 'ALL',
                       )
                       .map(d => d.numericValue)}
                     colors={
@@ -363,7 +363,7 @@ function HomepageEl({
                         d.countryCode === selectedId &&
                         `${d.mainIndicatorId}` ===
                           selectedSubIndicator[inViewSlide].split('_')[0] &&
-                        d.contractValue === null,
+                        d.contractValue === 'ALL',
                     )
                     .map(d => ({
                       id:
