@@ -45,12 +45,7 @@ interface Props {
   suffix: string;
 }
 
-const CONTRACT_VALUE = [
-  'No contract type selected',
-  'All',
-  'High',
-  'High + Medium',
-];
+const CONTRACT_VALUE = ['All', 'High', 'High + Medium'];
 
 function useDataDataAvailability() {
   return useQuery({
@@ -90,8 +85,8 @@ function Viz({
     undefined | MarketListDataType
   >(undefined);
   const [selectedContractValue, setSelectedContractValue] = useState({
-    value: null,
-    label: 'No contract type selected',
+    value: 'All',
+    label: 'All',
   });
   useEffect(() => {
     setSelectedYear(latestYear);
@@ -281,7 +276,7 @@ function Viz({
             placeholder='Select contract value'
             value={selectedContractValue}
             options={CONTRACT_VALUE.map(d => ({
-              value: d === 'No contract type selected' ? null : d.toUpperCase(),
+              value: d.toUpperCase(),
               label: d,
             }))}
             size='base'
@@ -457,6 +452,7 @@ function Viz({
               }
               contractValue={selectedContractValue.value}
               suffix={suffix}
+              maxValue={indicatorMetaData.maxValue ?? 100}
             />
           </GraphCard>
         </div>
@@ -532,7 +528,7 @@ function Viz({
                             No. of contracts
                           </ParagraphText>
                           <ParagraphText size='sm'>
-                            {d.data.contractValue ?? 'NA'}
+                            {d.data.allContracts ?? 'NA'}
                           </ParagraphText>
                         </div>
                         <div className='flex gap-8 justify-between py-4 border-b border-b-[#ffffff40]'>
@@ -625,43 +621,21 @@ function Viz({
                       yAxis: {
                         labels: 'poppins-regular',
                       },
+                      tooltip:
+                        'poppins-regular bg-[var(--color-text-black)] p-4 border-0',
                     }}
                     tooltip={d => {
                       return (
                         <div className='flex flex-col bg-[var(--color-text-black)]'>
                           <ParagraphText size='sm' weight='bold'>
-                            {d.data.year}
+                            {d.data.Year}
                           </ParagraphText>
-                          <div className='flex gap-8 justify-between py-4 border-b border-b-[#ffffff40]'>
+                          <div className='flex gap-8 justify-between pt-4'>
                             <ParagraphText size='sm'>
                               Data availability
                             </ParagraphText>
                             <ParagraphText size='sm'>
-                              {d.data.contractValue || 'NA'}
-                            </ParagraphText>
-                          </div>
-                          <div className='flex gap-8 justify-between py-4 border-b border-b-[#ffffff40]'>
-                            <ParagraphText size='sm'>
-                              No. of contracts
-                            </ParagraphText>
-                            <ParagraphText size='sm'>
-                              {d.data.contractValue || 'NA'}
-                            </ParagraphText>
-                          </div>
-                          <div className='flex gap-8 justify-between py-4 border-b border-b-[#ffffff40]'>
-                            <ParagraphText size='sm'>
-                              No. of risky contracts
-                            </ParagraphText>
-                            <ParagraphText size='sm'>
-                              {d.data.totalNumberOfRiskyContracts ?? 'NA'}
-                            </ParagraphText>
-                          </div>
-                          <div className='flex gap-8 justify-between pt-4'>
-                            <ParagraphText size='sm'>
-                              Total contract value (USD)
-                            </ParagraphText>
-                            <ParagraphText size='sm'>
-                              {d.data.totalContractValueMillionUsd || 'NA'}
+                              {d.data.Indicator_availability ?? 'NA'}
                             </ParagraphText>
                           </div>
                         </div>
