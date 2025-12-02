@@ -59,6 +59,8 @@ function useDataDataAvailability() {
       })),
   });
 }
+const formatBandNumber = (value?: number | null) =>
+  value == null ? 'NA' : value.toFixed(2).replace(/\.00$/, '');
 
 function Viz({
   data,
@@ -105,82 +107,86 @@ function Viz({
       <Spacer size='4xl' />
       <div className='dark'>
         <div className='flex w-full pb-2 border-b border-b-primary-white'>
-          <div className='poppins-semibold text-[16px]! text-primary-white! w-[50%] pr-4!'>
+          <div className='poppins-semibold text-[16px]! text-primary-white! w-[40%] pr-4!'>
             Indicator name
           </div>
-          <div className='poppins-semibold text-[16px]! text-primary-white! w-[25%] pr-4!'>
+          <div className='poppins-semibold text-[16px]! text-primary-white! w-[20%] pr-4!'>
             Indicator value
           </div>
-          <div className='poppins-semibold text-[16px]! text-primary-white! w-[25%] pr-4!'>
+          <div className='poppins-semibold text-[16px]! text-primary-white! w-[20%] pr-4!'>
             Status
+          </div>
+          <div className='poppins-semibold text-[16px]! text-primary-white! w-[20%] pr-4!'>
+            Bands
           </div>
         </div>
         <div>
           {indicatorMetaData.subIndicators.map((el, i) => {
-            const tagColors = el.colors.split(',');
-            return (
-              <div key={i}>
-                <div className='flex w-full py-4 border-b border-b-[0.5px] border-b-primary-white items-center'>
-                  <div className='poppins-light text-[16px]! text-primary-white! w-[50%] pr-4!'>
-                    {el.name} ({el.description})
-                  </div>
-                  <div className='poppins-light text-[16px]! text-primary-white! w-[25%] pr-4!'>
-                    {latestCountryData.find(d => d.id === el.id)
-                      ?.numericValue ?? 'NA'}{' '}
-                    {latestCountryData.find(d => d.id === el.id)
-                      ?.numericValue !== null ||
-                    latestCountryData.find(d => d.id === el.id)
-                      ?.numericValue !== undefined
-                      ? suffix
-                      : ''}
-                  </div>
-                  <div className='poppins-light text-[16px]! text-primary-white! w-[25%] pr-4!'>
-                    <Badge
-                      rounded='full'
-                      className='poppins-medium py-0 text-[12px]! px-3!'
-                      style={{
-                        backgroundColor: !latestCountryData.find(
-                          d => d.id === el.id,
-                        )?.indicatorValue
-                          ? '#DADADA'
-                          : ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                latestCountryData.find(d => d.id === el.id)
-                                  ?.indicatorValue || 'NA',
-                              ) !== -1
-                            ? tagColors[
-                                ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                  latestCountryData.find(d => d.id === el.id)
-                                    ?.indicatorValue || 'NA',
-                                )
-                              ]
-                            : '#DADADA',
-                        color: !latestCountryData.find(d => d.id === el.id)
-                          ?.indicatorValue
-                          ? '#000'
-                          : getTextColorBasedOnBgColor(
-                              ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                latestCountryData.find(d => d.id === el.id)
-                                  ?.indicatorValue || 'NA',
-                              ) !== -1
-                                ? tagColors[
-                                    ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                      latestCountryData.find(
-                                        d => d.id === el.id,
-                                      )?.indicatorValue || 'NA',
-                                    )
-                                  ]
-                                : '#DADADA',
-                            ),
-                      }}
-                    >
-                      {latestCountryData.find(d => d.id === el.id)
-                        ?.indicatorValue || 'NA'}
-                    </Badge>
-                  </div>
-                </div>
+  const tagColors = el.colors.split(',');
+  const row = latestCountryData.find(d => d.id === el.id);
+  const band = row?.bandData;
+
+  return (
+    <div key={i}>
+      <div className='flex w-full py-4 border-b border-b-[0.5px] border-b-primary-white items-center'>
+
+        <div className='poppins-light text-[16px]! text-primary-white! w-[40%] pr-4!'>
+          {el.name} ({el.description})
+        </div>
+
+
+        <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
+          {row?.numericValue ?? 'NA'}{' '}
+          {row?.numericValue !== null && row?.numericValue !== undefined
+            ? suffix
+            : ''}
+        </div>
+
+
+        <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
+          <Badge
+            rounded='full'
+            className='poppins-medium py-0 text-[12px]! px-3!'
+            style={{
+              backgroundColor: '#DADADA',
+              color: '#000'
+            }}
+          >
+            {row?.indicatorValue || 'NA'}
+          </Badge>
+        </div>
+
+        <div className='poppins-light text-[14px]! text-primary-white! w-[20%] pr-4!'>
+          {band ? (
+            <>
+              <div>
+                <strong>Low:</strong>{' '}
+                {formatBandNumber(band.low_Min)}-
+                {formatBandNumber(band.low_Max)}
+                {suffix}
               </div>
-            );
-          })}
+              <div>
+                <strong>Medium:</strong>{' '}
+                {formatBandNumber(band.medium_Min)}-
+                {formatBandNumber(band.medium_Max)}
+                {suffix}
+              </div>
+              <div>
+                <strong>High:</strong>{' '}
+                {formatBandNumber(band.high_Min)}-
+                {formatBandNumber(band.high_Max)}
+                {suffix}
+              </div>
+            </>
+          ) : (
+            <div>Band data not available</div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+})}
+
         </div>
         <Spacer size='xl' />
         <ParagraphText size='sm' className='italic! opacity-50'>

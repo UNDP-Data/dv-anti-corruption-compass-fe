@@ -25,6 +25,16 @@ export interface DataType {
   allContracts: number | null;
   totalContractValueMillionUsd: number;
   indicatorAvailabilityFilter: string;
+  bandData: BandData;
+}
+
+export interface BandData {
+  low_Min: number;
+  low_Max: number;
+  medium_Min: number;
+  medium_Max: number;
+  high_Min: number;
+  high_Max: number;
 }
 
 export interface SubIndicatorsMetaDataType {
