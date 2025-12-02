@@ -71,7 +71,7 @@ const Introduction = (props: Props) => {
                 ScrollToObj(countryLevelInsightsRef.current);
               }}
             >
-              View Country Level Insights →
+              Country-Level Insights →
             </Button>
           </div>
         </div>
