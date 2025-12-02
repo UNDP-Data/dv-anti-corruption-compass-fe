@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Spinner } from '@undp/design-system-react';
 import { Badge } from '@undp/design-system-react/Badge';
-import { getTextColorBasedOnBgColor } from '@undp/data-viz/utils';
 
 import SubNationalVIz from './SubNationalVIz';
 
@@ -115,12 +114,11 @@ function Viz({
             Status
           </div>
           <div className='poppins-semibold text-[16px]! text-primary-white! w-[20%] pr-4!'>
-            bands
+            Bands
           </div>
         </div>
         <div>
           {indicatorMetaData.subIndicators.map((el, i) => {
-            const tagColors = el.colors.split(',');
             return (
               <div key={i}>
                 <div className='flex w-full py-4 border-b border-b-[0.5px] border-b-primary-white items-center'>
@@ -140,40 +138,10 @@ function Viz({
                   <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
                     <Badge
                       rounded='full'
-                      className='poppins-medium py-0 text-[12px]! px-3!'
+                      className='poppins-medium py-0 text-[14px]! px-3!'
                       style={{
-                        backgroundColor: !latestCountryData.find(
-                          d => d.id === el.id,
-                        )?.indicatorValue
-                          ? '#DADADA'
-                          : ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                latestCountryData.find(d => d.id === el.id)
-                                  ?.indicatorValue || 'NA',
-                              ) !== -1
-                            ? tagColors[
-                                ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                  latestCountryData.find(d => d.id === el.id)
-                                    ?.indicatorValue || 'NA',
-                                )
-                              ]
-                            : '#DADADA',
-                        color: !latestCountryData.find(d => d.id === el.id)
-                          ?.indicatorValue
-                          ? '#000'
-                          : getTextColorBasedOnBgColor(
-                              ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                latestCountryData.find(d => d.id === el.id)
-                                  ?.indicatorValue || 'NA',
-                              ) !== -1
-                                ? tagColors[
-                                    ['LOW', 'MEDIUM', 'HIGH'].indexOf(
-                                      latestCountryData.find(
-                                        d => d.id === el.id,
-                                      )?.indicatorValue || 'NA',
-                                    )
-                                  ]
-                                : '#DADADA',
-                            ),
+                        backgroundColor: '#DADADA',
+                        color: '#000',
                       }}
                     >
                       {latestCountryData.find(d => d.id === el.id)
