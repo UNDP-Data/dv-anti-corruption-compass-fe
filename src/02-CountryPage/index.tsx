@@ -71,7 +71,7 @@ function CountryPageEl({
             )}
           </>
         ) : (
-          <div className='container mx-auto'>
+          <div className='mx-auto'>
             <HeadingText type='h2' alignment='center'>
               Country profile
             </HeadingText>
@@ -79,7 +79,7 @@ function CountryPageEl({
             <CountryProfile isoCode={isoCode} />
           </div>
         )}
-        <div className='container mx-auto'>
+        <div className='w-full mx-auto'>
           <Spacer size='6xl' />
           <div className='w-full'>
             <HeadingText type='h2'>Learn more</HeadingText>
