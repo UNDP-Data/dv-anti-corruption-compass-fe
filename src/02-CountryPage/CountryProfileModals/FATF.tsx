@@ -139,7 +139,12 @@ function FATF({ isoCode }: Props) {
           >
             Learn more
           </ParagraphText>
-          <ExternalLink width={20} height={20} strokeWidth={2} stroke='#000' />
+          <ExternalLink
+            width={20}
+            height={20}
+            strokeWidth={1.5}
+            stroke='#000'
+          />
         </a>
       </div>
     </div>

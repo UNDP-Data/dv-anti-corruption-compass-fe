@@ -109,7 +109,7 @@ function AntiCorruptionStrategies({ isoCode }: Props) {
                 <ExternalLink
                   width={20}
                   height={20}
-                  strokeWidth={2}
+                  strokeWidth={1.5}
                   stroke='#000'
                 />
               </a>
