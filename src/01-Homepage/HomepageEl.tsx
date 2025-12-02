@@ -189,7 +189,7 @@ function HomepageEl({
           opacity: pillarVisualizationOpacity,
         }}
       >
-        <div className='w-1/2 px-10'>
+        <div className='w-1/2 px-20'>
           {indicatorsMetaData.map((d, i) => (
             <div
               ref={el => {
