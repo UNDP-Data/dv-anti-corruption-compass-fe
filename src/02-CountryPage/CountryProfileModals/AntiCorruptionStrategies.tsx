@@ -36,7 +36,7 @@ function AntiCorruptionStrategies({ isoCode }: Props) {
         marginBottom='lg'
         className='text-[var(--color-text-black)]'
       >
-        Anti-corruption laws
+        Anti-corruption strategies
       </HeadingText>
 
       {countryData.length > 0 ? (
