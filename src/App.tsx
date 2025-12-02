@@ -278,6 +278,7 @@ function CountriesListing() {
   ];
   return (
     <div className='container mx-auto'>
+      <Spacer size='7xl' />
       <HeadingText type='h2'>Country profile</HeadingText>
       <Spacer size='6xl' />
       {alphabets.map((d, i) => (
