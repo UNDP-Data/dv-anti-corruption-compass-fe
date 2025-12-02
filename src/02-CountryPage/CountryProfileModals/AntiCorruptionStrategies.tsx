@@ -30,7 +30,7 @@ function AntiCorruptionStrategies({ isoCode }: Props) {
     );
   const countryData = (data as any).filter((d: any) => d.ISO3_Code === isoCode);
   return (
-    <div className='flex w-full flex-col gap-4'>
+    <div className='flex w-full flex-col gap-0'>
       <HeadingText
         type='h2'
         marginBottom='lg'
@@ -46,7 +46,7 @@ function AntiCorruptionStrategies({ isoCode }: Props) {
               weight='semibold'
               size='sm'
               marginBottom='none'
-              className='text-[var(--color-text-black)] w-[45%]'
+              className='text-[var(--color-text-black)] w-[50%]'
             >
               Name
             </ParagraphText>
@@ -54,7 +54,7 @@ function AntiCorruptionStrategies({ isoCode }: Props) {
               weight='semibold'
               size='sm'
               marginBottom='none'
-              className='text-[var(--color-text-black)] w-[25%] pr-4'
+              className='text-[var(--color-text-black)] w-[20%] pr-4'
             >
               Coverage period
             </ParagraphText>
@@ -76,12 +76,12 @@ function AntiCorruptionStrategies({ isoCode }: Props) {
             </ParagraphText>
           </div>
           {countryData.map((d: any, i: number) => (
-            <div className='flex border-b-[#0000004D] pb-2 border-b' key={i}>
+            <div className='flex border-b-[#0000004D] py-3 border-b' key={i}>
               <ParagraphText
                 weight='regular'
                 size='sm'
                 marginBottom='none'
-                className='text-[var(--color-text-black)] w-[45%] pr-4'
+                className='text-[var(--color-text-black)] w-[50%] pr-4'
               >
                 {d['Name of Strategy']}
               </ParagraphText>
@@ -89,7 +89,7 @@ function AntiCorruptionStrategies({ isoCode }: Props) {
                 weight='regular'
                 size='sm'
                 marginBottom='none'
-                className='text-[var(--color-text-black)]  w-[25%]'
+                className='text-[var(--color-text-black)]  w-[20%]'
               >
                 {d['Coverage period'] || '-'}
               </ParagraphText>

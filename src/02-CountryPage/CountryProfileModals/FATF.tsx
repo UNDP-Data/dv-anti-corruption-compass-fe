@@ -68,7 +68,7 @@ function FATF({ isoCode }: Props) {
             </ParagraphText>
           </div>
           {countryData.map((d: any, i: number) => (
-            <div className='flex border-b-[#0000004D] pb-2 border-b' key={i}>
+            <div className='flex border-b-[#0000004D] py-3 border-b' key={i}>
               <ParagraphText
                 weight='regular'
                 size='sm'
