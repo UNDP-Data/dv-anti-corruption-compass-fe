@@ -84,6 +84,7 @@ function CountryProfile({ isoCode }: { isoCode: string }) {
       {cardClicked && (
         <Modal
           open={cardClicked !== undefined}
+          overlayClassName='modal-overlay'
           onClose={() => {
             setCardClicked(undefined);
           }}

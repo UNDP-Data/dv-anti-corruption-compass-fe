@@ -200,6 +200,7 @@ export const Header = ({
       {showCountrySelection && (
         <Modal
           open={showCountrySelection}
+          overlayClassName='modal-overlay'
           onClose={() => {
             setShowCountrySelection(false);
           }}

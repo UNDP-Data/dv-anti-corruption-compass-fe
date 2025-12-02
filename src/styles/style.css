@@ -62,3 +62,8 @@ main {
   margin: 0 auto;
   padding: 0 5rem;
 }
+
+.modal-overlay {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(25px);
+}
