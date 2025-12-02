@@ -102,7 +102,7 @@ function FATF({ isoCode }: Props) {
         </div>
       )}
       <Spacer size='2xl' />
-      <div className='p-6 bg-[#4B6E911A] border border-[#4B6E9180]'>
+      <div className='p-6 bg-[#4B6E911A] rounded-[8px] border border-[#4B6E9180]'>
         <ParagraphText
           weight='bold'
           marginBottom='none'
@@ -130,12 +130,12 @@ function FATF({ isoCode }: Props) {
         <a
           href='https://www.fatf-gafi.org/en/countries/black-and-grey-lists.html'
           target='_blank'
-          className='text-[var(--color-text-black)] flex gap-2 items-center'
+          className='text-[var(--color-text-black)] flex gap-2 items-start'
         >
           <ParagraphText
             marginBottom='none'
             weight='bold'
-            className='text-[var(--color-text-black)] underline'
+            className='text-[var(--color-text-black)] border-b border-[#4B6E9180] border-b-[2px]'
           >
             Learn more
           </ParagraphText>

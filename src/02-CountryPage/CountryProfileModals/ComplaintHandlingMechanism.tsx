@@ -43,7 +43,6 @@ function ComplaintHandlingMechanism({ isoCode }: Props) {
         countryData.map((d: any, i: number) => (
           <div className='flex flex-col' key={i}>
             <ParagraphText
-              size='sm'
               marginBottom='none'
               className=' text-[var(--color-text-black)]'
             >
@@ -55,13 +54,12 @@ function ComplaintHandlingMechanism({ isoCode }: Props) {
                 <a
                   href={d.Link}
                   target='_blank'
-                  className='flex gap-1 items-center'
+                  className='flex gap-1 items-start'
                 >
                   <ParagraphText
-                    size='sm'
                     weight='bold'
                     marginBottom='none'
-                    className='underline text-[var(--color-text-black)]'
+                    className='text-[var(--color-text-black)] border-b border-[#4B6E9180] border-b-[2px]'
                   >
                     Explore
                   </ParagraphText>

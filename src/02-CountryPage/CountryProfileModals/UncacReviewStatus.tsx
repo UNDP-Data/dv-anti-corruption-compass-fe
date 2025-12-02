@@ -41,7 +41,7 @@ function UncacReviewStatus({ isoCode }: Props) {
       {countryData ? (
         <>
           <ParagraphText
-            weight='medium'
+            weight='bold'
             marginBottom='none'
             className='text-[var(--color-text-black)]'
           >
@@ -58,11 +58,12 @@ function UncacReviewStatus({ isoCode }: Props) {
           <a
             href={countryData['Review Cycle 1 - PDF Link']}
             target='_blank'
-            className='text-[var(--color-text-black)] flex gap-2 items-center'
+            className='text-[var(--color-text-black)] flex gap-2 items-start'
           >
             <ParagraphText
+              weight='bold'
               marginBottom='none'
-              className='text-[var(--color-text-black)] underline'
+              className='text-[var(--color-text-black)] border-b border-[#4B6E9180] border-b-[2px]'
             >
               View Source
             </ParagraphText>
@@ -75,7 +76,7 @@ function UncacReviewStatus({ isoCode }: Props) {
           </a>
           <Spacer size='3xl' />
           <ParagraphText
-            weight='medium'
+            weight='bold'
             marginBottom='none'
             className='text-[var(--color-text-black)]'
           >
@@ -92,11 +93,12 @@ function UncacReviewStatus({ isoCode }: Props) {
           <a
             href={countryData['Review Cycle 2 - PDF Link']}
             target='_blank'
-            className='text-[var(--color-text-black)] flex gap-2 items-center'
+            className='text-[var(--color-text-black)] flex gap-2 items-start'
           >
             <ParagraphText
+              weight='bold'
               marginBottom='none'
-              className='text-[var(--color-text-black)] underline'
+              className='text-[var(--color-text-black)] border-b border-[#4B6E9180] border-b-[2px]'
             >
               View Source
             </ParagraphText>
