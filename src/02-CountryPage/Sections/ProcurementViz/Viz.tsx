@@ -105,14 +105,17 @@ function Viz({
       <Spacer size='4xl' />
       <div className='dark'>
         <div className='flex w-full pb-2 border-b border-b-primary-white'>
-          <div className='poppins-semibold text-[16px]! text-primary-white! w-[50%] pr-4!'>
+          <div className='poppins-semibold text-[16px]! text-primary-white! w-[40%] pr-4!'>
             Indicator name
           </div>
-          <div className='poppins-semibold text-[16px]! text-primary-white! w-[25%] pr-4!'>
+          <div className='poppins-semibold text-[16px]! text-primary-white! w-[20%] pr-4!'>
             Indicator value
           </div>
-          <div className='poppins-semibold text-[16px]! text-primary-white! w-[25%] pr-4!'>
+          <div className='poppins-semibold text-[16px]! text-primary-white! w-[20%] pr-4!'>
             Status
+          </div>
+          <div className='poppins-semibold text-[16px]! text-primary-white! w-[20%] pr-4!'>
+            bands
           </div>
         </div>
         <div>
@@ -121,10 +124,10 @@ function Viz({
             return (
               <div key={i}>
                 <div className='flex w-full py-4 border-b border-b-[0.5px] border-b-primary-white items-center'>
-                  <div className='poppins-light text-[16px]! text-primary-white! w-[50%] pr-4!'>
+                  <div className='poppins-light text-[16px]! text-primary-white! w-[40%] pr-4!'>
                     {el.name} ({el.description})
                   </div>
-                  <div className='poppins-light text-[16px]! text-primary-white! w-[25%] pr-4!'>
+                  <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
                     {latestCountryData.find(d => d.id === el.id)
                       ?.numericValue ?? 'NA'}{' '}
                     {latestCountryData.find(d => d.id === el.id)
@@ -134,7 +137,7 @@ function Viz({
                       ? suffix
                       : ''}
                   </div>
-                  <div className='poppins-light text-[16px]! text-primary-white! w-[25%] pr-4!'>
+                  <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
                     <Badge
                       rounded='full'
                       className='poppins-medium py-0 text-[12px]! px-3!'
@@ -176,6 +179,47 @@ function Viz({
                       {latestCountryData.find(d => d.id === el.id)
                         ?.indicatorValue || 'NA'}
                     </Badge>
+                  </div>
+                  <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
+                    {latestCountryData.find(d => d.id === el.id)?.bandData && (
+                      <>
+                        <strong>Low:</strong>{' '}
+                        {
+                          latestCountryData.find(d => d.id === el.id)?.bandData
+                            .low_Min
+                        }
+                        {suffix || ''} -{' '}
+                        {
+                          latestCountryData.find(d => d.id === el.id)?.bandData
+                            .low_Max
+                        }
+                        {suffix || ''}
+                        <br />
+                        <strong>Medium:</strong>{' '}
+                        {
+                          latestCountryData.find(d => d.id === el.id)?.bandData
+                            .medium_Min
+                        }
+                        {suffix || ''} -{' '}
+                        {
+                          latestCountryData.find(d => d.id === el.id)?.bandData
+                            .medium_Max
+                        }
+                        {suffix || ''}
+                        <br />
+                        <strong>High:</strong>{' '}
+                        {
+                          latestCountryData.find(d => d.id === el.id)?.bandData
+                            .high_Min
+                        }
+                        {suffix || ''} -{' '}
+                        {
+                          latestCountryData.find(d => d.id === el.id)?.bandData
+                            .high_Max
+                        }
+                        {suffix || ''}
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

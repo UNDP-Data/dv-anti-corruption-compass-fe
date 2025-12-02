@@ -9,6 +9,15 @@ export interface DataAvailabilityDataType {
   Indicator_availability: number;
 }
 
+export interface BandData {
+  low_Min: number;
+  low_Max: number;
+  medium_Min: number;
+  medium_Max: number;
+  high_Min: number;
+  high_Max: number;
+}
+
 export interface DataType {
   factId: number;
   countryCode: string;
@@ -25,6 +34,7 @@ export interface DataType {
   allContracts: number | null;
   totalContractValueMillionUsd: number;
   indicatorAvailabilityFilter: string;
+  bandData: BandData;
 }
 
 export interface SubIndicatorsMetaDataType {

@@ -3,6 +3,7 @@ import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
 
 import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
+import { ParagraphText } from '@/Components/Typography';
 
 interface Props {
   globeData: {
@@ -31,6 +32,7 @@ function GlobeComponent({
   selectedId,
   setSelectedId,
   setSelectedYear,
+  countriesList,
 }: Props) {
   return (
     <>
@@ -84,6 +86,23 @@ function GlobeComponent({
                   color: 0xfafafa,
                 })
               }
+              tooltip={d => {
+                return (
+                  <div>
+                    <ParagraphText
+                      size='xs'
+                      weight='bold'
+                      className='text-black'
+                    >
+                      {
+                        countriesList.find(c => c['Alpha-3 code'] === d.id)?.[
+                          'Country or Area (official name)'
+                        ]
+                      }
+                    </ParagraphText>
+                  </div>
+                );
+              }}
               fogSettings={{
                 color:
                   indicatorsMetaData
