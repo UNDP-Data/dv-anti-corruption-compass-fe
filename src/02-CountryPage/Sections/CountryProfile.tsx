@@ -74,7 +74,7 @@ function CountryProfile({ isoCode }: { isoCode: string }) {
         />
         <CountryProfileCard
           title='Financial Action Task Force'
-          imgSrc='/imgs/CountryProfileCardsIcons/07.png'
+          imgSrc='/imgs/CountryProfileCardsIcons/08.png'
           description='Lorem ipsum dolor sit amet consectetur. Nec risus ipsum ipsum augue at in molestie sed vulputate.'
           onClick={() => {
             setCardClicked('fatf');
