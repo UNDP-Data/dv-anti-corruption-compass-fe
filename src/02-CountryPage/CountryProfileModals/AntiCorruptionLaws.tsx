@@ -30,7 +30,7 @@ function AntiCorruptionLaws({ isoCode }: Props) {
     );
   const countryData = (data as any).filter((d: any) => d.ISO3_Code === isoCode);
   return (
-    <div className='flex w-full flex-col gap-4'>
+    <div className='flex w-full flex-col gap-0'>
       <HeadingText
         type='h2'
         marginBottom='lg'
@@ -45,7 +45,7 @@ function AntiCorruptionLaws({ isoCode }: Props) {
               weight='semibold'
               size='sm'
               marginBottom='none'
-              className='text-[var(--color-text-black)] w-[35%]'
+              className='text-[var(--color-text-black)] w-[40%]'
             >
               Name
             </ParagraphText>
@@ -61,7 +61,7 @@ function AntiCorruptionLaws({ isoCode }: Props) {
               weight='semibold'
               size='sm'
               marginBottom='none'
-              className='text-[var(--color-text-black)] w-[15%]'
+              className='text-[var(--color-text-black)] w-[10%]'
             >
               Year
             </ParagraphText>
@@ -83,12 +83,12 @@ function AntiCorruptionLaws({ isoCode }: Props) {
             </ParagraphText>
           </div>
           {countryData.map((d: any, i: number) => (
-            <div className='flex border-b-[#0000004D] pb-2 border-b' key={i}>
+            <div className='flex border-b-[#0000004D] py-3 border-b' key={i}>
               <ParagraphText
                 weight='regular'
                 size='sm'
                 marginBottom='none'
-                className='text-[var(--color-text-black)] w-[35%] pr-4'
+                className='text-[var(--color-text-black)] w-[40%] pr-4'
               >
                 {d.Law}
               </ParagraphText>
@@ -97,7 +97,7 @@ function AntiCorruptionLaws({ isoCode }: Props) {
                   weight='regular'
                   size='xs'
                   marginBottom='none'
-                  className='text-[#4B6E91] p-1 border-[#4B6E9180] bg-[#4B6E911A] border w-fit'
+                  className='text-[#4B6E91] p-1 px-2 border-[#4B6E9180] rounded-[4px] bg-[#4B6E911A] border w-fit'
                 >
                   {d.Category}
                 </ParagraphText>
@@ -106,7 +106,7 @@ function AntiCorruptionLaws({ isoCode }: Props) {
                 weight='regular'
                 size='sm'
                 marginBottom='none'
-                className='text-[var(--color-text-black)] w-[15%]'
+                className='text-[var(--color-text-black)] w-[10%]'
               >
                 {d.Year || '-'}
               </ParagraphText>
@@ -126,7 +126,7 @@ function AntiCorruptionLaws({ isoCode }: Props) {
                 <ExternalLink
                   width={20}
                   height={20}
-                  strokeWidth={2}
+                  strokeWidth={1.5}
                   stroke='#000'
                 />
               </a>

@@ -60,7 +60,15 @@ function AboutUsPage() {
             efforts to coordinated, evidence-based action against corruption.
             <br />
             <br />
-            Find out more on UNDP Anti-Corruption Web Portal here.
+            Find out more on{' '}
+            <a
+              className='underline poppins-semibold'
+              href='https://info.anti-corruption.org/'
+              target='_blank'
+            >
+              UNDP Anti-Corruption Web Portal
+            </a>
+            .
           </ParagraphText>
         </div>
         <div className='w-full md:w-[calc(40%-20px)]'>

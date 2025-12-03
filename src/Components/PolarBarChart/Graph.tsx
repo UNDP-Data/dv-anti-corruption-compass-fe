@@ -31,9 +31,14 @@ export const Graph = ({
   const r = scaleLinear()
     .domain([0, maxValue])
     .range([0, radius * (1 - innerRadiusRatio)]);
+
   return (
     <>
-      <svg width={(radius + marginSide) * 2} height={radius + marginTop}>
+      <svg
+        width={(radius + marginSide) * 2}
+        height={radius + marginTop}
+        className='overflow-visible'
+      >
         <defs>
           <radialGradient
             id={`${indicatorMetaData.mainIndicatorId}-radial-gradient`}
@@ -101,14 +106,22 @@ export const Graph = ({
                   stroke='#F7F7F7'
                 />
                 <foreignObject
-                  y={(radius + 15) * Math.cos(angle) * -1 - 70}
                   x={
-                    (radius + 15) * Math.sin(angle) -
-                    (Math.abs(angle) > Math.PI / 6
-                      ? angle > Math.PI / 6
-                        ? 30
-                        : 110
-                      : 65)
+                    (radius +
+                      30 +
+                      50 * Math.abs(Math.sin(angle)) +
+                      20 * (1 - Math.abs(Math.sin(angle)))) *
+                      Math.sin(angle) -
+                    65
+                  }
+                  y={
+                    (radius +
+                      30 +
+                      50 * Math.abs(Math.sin(angle)) +
+                      20 * (1 - Math.abs(Math.sin(angle)))) *
+                      Math.cos(angle) *
+                      -1 -
+                    30
                   }
                   width={130}
                   height={60}

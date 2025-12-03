@@ -22,7 +22,7 @@ const CountryLevelInsight = (props: Props) => {
   const [selectedTab, setSelectedTab] = useState('tab 1');
   return (
     <div
-      className={`flex items-start pt-50 w-full px-4 bg-cover bg-center bg-no-repeat ${selectedTab === 'tab 2' ? 'bg-transparent' : "bg-[url('/imgs/sphere.webp')]"} px-34 min-h-[calc(100vh-120px)]`}
+      className={`flex items-start pt-50 w-full px-4 bg-cover bg-center bg-no-repeat ${selectedTab === 'tab 2' ? 'bg-transparent' : "bg-[url('/imgs/sphere.webp')]"} px-20 min-h-[calc(100vh-120px)]`}
     >
       <div className='gap-4.5 flex flex-col w-full text-white mx-auto'>
         <Tabs

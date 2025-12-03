@@ -127,8 +127,10 @@ function RootComponent() {
             style={{
               background:
                 'linear-gradient(97.48deg, #17232B -5.56%, #4E7691 156.23%)',
+              boxShadow:
+                '0 5px 60px 0 var(--tw-shadow-color, rgba(0,0,0,0.20))',
             }}
-            className='px-8 !py-[80px] flex items-center justify-center flex-col gap-8 w-full mt-16'
+            className='px-8 !py-[80px] rounded-[8px] flex items-center justify-center flex-col gap-8 w-full mt-16'
           >
             <HeadingText type='h2'>Have feedback for us?</HeadingText>
             <ParagraphText>
@@ -276,6 +278,7 @@ function CountriesListing() {
   ];
   return (
     <div className='container mx-auto'>
+      <Spacer size='7xl' />
       <HeadingText type='h2'>Country profile</HeadingText>
       <Spacer size='6xl' />
       {alphabets.map((d, i) => (

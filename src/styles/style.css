@@ -58,7 +58,12 @@ main {
 
 .container {
   width: 100%;
-  max-width: 1392px;
+  max-width: 1920px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 5rem;
+}
+
+.modal-overlay {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(25px);
 }

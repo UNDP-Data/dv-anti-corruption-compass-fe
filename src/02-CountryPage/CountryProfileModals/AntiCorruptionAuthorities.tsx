@@ -4,7 +4,7 @@ import { Spinner } from '@undp/design-system-react/Spinner';
 import { ExternalLink } from 'lucide-react';
 
 import { ErrorState } from '@/Components/ErrorState';
-import { HeadingText } from '@/Components/Typography';
+import { HeadingText, ParagraphText } from '@/Components/Typography';
 import { getAntiCorruptionAuthorities } from '@/QueryFn/CountryProfileData/getAntiCorruptionAuthorities';
 import { NoData } from '@/Components/NoData';
 interface Props {
@@ -41,19 +41,20 @@ function AntiCorruptionAuthorities({ isoCode }: Props) {
       {countryData.length > 0 ? (
         countryData.map((d: any, i: number) => (
           <div className='flex gap-2 items-center' key={i}>
-            <a
-              href={d.Link}
-              target='_blank'
-              className='poppins-regular text-[16px] underline m-0 text-[var(--color-text-black)]'
-            >
-              {d['Name of anti-corruption/bribery authority/institution']}
+            <a href={d.Link} target='_blank' className='flex gap-1 items-start'>
+              <ParagraphText
+                marginBottom='none'
+                className='text-[var(--color-text-black)] border-b border-[#4B6E9180] border-b-[2px]'
+              >
+                {d['Name of anti-corruption/bribery authority/institution']}
+              </ParagraphText>
+              <ExternalLink
+                width={20}
+                height={20}
+                strokeWidth={1.5}
+                stroke='#000'
+              />
             </a>
-            <ExternalLink
-              width={20}
-              height={20}
-              strokeWidth={2}
-              stroke='#000'
-            />
           </div>
         ))
       ) : (

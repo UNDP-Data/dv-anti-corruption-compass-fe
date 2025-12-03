@@ -61,18 +61,18 @@ function CountryLevelSurveys({ isoCode }: Props) {
                     key={i}
                     href={el.Link}
                     target='_blank'
-                    className='flex gap-1 items-center'
+                    className='flex gap-1 items-start'
                   >
                     <ParagraphText
                       marginBottom='none'
-                      className='underline text-[var(--color-text-black)]'
+                      className='text-[var(--color-text-black)] border-b border-[#4B6E9180] border-b-[2px]'
                     >
                       {el.Year}
                     </ParagraphText>
                     <ExternalLink
                       width={20}
                       height={20}
-                      strokeWidth={2}
+                      strokeWidth={1.5}
                       stroke='#000'
                     />
                   </a>

@@ -39,7 +39,7 @@ const GlobeControls = (props: Props) => {
   return (
     <div
       ref={ref}
-      className={`h-[calc(100vh-120px)] px-4 ${isLastSection ? 'mb-60' : ''} `}
+      className={`h-[calc(100vh-120px)] ${isLastSection ? 'mb-60' : ''} `}
     >
       <div className='h-full max-w-[720px] m-auto flex-col gap-10 justify-center flex'>
         <div className='flex-col gap-4.5 justify-center flex'>

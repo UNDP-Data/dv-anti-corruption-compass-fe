@@ -3,7 +3,7 @@ import { Label } from '@undp/design-system-react/Label';
 import * as THREE from 'three';
 import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
 import { useEffect, useState } from 'react';
-import { ArrowDownToLine } from 'lucide-react';
+// import { ArrowDownToLine } from 'lucide-react';
 import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
 
@@ -13,7 +13,7 @@ import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
 import { DROPDOWN_CLASSNAMES } from '@/Constants';
 import { customDropdownComponents } from '@/Utils/DropdownComponents';
 import { ParagraphText } from '@/Components/Typography';
-import { Button } from '@/Components/Button';
+// import { Button } from '@/Components/Button';
 import { GraphCard } from '@/Components/GraphCard';
 import { NoData } from '@/Components/NoData';
 import DataTableSimple from '@/Components/DataTable/SecondaryTable';
@@ -327,10 +327,10 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
             </div>
           </GraphCard>
         </div>
-        <Button variant='secondary' className='w-fit flex items-center gap-2'>
+        {/* <Button variant='secondary' className='w-fit flex items-center gap-2'>
           Download Public Procurement Data{' '}
           <ArrowDownToLine size={16} strokeWidth={3} />
-        </Button>
+        </Button> */}
       </div>
       {indicatorMetaData.mainIndicatorId === 1 ||
       indicatorMetaData.mainIndicatorId === 2 ? (

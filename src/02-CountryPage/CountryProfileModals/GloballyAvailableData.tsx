@@ -104,13 +104,15 @@ function GloballyAvailableData({ isoCode }: Props) {
       sdg16CountryData.length > 0 ? (
         <>
           <div className='flex gap-4 flex-wrap'>
-            <div className='w-[calc(50%-0.5rem)] border-1 border-[#4373904D] p-4 rounded-[8px]!'>
+            <div className='w-[calc(50%-0.5rem)] border-1 border-[#4373904D] p-5 rounded-[8px]!'>
               <BulletChart
                 showValues={false}
+                maxBarThickness={64}
+                leftMargin={40}
                 graphTitle={
                   <>
                     <ParagraphText
-                      weight='semibold'
+                      weight='regular'
                       className='text-[var(--color-text-black)]'
                     >
                       Chandler Good Government Index
@@ -125,7 +127,8 @@ function GloballyAvailableData({ isoCode }: Props) {
                       </ParagraphText>
                       <ParagraphText
                         marginBottom='none'
-                        className='poppins-regular p-1 text-[var(--color-text-black)] bg-[#4373901A]'
+                        size='xs'
+                        className='poppins-regular py-1 px-2 rounded-[4px] text-[var(--color-text-black)] bg-[#4373901A]'
                       >
                         {cggiData[cggiData.length - 1]?.Year}
                       </ParagraphText>
@@ -155,7 +158,7 @@ function GloballyAvailableData({ isoCode }: Props) {
                 graphTitle={
                   <>
                     <ParagraphText
-                      weight='semibold'
+                      weight='regular'
                       className='text-[var(--color-text-black)]'
                     >
                       Corruption Perception Index (CPI)
@@ -170,7 +173,8 @@ function GloballyAvailableData({ isoCode }: Props) {
                       </ParagraphText>
                       <ParagraphText
                         marginBottom='none'
-                        className='poppins-regular p-1 text-[var(--color-text-black)] bg-[#4373901A]'
+                        size='xs'
+                        className='poppins-regular py-1 px-2 rounded-[4px] text-[var(--color-text-black)] bg-[#4373901A]'
                       >
                         {cpiData[cpiData.length - 1]?.Year}
                       </ParagraphText>
@@ -178,6 +182,8 @@ function GloballyAvailableData({ isoCode }: Props) {
                   </>
                 }
                 showValues={false}
+                maxBarThickness={64}
+                leftMargin={40}
                 targetLineThickness={4}
                 targetColor='#437390'
                 qualitativeRangeColors={['#9FBCCE4D']}
@@ -203,7 +209,7 @@ function GloballyAvailableData({ isoCode }: Props) {
                   graphTitle={
                     <>
                       <ParagraphText
-                        weight='semibold'
+                        weight='regular'
                         className='text-[var(--color-text-black)]'
                       >
                         Ibrahim Index of African Governance
@@ -218,7 +224,8 @@ function GloballyAvailableData({ isoCode }: Props) {
                         </ParagraphText>
                         <ParagraphText
                           marginBottom='none'
-                          className='poppins-regular p-1 text-[var(--color-text-black)] bg-[#4373901A]'
+                          size='xs'
+                          className='poppins-regular py-1 px-2 rounded-[4px] text-[var(--color-text-black)] bg-[#4373901A]'
                         >
                           {iiagData[iiagData.length - 1]?.Year}
                         </ParagraphText>
@@ -240,123 +247,130 @@ function GloballyAvailableData({ isoCode }: Props) {
               </div>
             )}
             {wgiData.length > 0 && (
-              <div className='w-full border-1 border-[#4373904D] p-5 rounded-[8px]! flex flex-wrap gap-6'>
+              <div className='w-full border-1 border-[#4373904D] p-5 rounded-[8px]!'>
                 <ParagraphText
                   weight='semibold'
+                  marginBottom='sm'
                   className='text-[var(--color-text-black)] w-full'
                 >
                   World Governance Indicator
                 </ParagraphText>
-                {wgiData.map((componentData, i: number) => (
-                  <div className='w-[calc(50%-12px)]' key={i}>
-                    <SimpleLineChart
-                      graphTitle={
-                        <>
-                          <ParagraphText className='text-[var(--color-text-black)]'>
-                            {componentData.component}
-                          </ParagraphText>
-                          <Spacer size='sm' />
+                <div className='w-full gap-6 gap-y-8 flex flex-wrap'>
+                  {wgiData.map((componentData, i: number) => (
+                    <div className='w-[calc(50%-12px)]' key={i}>
+                      <SimpleLineChart
+                        graphTitle={
+                          <>
+                            <ParagraphText className='text-[var(--color-text-black)]'>
+                              {componentData.component}
+                            </ParagraphText>
+                            <Spacer size='sm' />
 
-                          <div className='flex gap-2 items-center'>
-                            <ParagraphText
-                              marginBottom='none'
-                              className='text-[36px] text-[var(--color-text-black)]'
-                            >
-                              {componentData.data[
-                                componentData.data.length - 1
-                              ]?.['Sub-componentValue'].toFixed(2)}
-                            </ParagraphText>
-                            <ParagraphText
-                              marginBottom='none'
-                              className='poppins-regular p-1 text-[var(--color-text-black)] bg-[#4373901A]'
-                            >
-                              {
-                                componentData.data[
+                            <div className='flex gap-2 items-center'>
+                              <ParagraphText
+                                marginBottom='none'
+                                className='text-[36px] text-[var(--color-text-black)]'
+                              >
+                                {componentData.data[
                                   componentData.data.length - 1
-                                ]?.Year
-                              }
-                            </ParagraphText>
-                          </div>
-                        </>
-                      }
-                      showValues={false}
-                      lineColor='#437390'
-                      showDots
-                      noOfXTicks={5}
-                      height={420}
-                      data={componentData.data.map((d: any) => ({
-                        date: d.Year,
-                        y: d['Sub-componentValue'],
-                      }))}
-                    />
-                  </div>
-                ))}
-                <Spacer size='sm' />
-                <ParagraphText size='sm' className='text-primary-gray-550'>
-                  {wgiData[0].data[0].Organization}
-                </ParagraphText>
+                                ]?.['Sub-componentValue'].toFixed(2)}
+                              </ParagraphText>
+                              <ParagraphText
+                                marginBottom='none'
+                                size='xs'
+                                className='poppins-regular py-1 px-2 rounded-[4px] text-[var(--color-text-black)] bg-[#4373901A]'
+                              >
+                                {
+                                  componentData.data[
+                                    componentData.data.length - 1
+                                  ]?.Year
+                                }
+                              </ParagraphText>
+                            </div>
+                          </>
+                        }
+                        showValues={false}
+                        lineColor='#437390'
+                        showDots
+                        noOfXTicks={5}
+                        height={420}
+                        data={componentData.data.map((d: any) => ({
+                          date: d.Year,
+                          y: d['Sub-componentValue'],
+                        }))}
+                      />
+                    </div>
+                  ))}
+                  <ParagraphText size='sm' className='text-primary-gray-550'>
+                    {wgiData[0].data[0].Organization}
+                  </ParagraphText>
+                </div>
               </div>
             )}
             {sdg16CountryDataFormatted.length > 0 && (
-              <div className='w-full border-1 border-[#4373904D] p-5 rounded-[8px]! flex flex-wrap gap-6'>
+              <div className='w-full border-1 border-[#4373904D] p-5 rounded-[8px]!'>
                 <ParagraphText
                   weight='semibold'
+                  marginBottom='sm'
                   className='text-[var(--color-text-black)] w-full'
                 >
                   SDG 16 Indicator
                 </ParagraphText>
-                {sdg16CountryDataFormatted.map((componentData, i: number) => (
-                  <div className='w-[calc(50%-12px)]' key={i}>
-                    <SimpleLineChart
-                      showValues={false}
-                      lineColor='#437390'
-                      showDots
-                      noOfXTicks={5}
-                      height={420}
-                      data={componentData.data.map((d: any) => ({
-                        date: d.Year,
-                        y: d.Value,
-                      }))}
-                      suffix={
-                        componentData.data[0].Unit === 'PERCENT' ? '%' : ''
-                      }
-                      graphTitle={
-                        <>
-                          <ParagraphText className='text-[var(--color-text-black)]'>
-                            {componentData.component}
-                          </ParagraphText>
-                          <Spacer size='sm' />
-                          <div className='flex gap-2 items-center'>
-                            <ParagraphText
-                              marginBottom='none'
-                              className='text-[36px] text-[var(--color-text-black)]'
-                            >
-                              {
-                                componentData.data[
-                                  componentData.data.length - 1
-                                ]?.Value
-                              }
-                              {componentData.data[0].Unit === 'PERCENT'
-                                ? '%'
-                                : ''}
+                <div className='w-full gap-6 gap-y-8 flex flex-wrap'>
+                  {sdg16CountryDataFormatted.map((componentData, i: number) => (
+                    <div className='w-[calc(50%-12px)]' key={i}>
+                      <SimpleLineChart
+                        showValues={false}
+                        lineColor='#437390'
+                        showDots
+                        noOfXTicks={5}
+                        height={420}
+                        data={componentData.data.map((d: any) => ({
+                          date: d.Year,
+                          y: d.Value,
+                        }))}
+                        suffix={
+                          componentData.data[0].Unit === 'PERCENT' ? '%' : ''
+                        }
+                        graphTitle={
+                          <>
+                            <ParagraphText className='text-[var(--color-text-black)]'>
+                              {componentData.component}
                             </ParagraphText>
-                            <ParagraphText
-                              marginBottom='none'
-                              className='poppins-regular p-1 text-[var(--color-text-black)] bg-[#4373901A]'
-                            >
-                              {
-                                componentData.data[
-                                  componentData.data.length - 1
-                                ]?.Year
-                              }
-                            </ParagraphText>
-                          </div>
-                        </>
-                      }
-                      footNote={`Source: ${componentData.data[0].Source}`}
-                    />
-                  </div>
-                ))}
+                            <Spacer size='sm' />
+                            <div className='flex gap-2 items-center'>
+                              <ParagraphText
+                                marginBottom='none'
+                                className='text-[36px] text-[var(--color-text-black)]'
+                              >
+                                {
+                                  componentData.data[
+                                    componentData.data.length - 1
+                                  ]?.Value
+                                }
+                                {componentData.data[0].Unit === 'PERCENT'
+                                  ? '%'
+                                  : ''}
+                              </ParagraphText>
+                              <ParagraphText
+                                marginBottom='none'
+                                size='xs'
+                                className='poppins-regular py-1 px-2 rounded-[4px] text-[var(--color-text-black)] bg-[#4373901A]'
+                              >
+                                {
+                                  componentData.data[
+                                    componentData.data.length - 1
+                                  ]?.Year
+                                }
+                              </ParagraphText>
+                            </div>
+                          </>
+                        }
+                        footNote={`Source: ${componentData.data[0].Source}`}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
