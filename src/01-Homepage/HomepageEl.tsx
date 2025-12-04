@@ -189,7 +189,7 @@ function HomepageEl({
           opacity: pillarVisualizationOpacity,
         }}
       >
-        <div className='w-1/2 px-20'>
+        <div className='w-1/2 px-10'>
           {indicatorsMetaData.map((d, i) => (
             <div
               ref={el => {
@@ -218,19 +218,27 @@ function HomepageEl({
             </div>
           ))}
         </div>
-        <GlobeComponent
-          globeData={globeData}
-          data={data}
-          selectedSubIndicator={selectedSubIndicator[inViewSlide]}
-          countriesList={countriesList}
-          inViewSlide={inViewSlide}
-          rotate={inViewSlide < indicatorsMetaData.length ? true : false}
-          indicatorsMetaData={indicatorsMetaData}
-          selectedIndicator={indicatorsMetaData[inViewSlide]}
-          selectedId={selectedId}
-          setSelectedId={setSelectedId}
-          setSelectedYear={setSelectedYear}
-        />
+        {countriesListLoading && <Spinner size='lg' className='my-20 m-auto' />}
+        {countriesListError && (
+          <div className='px-4 container mx-auto'>
+            <ErrorState />
+          </div>
+        )}
+        {!countriesListError && !countriesListLoading ? (
+          <GlobeComponent
+            globeData={globeData}
+            data={data}
+            selectedSubIndicator={selectedSubIndicator[inViewSlide]}
+            countriesList={countriesList}
+            inViewSlide={inViewSlide}
+            rotate={inViewSlide < indicatorsMetaData.length ? true : false}
+            indicatorsMetaData={indicatorsMetaData}
+            selectedIndicator={indicatorsMetaData[inViewSlide]}
+            selectedId={selectedId}
+            setSelectedId={setSelectedId}
+            setSelectedYear={setSelectedYear}
+          />
+        ) : null}
       </motion.div>
       <div
         className='flex flex-col relative z-10'
@@ -322,7 +330,7 @@ function HomepageEl({
                             selectedSubIndicator[inViewSlide].split('_')[0] &&
                           d.contractValue === 'ALL',
                       )
-                      .map(d => d.numericValue)}
+                      .map(d => ({ value: d.numericValue, id: d.id }))}
                     colors={
                       indicatorsMetaData
                         .find(
@@ -330,13 +338,21 @@ function HomepageEl({
                             `${d.mainIndicatorId}` ===
                             selectedSubIndicator[inViewSlide].split('_')[0],
                         )
-                        ?.subIndicators.map(d => d.color) || []
+                        ?.subIndicators.map(d => ({
+                          id: d.id,
+                          color: d.color,
+                        })) || []
                     }
                     subPillars={
                       indicatorsMetaData
                         .map(d => d.subIndicators)
                         .flat()
-                        .map(d => d.name) || []
+                        .filter(
+                          d =>
+                            `${d.mainIndicatorId}` ===
+                            selectedSubIndicator[inViewSlide].split('_')[0],
+                        )
+                        .map(d => ({ name: d.name, id: d.id })) || []
                     }
                     suffix={
                       indicatorsMetaData.find(
