@@ -6,19 +6,18 @@ import {
 } from '@undp/design-system-react/Tabs';
 import { useState } from 'react';
 
-import DataTableWithFilters from '../../Components/DataTable';
+import { PagedDataTableWithFilters } from '../../Components/DataTable/PagedDataTableWithFilters';
 
-import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
+import { CountriesDataType, IndicatorsMetaDataType } from '@/Types';
 import { CountrySelect } from '@/Components/CountrySelect';
 
 interface Props {
-  data: DataType[];
   countriesList: CountriesDataType[];
   indicatorsMetaData: IndicatorsMetaDataType[];
 }
 
 const CountryLevelInsight = (props: Props) => {
-  const { data, countriesList, indicatorsMetaData } = props;
+  const { countriesList, indicatorsMetaData } = props;
   const [selectedTab, setSelectedTab] = useState('tab 1');
   return (
     <div
@@ -54,8 +53,7 @@ const CountryLevelInsight = (props: Props) => {
             />
           </TabsContent>
           <TabsContent value='tab 2'>
-            <DataTableWithFilters
-              data={data}
+            <PagedDataTableWithFilters
               indicatorsMetaData={indicatorsMetaData}
               countriesList={countriesList || []}
             />

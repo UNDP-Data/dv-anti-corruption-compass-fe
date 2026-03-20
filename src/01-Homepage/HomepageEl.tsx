@@ -18,6 +18,16 @@ import { ErrorState } from '@/Components/ErrorState';
 import { ArcChart } from '@/Components/ArcChart';
 import { BarChartList } from '@/Components/BarChartList';
 import { Button } from '@/Components/Button';
+import {
+  logTimelinePhase,
+  endTimeline,
+  logResourceSummary,
+} from '@/logging/loadTimeLogger';
+import {
+  HomepageCountriesYes,
+  HomepageGlobeAvailability,
+} from '@/Utils/homepageFactsCache';
+import { getHomepageDefaultSubIndicatorId } from './homepagePreferredSubIndicators';
 
 const getGlobeData = (data: DataType[]) => {
   const uniqueCountryCodes = [...new Set(data.map(d => d.countryCode))];
@@ -51,30 +61,51 @@ const getGlobeData = (data: DataType[]) => {
 };
 
 function HomepageEl({
-  indicatorsMetaData,
-  countriesList,
-  data,
-  countriesListLoading,
-  countriesListError,
+  indicatorsMetaData = [],
+  countriesList = [],
+  data = [],
+  factsLoading = false,
+  factsError = false,
+  cachedCountriesYes = [],
+  cachedGlobeAvailability = [],
+  countriesListLoading = false,
+  countriesListError = false,
 }: {
-  indicatorsMetaData: IndicatorsMetaDataType[];
-  countriesList: CountriesDataType[];
-  data: DataType[];
-  countriesListLoading: boolean;
-  countriesListError: boolean;
+  indicatorsMetaData?: IndicatorsMetaDataType[];
+  countriesList?: CountriesDataType[];
+  data?: DataType[];
+  factsLoading?: boolean;
+  factsError?: boolean;
+  cachedCountriesYes?: HomepageCountriesYes;
+  cachedGlobeAvailability?: HomepageGlobeAvailability;
+  countriesListLoading?: boolean;
+  countriesListError?: boolean;
 }) {
+  logTimelinePhase('HomepageEl render start');
+  const safeCountriesList = Array.isArray(countriesList) ? countriesList : [];
+  const safeIndicatorsMetaData = Array.isArray(indicatorsMetaData)
+    ? indicatorsMetaData
+    : [];
+  const safeCachedCountriesYes = Array.isArray(cachedCountriesYes)
+    ? cachedCountriesYes
+    : [];
+  const safeCachedGlobeAvailability = Array.isArray(cachedGlobeAvailability)
+    ? cachedGlobeAvailability
+    : [];
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [selectedYear, setSelectedYear] = useState<number | undefined>(
     undefined,
   );
   const [inViewSlide, setInViewSlide] = useState<number>(0);
-  const [selectedSubIndicator, setSelectedSubIndicator] = useState<string[]>(
-    [...new Set(indicatorsMetaData.map(d => d.mainIndicatorId))].map(
-      d =>
-        indicatorsMetaData.find(el => el.mainIndicatorId === d)
-          ?.subIndicators[0].id as string,
-    ),
+  const [selectedSubIndicators, setSelectedSubIndicators] = useState<string[]>(
+    [...new Set(safeIndicatorsMetaData.map(d => d.mainIndicatorId))].map(d => {
+      const indicator = safeIndicatorsMetaData.find(el => el.mainIndicatorId === d);
+      return indicator ? getHomepageDefaultSubIndicatorId(indicator) : '';
+    }),
   );
+  const safeSelectedSubIndicator = Array.isArray(selectedSubIndicators)
+    ? selectedSubIndicators
+    : [];
   const [showNavigation, setShowNavigation] = useState(false);
 
   const globeControlsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -107,6 +138,7 @@ function HomepageEl({
   );
 
   useEffect(() => {
+    logTimelinePhase('HomepageEl mount & effects');
     const unsubscribe = introductionOpacity.on('change', latest => {
       setShowNavigation(latest < 0.25);
       if (latest > 0.5) {
@@ -129,7 +161,13 @@ function HomepageEl({
     return () => unsubscribe();
   }, [pillarVisualizationOpacity]);
 
-  const globeData = getGlobeData(data);
+  const factsLoaded = data.length !== 0;
+  const globeData = factsLoaded ? getGlobeData(data) : safeCachedGlobeAvailability;
+  logTimelinePhase('Computed globeData for homepage');
+  const activeSubIndicator =
+    safeSelectedSubIndicator[inViewSlide] ||
+    safeIndicatorsMetaData[inViewSlide]?.subIndicators?.[0]?.id ||
+    safeIndicatorsMetaData[0]?.subIndicators?.[0]?.id;
 
   const updateYear = useEffectEvent(
     (inViewSlide: number, selectedId?: string) => {
@@ -137,7 +175,7 @@ function HomepageEl({
       setSelectedYear(
         globeData.find(
           d =>
-            d.indicatorId === selectedSubIndicator[inViewSlide] &&
+            d.indicatorId === safeSelectedSubIndicator[inViewSlide] &&
             d.countryCode === selectedId,
         )?.year,
       );
@@ -148,16 +186,26 @@ function HomepageEl({
     updateYear(inViewSlide, selectedId);
   }, [inViewSlide, selectedId]);
 
+  useEffect(() => {
+    // Treat this as "homepage visible with main sections rendered"
+    logTimelinePhase('HomepageEl main sections rendered');
+    // After initial render, log the slowest loaded resources (JS chunks, images, etc.)
+    logResourceSummary('Homepage', { minDurationMs: 50, limit: 30 });
+    endTimeline('HomepageEl initial render complete');
+    // We only want to log once on initial mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className='relative'>
       {showNavigation && (
         <Navigation
           inViewSlide={
-            countryLevelInsightsInView ? indicatorsMetaData.length : inViewSlide
+            countryLevelInsightsInView ? safeIndicatorsMetaData.length : inViewSlide
           }
           globeControlsRef={globeControlsRef}
           countryLevelInsightsRef={countryLevelInsightsRef}
-          indicatorsMetaData={indicatorsMetaData.filter(d => !d.comingSoon)}
+          indicatorsMetaData={safeIndicatorsMetaData.filter(d => !d.comingSoon)}
         />
       )}
       <div
@@ -172,13 +220,22 @@ function HomepageEl({
         className='sticky top-[184px] h-[calc(100vh-120px)] flex flex-col'
       >
         <Introduction
-          data={[...new Set(data.map(d => d.countryCode))].map(d => ({
-            id: d,
-            x: 'Yes',
-          }))}
+          data={
+            safeCountriesList.length
+              ? safeCountriesList.map(c => ({
+                  id: c['Alpha-3 code'],
+                  x: 'Yes' as const,
+                }))
+              : factsLoaded
+                ? [...new Set(data.map(d => d.countryCode))].map(d => ({
+                    id: d,
+                    x: 'Yes' as const,
+                  }))
+                : safeCachedCountriesYes
+          }
           pillarVisualizationRef={pillarVisualizationRef}
           countryLevelInsightsRef={countryLevelInsightsRef}
-          indicatorsMetaData={indicatorsMetaData.filter(d => !d.comingSoon)}
+          indicatorsMetaData={safeIndicatorsMetaData.filter(d => !d.comingSoon)}
           globeControlsRef={globeControlsRef}
         />
       </motion.div>
@@ -190,7 +247,7 @@ function HomepageEl({
         }}
       >
         <div className='w-1/2 px-10'>
-          {indicatorsMetaData.map((d, i) => (
+          {safeIndicatorsMetaData.map((d, i) => (
             <div
               ref={el => {
                 globeControlsRef.current[i] = el;
@@ -209,7 +266,7 @@ function HomepageEl({
                   color: el.color,
                 }))}
                 onClick={el => {
-                  setSelectedSubIndicator(prev =>
+                  setSelectedSubIndicators(prev =>
                     prev.map((v, idx) => (idx === i ? el : v)),
                   );
                 }}
@@ -218,22 +275,22 @@ function HomepageEl({
             </div>
           ))}
         </div>
-        {countriesListLoading && <Spinner size='lg' className='my-20 m-auto' />}
-        {countriesListError && (
+        {countriesListError ? (
           <div className='px-4 container mx-auto'>
             <ErrorState />
           </div>
-        )}
-        {!countriesListError && !countriesListLoading ? (
+        ) : activeSubIndicator ? (
           <GlobeComponent
             globeData={globeData}
             data={data}
-            selectedSubIndicator={selectedSubIndicator[inViewSlide]}
-            countriesList={countriesList}
+            selectedSubIndicator={activeSubIndicator}
+            countriesList={countriesListLoading ? [] : safeCountriesList}
             inViewSlide={inViewSlide}
-            rotate={inViewSlide < indicatorsMetaData.length ? true : false}
-            indicatorsMetaData={indicatorsMetaData}
-            selectedIndicator={indicatorsMetaData[inViewSlide]}
+            rotate={inViewSlide < safeIndicatorsMetaData.length ? true : false}
+            indicatorsMetaData={safeIndicatorsMetaData}
+            selectedIndicator={
+              safeIndicatorsMetaData[inViewSlide] || safeIndicatorsMetaData[0]
+            }
             selectedId={selectedId}
             setSelectedId={setSelectedId}
             setSelectedYear={setSelectedYear}
@@ -244,7 +301,9 @@ function HomepageEl({
         className='flex flex-col relative z-10'
         ref={countryLevelInsightsRef}
       >
-        {countriesListLoading && <Spinner size='lg' className='my-20 m-auto' />}
+        {countriesListLoading && (
+          <Spinner size='lg' className='my-20 m-auto' />
+        )}
         {countriesListError && (
           <div className='px-4 container mx-auto'>
             <ErrorState />
@@ -252,9 +311,8 @@ function HomepageEl({
         )}
         {!countriesListError && !countriesListLoading ? (
           <CountryLevelInsight
-            data={data}
-            countriesList={countriesList}
-            indicatorsMetaData={indicatorsMetaData}
+            countriesList={safeCountriesList}
+            indicatorsMetaData={safeIndicatorsMetaData}
           />
         ) : null}
         <div className='w-full my-20 px-20'>
@@ -270,7 +328,7 @@ function HomepageEl({
         </div>
       </div>
       {selectedId &&
-        data.length !== 0 &&
+        factsLoaded &&
         createPortal(
           <div className='fixed bottom-8 right-20 bg-[#fff] p-6 lg:w-[300px] sm:w-[360px] rounded-[8px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] z-[999] max-h-[80vh] overflow-y-auto'>
             <div
@@ -290,7 +348,7 @@ function HomepageEl({
               <img
                 alt='Country flag'
                 className='w-9 mb-3'
-                src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${countriesList.find(d => d['Alpha-3 code'] === selectedId)?.['Alpha-2 code']}.svg`}
+                src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${safeCountriesList.find(d => d['Alpha-3 code'] === selectedId)?.['Alpha-2 code']}.svg`}
               />
               <ParagraphText
                 className='text-[var(--color-text-black)]'
@@ -299,7 +357,7 @@ function HomepageEl({
                 size='xl'
               >
                 {
-                  countriesList.find(el => el['Alpha-3 code'] === selectedId)?.[
+                  safeCountriesList.find(el => el['Alpha-3 code'] === selectedId)?.[
                     'Country or Area (official name)'
                   ]
                 }
@@ -314,11 +372,11 @@ function HomepageEl({
                 {selectedYear}
               </ParagraphText>
               <Spacer size='2xl' />
-              {(indicatorsMetaData.find(
+              {(safeIndicatorsMetaData.find(
                 d =>
                   d.mainIndicatorId ===
-                  parseInt(selectedSubIndicator[inViewSlide].split('_')[0]),
-              )?.subIndicators.length || 0) < 6 ? (
+                  parseInt(safeSelectedSubIndicator[inViewSlide].split('_')[0]),
+              )?.subIndicators?.length || 0) < 6 ? (
                 <div className='w-full flex items-center text-primary-gray-500 justify-center'>
                   <ArcChart
                     data={data
@@ -327,7 +385,7 @@ function HomepageEl({
                           d.year === selectedYear &&
                           d.countryCode === selectedId &&
                           `${d.mainIndicatorId}` ===
-                            selectedSubIndicator[inViewSlide].split('_')[0] &&
+                            safeSelectedSubIndicator[inViewSlide].split('_')[0] &&
                           d.contractValue === 'ALL',
                       )
                       .map(d => ({ value: d.numericValue, id: d.id }))}
@@ -336,7 +394,7 @@ function HomepageEl({
                         .find(
                           d =>
                             `${d.mainIndicatorId}` ===
-                            selectedSubIndicator[inViewSlide].split('_')[0],
+                            safeSelectedSubIndicator[inViewSlide].split('_')[0],
                         )
                         ?.subIndicators.map(d => ({
                           id: d.id,
@@ -350,7 +408,7 @@ function HomepageEl({
                         .filter(
                           d =>
                             `${d.mainIndicatorId}` ===
-                            selectedSubIndicator[inViewSlide].split('_')[0],
+                            safeSelectedSubIndicator[inViewSlide].split('_')[0],
                         )
                         .map(d => ({ name: d.name, id: d.id })) || []
                     }
@@ -358,14 +416,14 @@ function HomepageEl({
                       indicatorsMetaData.find(
                         d =>
                           `${d.mainIndicatorId}` ===
-                          selectedSubIndicator[inViewSlide].split('_')[0],
+                          safeSelectedSubIndicator[inViewSlide].split('_')[0],
                       )?.suffix || ''
                     }
                     maxValue={
                       indicatorsMetaData.find(
                         d =>
                           `${d.mainIndicatorId}` ===
-                          selectedSubIndicator[inViewSlide].split('_')[0],
+                          safeSelectedSubIndicator[inViewSlide].split('_')[0],
                       )?.maxValue ?? 100
                     }
                   />
@@ -378,7 +436,7 @@ function HomepageEl({
                         d.year === selectedYear &&
                         d.countryCode === selectedId &&
                         `${d.mainIndicatorId}` ===
-                          selectedSubIndicator[inViewSlide].split('_')[0] &&
+                          safeSelectedSubIndicator[inViewSlide].split('_')[0] &&
                         d.contractValue === 'ALL',
                     )
                     .map(d => ({
@@ -393,21 +451,21 @@ function HomepageEl({
                     indicatorsMetaData.find(
                       d =>
                         `${d.mainIndicatorId}` ===
-                        selectedSubIndicator[inViewSlide].split('_')[0],
+                        safeSelectedSubIndicator[inViewSlide].split('_')[0],
                     )?.suffix || ''
                   }
                   maxValue={
                     indicatorsMetaData.find(
                       d =>
                         `${d.mainIndicatorId}` ===
-                        selectedSubIndicator[inViewSlide].split('_')[0],
+                        safeSelectedSubIndicator[inViewSlide].split('_')[0],
                     )?.maxValue ?? 100
                   }
                   color={
                     indicatorsMetaData.find(
                       d =>
                         `${d.mainIndicatorId}` ===
-                        selectedSubIndicator[inViewSlide].split('_')[0],
+                        safeSelectedSubIndicator[inViewSlide].split('_')[0],
                     )?.mainColor || '#fff'
                   }
                   textClassName='text-[var(--color-text-black)]'
