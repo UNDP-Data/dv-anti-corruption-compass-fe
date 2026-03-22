@@ -5,6 +5,9 @@ import { Spinner } from '@undp/design-system-react';
 import { X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { Link } from '@tanstack/react-router';
+import * as THREE from 'three';
+import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
+import { transformDataForGraph } from '@undp/data-viz/transformData';
 
 import GlobeControls from './Components/GlobeControls';
 import Navigation from './Components/Navigation';
@@ -28,6 +31,7 @@ import {
   HomepageGlobeAvailability,
 } from '@/Utils/homepageFactsCache';
 import { getHomepageDefaultSubIndicatorId } from './homepagePreferredSubIndicators';
+import { useIsMobileBreakpoint } from '@/Utils/useIsMobileBreakpoint';
 
 const getGlobeData = (data: DataType[]) => {
   const uniqueCountryCodes = [...new Set(data.map(d => d.countryCode))];
@@ -107,6 +111,7 @@ function HomepageEl({
     ? selectedSubIndicators
     : [];
   const [showNavigation, setShowNavigation] = useState(false);
+  const isMobile = useIsMobileBreakpoint();
 
   const globeControlsRef = useRef<(HTMLDivElement | null)[]>([]);
   const pillarVisualizationRef = useRef<HTMLDivElement>(null);
@@ -164,6 +169,25 @@ function HomepageEl({
   const factsLoaded = data.length !== 0;
   const globeData = factsLoaded ? getGlobeData(data) : safeCachedGlobeAvailability;
   logTimelinePhase('Computed globeData for homepage');
+
+  // DIAGNOSTIC LOGS — remove after confirming root cause
+  if (isMobile) {
+    console.group('[HomepageEl mobile] Globe data pipeline');
+    console.log('data.length (raw facts):', data.length);
+    console.log('factsLoaded:', factsLoaded);
+    console.log('safeCachedGlobeAvailability.length:', safeCachedGlobeAvailability.length);
+    console.log('globeData.length (post-compute):', globeData.length);
+    console.log('safeSelectedSubIndicator:', safeSelectedSubIndicator);
+    console.log(
+      'per-indicator filter results:',
+      safeIndicatorsMetaData.map((d, i) => {
+        const subIndicatorId = safeSelectedSubIndicator[i] || d.subIndicators[0]?.id;
+        const matches = globeData.filter(gd => gd.indicatorId === subIndicatorId).length;
+        return { indicator: d.name, subIndicatorId, globeDataMatches: matches };
+      }),
+    );
+    console.groupEnd();
+  }
   const activeSubIndicator =
     safeSelectedSubIndicator[inViewSlide] ||
     safeIndicatorsMetaData[inViewSlide]?.subIndicators?.[0]?.id ||
@@ -215,94 +239,209 @@ function HomepageEl({
             'linear-gradient(141.12deg, #0F0F0F -2.91%, #2D4351 44.74%, #437390 95.34%, #93DBFF 119.46%)',
         }}
       />
-      <motion.div
-        style={{ opacity: introductionOpacity }}
-        className='sticky top-[184px] h-[calc(100vh-120px)] flex flex-col'
-      >
-        <Introduction
-          data={
-            safeCountriesList.length
-              ? safeCountriesList.map(c => ({
-                  id: c['Alpha-3 code'],
-                  x: 'Yes' as const,
-                }))
-              : factsLoaded
-                ? [...new Set(data.map(d => d.countryCode))].map(d => ({
-                    id: d,
+      {isMobile ? (
+        <div className='relative flex flex-col pt-8'>
+          <Introduction
+            data={
+              safeCountriesList.length
+                ? safeCountriesList.map(c => ({
+                    id: c['Alpha-3 code'],
                     x: 'Yes' as const,
                   }))
-                : safeCachedCountriesYes
-          }
-          pillarVisualizationRef={pillarVisualizationRef}
-          countryLevelInsightsRef={countryLevelInsightsRef}
-          indicatorsMetaData={safeIndicatorsMetaData.filter(d => !d.comingSoon)}
-          globeControlsRef={globeControlsRef}
-        />
-      </motion.div>
-      <motion.div
-        ref={pillarVisualizationRef}
-        className='flex z-5 relative top-[120px] pb-60'
-        style={{
-          opacity: pillarVisualizationOpacity,
-        }}
-      >
-        <div className='w-1/2 px-10'>
-          {safeIndicatorsMetaData.map((d, i) => (
-            <div
-              ref={el => {
-                globeControlsRef.current[i] = el;
-              }}
-              key={i}
-            >
-              <GlobeControls
-                onViewChange={el => {
-                  setInViewSlide(el);
-                }}
-                heading={d.name}
-                description={d.description}
-                buttons={d.subIndicators.map(el => ({
-                  label: el.name,
-                  value: `${el.mainIndicatorId}_${el.subIndicatorId}`,
-                  color: el.color,
-                }))}
-                onClick={el => {
-                  setSelectedSubIndicators(prev =>
-                    prev.map((v, idx) => (idx === i ? el : v)),
-                  );
-                }}
-                index={i}
-              />
-            </div>
-          ))}
-        </div>
-        {countriesListError ? (
-          <div className='px-4 container mx-auto'>
-            <ErrorState />
-          </div>
-        ) : activeSubIndicator ? (
-          <GlobeComponent
-            globeData={globeData}
-            data={data}
-            selectedSubIndicator={activeSubIndicator}
-            countriesList={countriesListLoading ? [] : safeCountriesList}
-            inViewSlide={inViewSlide}
-            rotate={inViewSlide < safeIndicatorsMetaData.length ? true : false}
-            indicatorsMetaData={safeIndicatorsMetaData}
-            selectedIndicator={
-              safeIndicatorsMetaData[inViewSlide] || safeIndicatorsMetaData[0]
+                : factsLoaded
+                  ? [...new Set(data.map(d => d.countryCode))].map(d => ({
+                      id: d,
+                      x: 'Yes' as const,
+                    }))
+                  : safeCachedCountriesYes
             }
-            selectedId={selectedId}
-            setSelectedId={setSelectedId}
-            setSelectedYear={setSelectedYear}
+            pillarVisualizationRef={pillarVisualizationRef}
+            countryLevelInsightsRef={countryLevelInsightsRef}
+            indicatorsMetaData={safeIndicatorsMetaData.filter(d => !d.comingSoon)}
+            globeControlsRef={globeControlsRef}
           />
-        ) : null}
-      </motion.div>
+        </div>
+      ) : (
+        <motion.div
+          style={{ opacity: introductionOpacity }}
+          className='sticky top-[184px] h-[calc(100vh-120px)] flex flex-col'
+        >
+          <Introduction
+            data={
+              safeCountriesList.length
+                ? safeCountriesList.map(c => ({
+                    id: c['Alpha-3 code'],
+                    x: 'Yes' as const,
+                  }))
+                : factsLoaded
+                  ? [...new Set(data.map(d => d.countryCode))].map(d => ({
+                      id: d,
+                      x: 'Yes' as const,
+                    }))
+                  : safeCachedCountriesYes
+            }
+            pillarVisualizationRef={pillarVisualizationRef}
+            countryLevelInsightsRef={countryLevelInsightsRef}
+            indicatorsMetaData={safeIndicatorsMetaData.filter(d => !d.comingSoon)}
+            globeControlsRef={globeControlsRef}
+          />
+        </motion.div>
+      )}
+      {isMobile ? (
+        <div ref={pillarVisualizationRef} className='relative z-5 pb-12'>
+          {safeIndicatorsMetaData.map((d, i) => {
+            const subIndicatorId =
+              safeSelectedSubIndicator[i] || d.subIndicators[0]?.id;
+            const subIndicator = d.subIndicators.find(
+              sub => sub.id === subIndicatorId,
+            );
+            return (
+              <div
+                ref={el => {
+                  globeControlsRef.current[i] = el;
+                }}
+                key={i}
+                className='mb-8'
+              >
+                <GlobeControls
+                  onViewChange={el => {
+                    setInViewSlide(el);
+                  }}
+                  heading={d.name}
+                  description={d.description}
+                  buttons={d.subIndicators.map(el => ({
+                    label: el.name,
+                    value: `${el.mainIndicatorId}_${el.subIndicatorId}`,
+                    color: el.color,
+                  }))}
+                  onClick={el => {
+                    setSelectedSubIndicators(prev =>
+                      prev.map((v, idx) => (idx === i ? el : v)),
+                    );
+                  }}
+                  index={i}
+                />
+                <div className='w-full h-[300px] overflow-hidden'>
+                  {globeData.filter(gd => gd.indicatorId === subIndicatorId)
+                    .length > 0 ? (
+                    <ThreeDGlobe
+                      showColorScale={false}
+                      polygonAltitude={0.005}
+                      highlightedAltitude={0.01}
+                      colors={[
+                        subIndicator?.colors?.split(',')[0] || '#4A7591',
+                      ]}
+                      colorDomain={['Yes']}
+                      scale={0.8}
+                      footNote=''
+                      enableZoom={false}
+                      atmosphereColor={subIndicator?.color || '#117df8'}
+                      globeMaterial={
+                        new THREE.MeshBasicMaterial({ color: 0xfafafa })
+                      }
+                      atmosphereAltitude={0.15}
+                      globeCurvatureResolution={2}
+                      resetSelectionOnDoubleClick={false}
+                      autoRotate={1}
+                      data={transformDataForGraph(
+                        globeData
+                          .filter(gd => gd.indicatorId === subIndicatorId)
+                          .map(gd => ({
+                            countryCode: gd.countryCode,
+                            x: 'Yes',
+                            year: gd.year,
+                          })),
+                        'threeDGlobe',
+                        [
+                          { chartConfigId: 'id', columnId: 'countryCode' },
+                          { chartConfigId: 'x', columnId: 'x' },
+                        ],
+                      )}
+                    />
+                  ) : (
+                    <div className='flex flex-col items-center justify-center w-full h-full gap-3 opacity-60'>
+                      <Spinner size='sm' />
+                      <ParagraphText size='sm'>
+                        Loading {d.name} data...
+                      </ParagraphText>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <motion.div
+          ref={pillarVisualizationRef}
+          className='flex lg:flex-row z-5 relative top-[120px] pb-60'
+          style={{
+            opacity: pillarVisualizationOpacity,
+          }}
+        >
+          <div className='lg:w-1/2 lg:px-10'>
+            {safeIndicatorsMetaData.map((d, i) => (
+              <div
+                ref={el => {
+                  globeControlsRef.current[i] = el;
+                }}
+                key={i}
+              >
+                <GlobeControls
+                  onViewChange={el => {
+                    setInViewSlide(el);
+                  }}
+                  heading={d.name}
+                  description={d.description}
+                  buttons={d.subIndicators.map(el => ({
+                    label: el.name,
+                    value: `${el.mainIndicatorId}_${el.subIndicatorId}`,
+                    color: el.color,
+                  }))}
+                  onClick={el => {
+                    setSelectedSubIndicators(prev =>
+                      prev.map((v, idx) => (idx === i ? el : v)),
+                    );
+                  }}
+                  index={i}
+                />
+              </div>
+            ))}
+          </div>
+          {countriesListError ? (
+            <div className='px-4 container mx-auto'>
+              <ErrorState />
+            </div>
+          ) : activeSubIndicator ? (
+            <GlobeComponent
+              globeData={globeData}
+              data={data}
+              selectedSubIndicator={activeSubIndicator}
+              countriesList={countriesListLoading ? [] : safeCountriesList}
+              inViewSlide={inViewSlide}
+              rotate={inViewSlide < safeIndicatorsMetaData.length ? true : false}
+              indicatorsMetaData={safeIndicatorsMetaData}
+              selectedIndicator={
+                safeIndicatorsMetaData[inViewSlide] || safeIndicatorsMetaData[0]
+              }
+              selectedId={selectedId}
+              setSelectedId={setSelectedId}
+              setSelectedYear={setSelectedYear}
+            />
+          ) : null}
+        </motion.div>
+      )}
       <div
         className='flex flex-col relative z-10'
         ref={countryLevelInsightsRef}
       >
         {countriesListLoading && (
-          <Spinner size='lg' className='my-20 m-auto' />
+          <div className='flex flex-col items-center gap-3 my-20'>
+            <Spinner size='lg' />
+            <ParagraphText size='sm' className='opacity-60'>
+              Loading country insights...
+            </ParagraphText>
+          </div>
         )}
         {countriesListError && (
           <div className='px-4 container mx-auto'>
@@ -315,7 +454,7 @@ function HomepageEl({
             indicatorsMetaData={safeIndicatorsMetaData}
           />
         ) : null}
-        <div className='w-full my-20 px-20'>
+        <div className='w-full my-20 px-4 lg:px-20'>
           <HeadingText type='h2'>Partnerships</HeadingText>
           <Spacer size='xl' />
           <ParagraphText>
@@ -330,7 +469,7 @@ function HomepageEl({
       {selectedId &&
         factsLoaded &&
         createPortal(
-          <div className='fixed bottom-8 right-20 bg-[#fff] p-6 lg:w-[300px] sm:w-[360px] rounded-[8px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] z-[999] max-h-[80vh] overflow-y-auto'>
+          <div className='fixed bottom-0 left-0 right-0 lg:bottom-8 lg:right-20 lg:left-auto bg-[#fff] p-6 w-full lg:w-[360px] rounded-t-[16px] lg:rounded-[8px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] z-[999] max-h-[80vh] overflow-y-auto'>
             <div
               style={{
                 cursor: 'pointer',

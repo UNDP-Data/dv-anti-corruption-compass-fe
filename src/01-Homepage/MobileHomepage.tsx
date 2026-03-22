@@ -9,8 +9,13 @@ type Props = {
 };
 
 export function MobileHomepage(props: Props) {
-  // For now, reuse the existing homepage composition so behavior and data are shared.
-  // Layout differences will be driven by the mobile container and scoped styles.
+  // DIAGNOSTIC LOG — remove after confirming root cause
+  console.warn(
+    '[MobileHomepage] Rendering — NO facts data or cachedGlobeAvailability passed in props.',
+    'indicatorsMetaData.length:', props.indicatorsMetaData.length,
+    '→ HomepageEl will receive data=[] and cachedGlobeAvailability=[], globes will never render.',
+  );
+
   return <HomepageEl {...props} />;
 }
 

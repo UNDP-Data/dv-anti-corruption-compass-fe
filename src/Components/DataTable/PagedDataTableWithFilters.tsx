@@ -23,6 +23,7 @@ import {
 import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
 import { customDropdownComponents } from '@/Utils/DropdownComponents';
 import { getFactsPage } from '@/QueryFn/getFactsPage';
+import { useIsMobileBreakpoint } from '@/Utils/useIsMobileBreakpoint';
 
 interface Props {
   indicatorsMetaData: IndicatorsMetaDataType[];
@@ -45,6 +46,7 @@ function parseCombinedId(id: string): { mainIndicatorId: number; subIndicatorId:
 }
 
 export function PagedDataTableWithFilters({ indicatorsMetaData, countriesList }: Props) {
+  const isMobile = useIsMobileBreakpoint();
   const subIndicators = indicatorsMetaData.map(d => d.subIndicators).flat();
 
   const defaultSub = subIndicators[0];
@@ -134,9 +136,9 @@ export function PagedDataTableWithFilters({ indicatorsMetaData, countriesList }:
 
   return (
     <div className='gap-4.5 flex flex-col w-full text-primary-gray-700'>
-      <div className='flex justify-between w-full items-center'>
-        <div className='gap-4 flex grow-1'>
-          <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px] max-w-[480px] flex-wrap'>
+      <div className='flex flex-col lg:flex-row justify-between w-full items-start lg:items-center gap-4'>
+        <div className='gap-4 flex flex-col lg:flex-row grow-1 w-full lg:w-auto'>
+          <div className='flex flex-col gap-1 w-full lg:w-[calc(25%-0.75rem)] grow-1 lg:min-w-[240px] lg:max-w-[480px] flex-wrap'>
             <Label className='text-primary-white'>Filter by year</Label>
             <DropdownSelect
               value={{ value: selectedYear, label: selectedYear }}
@@ -154,7 +156,7 @@ export function PagedDataTableWithFilters({ indicatorsMetaData, countriesList }:
               components={customDropdownComponents('light', false)}
             />
           </div>
-          <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px] max-w-[480px] flex-wrap'>
+          <div className='flex flex-col gap-1 w-full lg:w-[calc(25%-0.75rem)] grow-1 lg:min-w-[240px] lg:max-w-[480px] flex-wrap'>
             <Label className='text-primary-white'>Filter by pillar</Label>
             <DropdownSelect
               placeholder='Select Pillar'
@@ -208,23 +210,25 @@ export function PagedDataTableWithFilters({ indicatorsMetaData, countriesList }:
       <Spacer size='lg' />
 
       <div className='dark'>
-        <div className='flex items-center justify-between'>
-          <div className='flex w-full pb-2 border-b border-b-primary-white'>
-            <div className='poppins-semibold text-[16px]! text-primary-white! w-[35%] pr-4!'>
-              Country name
+        {!isMobile && (
+          <div className='flex items-center justify-between'>
+            <div className='flex w-full pb-2 border-b border-b-primary-white'>
+              <div className='poppins-semibold text-[16px]! text-primary-white! w-[35%] pr-4!'>
+                Country name
+              </div>
+              <div className='poppins-semibold text-[16px]! text-primary-white! w-[25%] pr-4!'>
+                Pillar
+              </div>
+              <div className='poppins-semibold text-[16px]! text-primary-white! w-[20%] pr-4!'>
+                Indicator value
+              </div>
+              <div className='poppins-semibold text-[16px]! text-primary-white! w-[10%] pr-4!'>
+                Value
+              </div>
+              <div className='poppins-semibold text-[16px]! text-primary-white! w-[10%] pr-4!' />
             </div>
-            <div className='poppins-semibold text-[16px]! text-primary-white! w-[25%] pr-4!'>
-              Pillar
-            </div>
-            <div className='poppins-semibold text-[16px]! text-primary-white! w-[20%] pr-4!'>
-              Indicator value
-            </div>
-            <div className='poppins-semibold text-[16px]! text-primary-white! w-[10%] pr-4!'>
-              Value
-            </div>
-            <div className='poppins-semibold text-[16px]! text-primary-white! w-[10%] pr-4!' />
           </div>
-        </div>
+        )}
 
         {query.isLoading && <Spinner size='lg' className='my-10 m-auto' />}
 
@@ -237,66 +241,107 @@ export function PagedDataTableWithFilters({ indicatorsMetaData, countriesList }:
                 )
                 ?.colors?.split(',') || [];
 
+            const countryName =
+              countriesList.find(c => c['Alpha-3 code'] === el.countryCode)?.[
+                'Country or Area (official name)'
+              ] || el.countryCode;
+            const pillarName =
+              subIndicators.find(
+                pd => `${pd.mainIndicatorId}_${pd.subIndicatorId}` === el.id,
+              )?.name || '';
+            const valueStr =
+              el.numericValue === null || el.numericValue === undefined
+                ? 'NA'
+                : el.numericValue.toFixed(2) +
+                  (indicatorsMetaData.find(
+                    d => d.mainIndicatorId === el.mainIndicatorId,
+                  )?.suffix || '');
+            const badgeBg =
+              el.indicatorValue === null
+                ? '#DADADA'
+                : ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue) !== -1
+                  ? tagColors[
+                      ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue)
+                    ]
+                  : '#DADADA';
+            const badgeColor =
+              el.indicatorValue === null
+                ? '#000'
+                : getTextColorBasedOnBgColor(
+                    ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue) !== -1
+                      ? tagColors[
+                          ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue)
+                        ]
+                      : '#DADADA',
+                  );
+
             return (
               <div key={`${el.factId}-${i}`}>
-                <div className='flex w-full py-4 border-b border-b-[0.5px] border-b-primary-white items-center'>
-                  <div className='poppins-light text-[16px]! text-primary-white! w-[35%] pr-4!'>
-                    {
-                      countriesList.find(c => c['Alpha-3 code'] === el.countryCode)?.[
-                        'Country or Area (official name)'
-                      ]
-                    }
+                {isMobile ? (
+                  <div className='py-4 border-b border-b-[0.5px] border-b-primary-white'>
+                    <div className='flex justify-between items-center mb-2'>
+                      <span className='poppins-medium text-[14px] text-primary-white'>
+                        {countryName}
+                      </span>
+                      <Link
+                        to='/countries/$isoCode/{-$indicator}'
+                        className='poppins-medium text-[13px] text-primary-white opacity-100 hover:opacity-80 underline underline-offset-4 shrink-0 ml-2'
+                        params={{ isoCode: el.countryCode }}
+                      >
+                        View Details
+                      </Link>
+                    </div>
+                    <div className='flex items-center gap-3 flex-wrap'>
+                      <span className='poppins-light text-[13px] text-primary-white'>
+                        {pillarName}
+                      </span>
+                      <Badge
+                        rounded='full'
+                        className='poppins-medium py-0 text-[11px]! px-2!'
+                        style={{
+                          backgroundColor: badgeBg,
+                          color: badgeColor,
+                        }}
+                      >
+                        {el.indicatorValue}
+                      </Badge>
+                      <span className='poppins-light text-[13px] text-primary-white'>
+                        {valueStr}
+                      </span>
+                    </div>
                   </div>
-                  <div className='poppins-light text-[16px]! text-primary-white! w-[25%] pr-4!'>
-                    {
-                      subIndicators.find(
-                        pd => `${pd.mainIndicatorId}_${pd.subIndicatorId}` === el.id,
-                      )?.name
-                    }
-                  </div>
-                  <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
-                    <Badge
-                      rounded='full'
-                      className='poppins-medium py-0 text-[12px]! px-3!'
-                      style={{
-                        backgroundColor:
-                          el.indicatorValue === null
-                            ? '#DADADA'
-                            : ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue) !== -1
-                              ? tagColors[
-                                  ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue)
-                                ]
-                              : '#DADADA',
-                        color:
-                          el.indicatorValue === null
-                            ? '#000'
-                            : getTextColorBasedOnBgColor(
-                                ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue) !== -1
-                                  ? tagColors[
-                                      ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue)
-                                    ]
-                                  : '#DADADA',
-                              ),
-                      }}
+                ) : (
+                  <div className='flex w-full py-4 border-b border-b-[0.5px] border-b-primary-white items-center'>
+                    <div className='poppins-light text-[16px]! text-primary-white! w-[35%] pr-4!'>
+                      {countryName}
+                    </div>
+                    <div className='poppins-light text-[16px]! text-primary-white! w-[25%] pr-4!'>
+                      {pillarName}
+                    </div>
+                    <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
+                      <Badge
+                        rounded='full'
+                        className='poppins-medium py-0 text-[12px]! px-3!'
+                        style={{
+                          backgroundColor: badgeBg,
+                          color: badgeColor,
+                        }}
+                      >
+                        {el.indicatorValue}
+                      </Badge>
+                    </div>
+                    <div className='poppins-light text-[16px]! text-primary-white! w-[10%] pr-4!'>
+                      {valueStr}
+                    </div>
+                    <Link
+                      to='/countries/$isoCode/{-$indicator}'
+                      className='poppins-light text-[16px]! text-primary-white! w-[10%] pr-4! opacity-100 hover:opacity-80 underline underline-offset-4'
+                      params={{ isoCode: el.countryCode }}
                     >
-                      {el.indicatorValue}
-                    </Badge>
+                      View Details
+                    </Link>
                   </div>
-                  <div className='poppins-light text-[16px]! text-primary-white! w-[10%] pr-4!'>
-                    {el.numericValue === null || el.numericValue === undefined
-                      ? 'NA'
-                      : el.numericValue.toFixed(2) +
-                        (indicatorsMetaData.find(d => d.mainIndicatorId === el.mainIndicatorId)
-                          ?.suffix || '')}
-                  </div>
-                  <Link
-                    to='/countries/$isoCode/{-$indicator}'
-                    className='poppins-light text-[16px]! text-primary-white! w-[10%] pr-4! opacity-100 hover:opacity-80 underline underline-offset-4'
-                    params={{ isoCode: el.countryCode }}
-                  >
-                    View Details
-                  </Link>
-                </div>
+                )}
               </div>
             );
           })}

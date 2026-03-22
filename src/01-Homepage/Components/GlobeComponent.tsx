@@ -39,7 +39,7 @@ function GlobeComponent({
   const hasAnyGlobeData = globeData.length !== 0;
   return (
     <>
-      <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] flex flex-col py-24 pl-10 pr-30'>
+      <div className='w-1/2 sticky top-[120px] h-[calc(100vh-120px)] hidden lg:flex flex-col py-24 pl-10 pr-30'>
         <div className='w-full grow flex radialGradientMask'>
           {hasAnyGlobeData ? (
             <ThreeDGlobe

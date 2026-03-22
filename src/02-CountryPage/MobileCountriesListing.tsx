@@ -19,10 +19,10 @@ export function MobileCountriesListing({ countriesListData, alphabets }: Props) 
   });
 
   return (
-    <div className='container mx-auto'>
-      <Spacer size='7xl' />
-      <HeadingText type='h2'>Country profile</HeadingText>
+    <div className='container mx-auto px-4'>
       <Spacer size='4xl' />
+      <HeadingText type='h2'>Country profile</HeadingText>
+      <Spacer size='2xl' />
       <div className='mb-6'>
         <input
           type='text'

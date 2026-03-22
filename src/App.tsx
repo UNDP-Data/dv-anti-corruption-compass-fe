@@ -42,6 +42,7 @@ import {
   endTimeline,
 } from './logging/loadTimeLogger';
 import { useIsMobileBreakpoint } from './Utils/useIsMobileBreakpoint';
+import { DebugOverlay } from './Components/DebugOverlay';
 import { MobileHomepage } from './01-Homepage/MobileHomepage';
 import { MobileMainIndicatorPage } from './03-MainIndicator/MobileMainIndicatorPage';
 import { MobileCountryPage } from './02-CountryPage/MobileCountryPage';
@@ -146,7 +147,7 @@ function RootComponent() {
           <ScrollToTop />
           <Outlet />
         </main>
-        <div className='relative z-10 px-20'>
+        <div className='relative z-10 px-4 lg:px-20'>
           <div
             style={{
               background:
@@ -170,6 +171,7 @@ function RootComponent() {
           indicatorsMetaData={indicatorsMetaData.data}
           indicatorsMetaDataLoading={indicatorsMetaData.isLoading}
         />
+        {isMobile && <DebugOverlay />}
       </div>
     </GlobalDataContext.Provider>
   );
