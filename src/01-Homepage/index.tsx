@@ -1,23 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
-import { Spinner } from '@undp/design-system-react/Spinner';
-
 import HomepageEl from './HomepageEl';
 
-import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
-import { ErrorState } from '@/Components/ErrorState';
-import { getAllCountriesAllData } from '@/QueryFn/getAllCountriesAllData';
+import { CountriesDataType, IndicatorsMetaDataType } from '@/Types';
+import { useIncrementalHomepageFacts } from './useIncrementalHomepageFacts';
 
-function useAllPillarsData() {
-  return useQuery({
-    queryKey: ['all-countries-all-data'],
-    queryFn: getAllCountriesAllData,
-    select: data =>
-      data.map((d: DataType) => ({
-        ...d,
-        id: `${d.mainIndicatorId}_${d.subIndicatorId}`,
-      })),
-  });
-}
 function Homepage({
   indicatorsMetaData,
   countriesList,
@@ -29,26 +14,30 @@ function Homepage({
   countriesListLoading: boolean;
   countriesListError: boolean;
 }) {
-  const { data, isLoading, isError } = useAllPillarsData();
+  const {
+    facts,
+    factsLoading,
+    factsError,
+    globeAvailability,
+    cachedCountriesYes,
+  } = useIncrementalHomepageFacts({
+    indicatorsMetaData,
+    firstPillarsCount: 2,
+  });
 
-  if (isLoading) return <Spinner size='lg' className='my-20 m-auto' />;
-  if (isError)
-    return (
-      <div className='px-4 container mx-auto'>
-        <ErrorState />
-      </div>
-    );
-  if (data)
-    return (
-      <HomepageEl
-        data={data}
-        indicatorsMetaData={indicatorsMetaData}
-        countriesList={countriesList}
-        countriesListLoading={countriesListLoading}
-        countriesListError={countriesListError}
-      />
-    );
-  return;
+  return (
+    <HomepageEl
+      data={facts}
+      factsLoading={factsLoading}
+      factsError={factsError}
+      cachedCountriesYes={cachedCountriesYes}
+      cachedGlobeAvailability={globeAvailability}
+      indicatorsMetaData={indicatorsMetaData}
+      countriesList={countriesList}
+      countriesListLoading={countriesListLoading}
+      countriesListError={countriesListError}
+    />
+  );
 }
 
 export default Homepage;

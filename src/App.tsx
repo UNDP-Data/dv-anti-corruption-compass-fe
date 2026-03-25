@@ -36,6 +36,19 @@ import { getIndicatorsMetaData } from './QueryFn/getIndicatorsMetaData';
 import { getCountriesList } from './QueryFn/getCountriesList';
 import { HeadingText, ParagraphText } from './Components/Typography';
 import { Button } from './Components/Button';
+import {
+  startTimeline,
+  logTimelinePhase,
+  endTimeline,
+} from './logging/loadTimeLogger';
+import { useIsMobileBreakpoint } from './Utils/useIsMobileBreakpoint';
+import { DebugOverlay } from './Components/DebugOverlay';
+import { MobileHomepage } from './01-Homepage/MobileHomepage';
+import { MobileMainIndicatorPage } from './03-MainIndicator/MobileMainIndicatorPage';
+import { MobileCountryPage } from './02-CountryPage/MobileCountryPage';
+import { MobileCountriesListing } from './02-CountryPage/MobileCountriesListing';
+import { MobileMethodologyPage } from './04-Methodology/MobileMethodologyPage';
+import { MobileAboutUsPage } from './05-AboutUs/MobileAboutUsPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -89,32 +102,44 @@ export function useGlobalDataContext() {
 }
 
 function RootComponent() {
+  startTimeline('Homepage route render');
+  logTimelinePhase('RootComponent render start');
   const { indicatorsMetaData, countriesList } = useGlobalData();
+  const isMobile = useIsMobileBreakpoint();
 
   const isLoading = indicatorsMetaData.isLoading;
   const isError = indicatorsMetaData.isError;
 
-  if (isLoading) return <Spinner size='lg' className='my-20 m-auto' />;
-  if (isError)
+  if (isLoading) {
+    logTimelinePhase('RootComponent loading global data');
+    return <Spinner size='lg' className='my-20 m-auto' />;
+  }
+  if (isError) {
+    logTimelinePhase('RootComponent error state');
     return (
       <div className='px-4 container mx-auto'>
         <ErrorState />
       </div>
     );
+  }
 
   return (
     <GlobalDataContext.Provider
       value={{
-        indicatorsMetaData: indicatorsMetaData.data,
-        countriesListData: countriesList.data,
+        indicatorsMetaData: indicatorsMetaData.data || [],
+        countriesListData: countriesList.data || [],
         countriesListLoading: countriesList.isLoading,
         countriesListError: countriesList.isError,
       }}
     >
-      <div className='min-h-screen flex flex-col background-inherit'>
+      <div
+        className={`min-h-screen flex flex-col background-inherit ${
+          isMobile ? 'mobileApp' : ''
+        }`}
+      >
         <Header
           indicatorsMetaData={indicatorsMetaData.data || []}
-          countriesListData={countriesList.data}
+          countriesListData={countriesList.data || []}
           countriesListDataLoading={countriesList.isLoading}
           countriesListDataError={countriesList.isError}
         />
@@ -122,7 +147,7 @@ function RootComponent() {
           <ScrollToTop />
           <Outlet />
         </main>
-        <div className='relative z-10 px-20'>
+        <div className='relative z-10 px-4 lg:px-20'>
           <div
             style={{
               background:
@@ -146,6 +171,7 @@ function RootComponent() {
           indicatorsMetaData={indicatorsMetaData.data}
           indicatorsMetaDataLoading={indicatorsMetaData.isLoading}
         />
+        {isMobile && <DebugOverlay />}
       </div>
     </GlobalDataContext.Provider>
   );
@@ -165,13 +191,17 @@ const indexRoute = createRoute({
       countriesListLoading,
       countriesListError,
     } = useGlobalDataContext();
-    return (
-      <Homepage
-        indicatorsMetaData={indicatorsMetaData.filter(d => !d.comingSoon)}
-        countriesList={countriesListData}
-        countriesListLoading={countriesListLoading}
-        countriesListError={countriesListError}
-      />
+    const isMobile = useIsMobileBreakpoint();
+    const pageProps = {
+      indicatorsMetaData: indicatorsMetaData.filter(d => !d.comingSoon),
+      countriesList: countriesListData || [],
+      countriesListLoading,
+      countriesListError,
+    };
+    return isMobile ? (
+      <MobileHomepage {...pageProps} />
+    ) : (
+      <Homepage {...pageProps} />
     );
   },
 });
@@ -180,7 +210,8 @@ const aboutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/about',
   component: function About() {
-    return <AboutUsPage />;
+    const isMobile = useIsMobileBreakpoint();
+    return isMobile ? <MobileAboutUsPage /> : <AboutUsPage />;
   },
 });
 
@@ -188,7 +219,8 @@ const methodologyRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/methodology',
   component: function Methodology() {
-    return <MethodologyPage />;
+    const isMobile = useIsMobileBreakpoint();
+    return isMobile ? <MobileMethodologyPage /> : <MethodologyPage />;
   },
 });
 
@@ -199,6 +231,7 @@ function MainIndicator() {
     countriesListLoading,
     countriesListError,
   } = useGlobalDataContext();
+  const isMobile = useIsMobileBreakpoint();
   const { indicator } = mainIndicatorRoute.useParams();
 
   const indicatorMetaData = indicatorsMetaData.find(
@@ -211,13 +244,17 @@ function MainIndicator() {
       </div>
     );
 
-  return (
-    <MainIndicatorPageEl
-      indicatorMetaData={indicatorMetaData || indicatorsMetaData[0]}
-      countriesListDataLoading={countriesListLoading}
-      countriesListDataError={countriesListError}
-      countriesList={countriesListData || []}
-    />
+  const pageProps = {
+    indicatorMetaData: indicatorMetaData || indicatorsMetaData[0],
+    countriesListDataLoading: countriesListLoading,
+    countriesListDataError: countriesListError,
+    countriesList: countriesListData || [],
+  };
+
+  return isMobile ? (
+    <MobileMainIndicatorPage {...pageProps} />
+  ) : (
+    <MainIndicatorPageEl {...pageProps} />
   );
 }
 
@@ -235,6 +272,7 @@ function Country() {
     countriesListLoading,
     countriesListError,
   } = useGlobalDataContext();
+  const isMobile = useIsMobileBreakpoint();
 
   const indicatorMetaData = indicatorsMetaData.find(
     d => d.name.replaceAll(' ', '-').toLowerCase() === indicator,
@@ -247,19 +285,24 @@ function Country() {
         <ErrorState />
       </div>
     );
-  return (
-    <CountryPageEl
-      isoCode={isoCode}
-      countriesList={countriesListData}
-      indicatorsMetaData={indicatorsMetaData}
-      selectedIndicator={indicatorMetaData || 'country-profile'}
-    />
+  const pageProps = {
+    isoCode,
+    countriesList: countriesListData || [],
+    indicatorsMetaData,
+    selectedIndicator: indicatorMetaData || 'country-profile',
+  };
+
+  return isMobile ? (
+    <MobileCountryPage {...pageProps} />
+  ) : (
+    <CountryPageEl {...pageProps} />
   );
 }
 
 function CountriesListing() {
   const { countriesListData, countriesListLoading, countriesListError } =
     useGlobalDataContext();
+  const isMobile = useIsMobileBreakpoint();
   if (countriesListLoading)
     return <Spinner size='lg' className='my-20 m-auto' />;
   if (countriesListError)
@@ -276,6 +319,15 @@ function CountriesListing() {
       ),
     ),
   ];
+  if (isMobile) {
+    return (
+      <MobileCountriesListing
+        countriesListData={countriesListData}
+        alphabets={alphabets}
+      />
+    );
+  }
+
   return (
     <div className='container mx-auto'>
       <Spacer size='7xl' />

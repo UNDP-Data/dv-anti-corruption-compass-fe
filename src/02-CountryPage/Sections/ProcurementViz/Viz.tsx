@@ -24,6 +24,7 @@ import { customDropdownComponents } from '@/Utils/DropdownComponents';
 import { BarChartList } from '@/Components/BarChartList';
 import { getDataAvailability } from '@/QueryFn/getDataAvailability';
 import { ErrorState } from '@/Components/ErrorState';
+import { useIsMobileBreakpoint } from '@/Utils/useIsMobileBreakpoint';
 
 interface MarketListDataType {
   productMarketId: number;
@@ -67,6 +68,7 @@ function Viz({
   countryCode,
   suffix,
 }: Props) {
+  const isMobile = useIsMobileBreakpoint();
   const dataAvailabilityData = useDataDataAvailability();
   const yearList = [...new Set(data.map(d => d.year))].sort((a, b) => b - a);
   const latestYear = yearList[0];
@@ -103,93 +105,93 @@ function Viz({
       </HeadingText>
       <Spacer size='4xl' />
       <div className='dark'>
-        <div className='flex w-full pb-2 border-b border-b-primary-white'>
-          <div className='poppins-semibold text-[16px]! text-primary-white! w-[40%] pr-4!'>
-            Indicator name
+        {!isMobile && (
+          <div className='flex w-full pb-2 border-b border-b-primary-white'>
+            <div className='poppins-semibold text-[16px]! text-primary-white! w-[40%] pr-4!'>
+              Indicator name
+            </div>
+            <div className='poppins-semibold text-[16px]! text-primary-white! w-[20%] pr-4!'>
+              Indicator value
+            </div>
+            <div className='poppins-semibold text-[16px]! text-primary-white! w-[20%] pr-4!'>
+              Status
+            </div>
+            <div className='poppins-semibold text-[16px]! text-primary-white! w-[20%] pr-4!'>
+              Bands
+            </div>
           </div>
-          <div className='poppins-semibold text-[16px]! text-primary-white! w-[20%] pr-4!'>
-            Indicator value
-          </div>
-          <div className='poppins-semibold text-[16px]! text-primary-white! w-[20%] pr-4!'>
-            Status
-          </div>
-          <div className='poppins-semibold text-[16px]! text-primary-white! w-[20%] pr-4!'>
-            Bands
-          </div>
-        </div>
+        )}
         <div>
           {indicatorMetaData.subIndicators.map((el, i) => {
+            const rowData = latestCountryData.find(d => d.id === el.id);
             return (
               <div key={i}>
-                <div className='flex w-full py-4 border-b border-b-[0.5px] border-b-primary-white items-center'>
-                  <div className='poppins-light text-[16px]! text-primary-white! w-[40%] pr-4!'>
-                    {el.name} ({el.description})
-                  </div>
-                  <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
-                    {latestCountryData.find(d => d.id === el.id)
-                      ?.numericValue ?? 'NA'}{' '}
-                    {latestCountryData.find(d => d.id === el.id)
-                      ?.numericValue !== null ||
-                    latestCountryData.find(d => d.id === el.id)
-                      ?.numericValue !== undefined
-                      ? suffix
-                      : ''}
-                  </div>
-                  <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
-                    <Badge
-                      rounded='full'
-                      className='poppins-medium py-0 text-[14px]! px-3!'
-                      style={{
-                        backgroundColor: '#DADADA',
-                        color: '#000',
-                      }}
-                    >
-                      {latestCountryData.find(d => d.id === el.id)
-                        ?.indicatorValue || 'NA'}
-                    </Badge>
-                  </div>
-                  <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
-                    {latestCountryData.find(d => d.id === el.id)?.bandData && (
-                      <>
-                        <strong>Low:</strong>{' '}
-                        {
-                          latestCountryData.find(d => d.id === el.id)?.bandData
-                            .low_Min
-                        }
-                        {suffix || ''} -{' '}
-                        {
-                          latestCountryData.find(d => d.id === el.id)?.bandData
-                            .low_Max
-                        }
-                        {suffix || ''}
-                        <br />
-                        <strong>Medium:</strong>{' '}
-                        {
-                          latestCountryData.find(d => d.id === el.id)?.bandData
-                            .medium_Min
-                        }
-                        {suffix || ''} -{' '}
-                        {
-                          latestCountryData.find(d => d.id === el.id)?.bandData
-                            .medium_Max
-                        }
-                        {suffix || ''}
-                        <br />
-                        <strong>High:</strong>{' '}
-                        {
-                          latestCountryData.find(d => d.id === el.id)?.bandData
-                            .high_Min
-                        }
-                        {suffix || ''} -{' '}
-                        {
-                          latestCountryData.find(d => d.id === el.id)?.bandData
-                            .high_Max
-                        }
-                        {suffix || ''}
-                      </>
+                {isMobile ? (
+                  <div className='py-4 border-b border-b-[0.5px] border-b-primary-white'>
+                    <ParagraphText size='sm' weight='medium' marginBottom='none' className='text-primary-white mb-1'>
+                      {el.name} ({el.description})
+                    </ParagraphText>
+                    <div className='flex items-center gap-3 flex-wrap mt-2'>
+                      <span className='poppins-light text-[13px] text-primary-white'>
+                        {rowData?.numericValue ?? 'NA'}{' '}
+                        {rowData?.numericValue != null ? suffix : ''}
+                      </span>
+                      <Badge
+                        rounded='full'
+                        className='poppins-medium py-0 text-[11px]! px-2!'
+                        style={{ backgroundColor: '#DADADA', color: '#000' }}
+                      >
+                        {rowData?.indicatorValue || 'NA'}
+                      </Badge>
+                    </div>
+                    {rowData?.bandData && (
+                      <div className='mt-2 text-[12px] poppins-light text-primary-white opacity-70'>
+                        Low: {rowData.bandData.low_Min}{suffix} - {rowData.bandData.low_Max}{suffix}
+                        {' · '}Medium: {rowData.bandData.medium_Min}{suffix} - {rowData.bandData.medium_Max}{suffix}
+                        {' · '}High: {rowData.bandData.high_Min}{suffix} - {rowData.bandData.high_Max}{suffix}
+                      </div>
                     )}
                   </div>
-                </div>
+                ) : (
+                  <div className='flex w-full py-4 border-b border-b-[0.5px] border-b-primary-white items-center'>
+                    <div className='poppins-light text-[16px]! text-primary-white! w-[40%] pr-4!'>
+                      {el.name} ({el.description})
+                    </div>
+                    <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
+                      {rowData?.numericValue ?? 'NA'}{' '}
+                      {rowData?.numericValue !== null ||
+                      rowData?.numericValue !== undefined
+                        ? suffix
+                        : ''}
+                    </div>
+                    <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
+                      <Badge
+                        rounded='full'
+                        className='poppins-medium py-0 text-[14px]! px-3!'
+                        style={{ backgroundColor: '#DADADA', color: '#000' }}
+                      >
+                        {rowData?.indicatorValue || 'NA'}
+                      </Badge>
+                    </div>
+                    <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
+                      {rowData?.bandData && (
+                        <>
+                          <strong>Low:</strong> {rowData.bandData.low_Min}
+                          {suffix || ''} - {rowData.bandData.low_Max}
+                          {suffix || ''}
+                          <br />
+                          <strong>Medium:</strong> {rowData.bandData.medium_Min}
+                          {suffix || ''} - {rowData.bandData.medium_Max}
+                          {suffix || ''}
+                          <br />
+                          <strong>High:</strong> {rowData.bandData.high_Min}
+                          {suffix || ''} - {rowData.bandData.high_Max}
+                          {suffix || ''}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -205,8 +207,8 @@ function Viz({
         </ParagraphText>
       </div>
       <Spacer size='8xl' />
-      <div className='flex items-center gap-4 w-full'>
-        <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
+      <div className='flex flex-col lg:flex-row items-start lg:items-center gap-4 w-full'>
+        <div className='flex flex-col gap-1 w-full lg:w-[calc(25%-0.75rem)] grow-1 lg:min-w-[240px]'>
           <Label className='text-primary-white'>Sub-pillar</Label>
           <DropdownSelect
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -225,7 +227,7 @@ function Viz({
             components={customDropdownComponents('light', false)}
           />
         </div>
-        <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
+        <div className='flex flex-col gap-1 w-full lg:w-[calc(25%-0.75rem)] grow-1 lg:min-w-[240px]'>
           <Label className='text-primary-white'>Year</Label>
           <DropdownSelect
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -244,7 +246,7 @@ function Viz({
             components={customDropdownComponents('light', false)}
           />
         </div>
-        <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
+        <div className='flex flex-col gap-1 w-full lg:w-[calc(25%-0.75rem)] grow-1 lg:min-w-[240px]'>
           <Label className='text-primary-white'>Market</Label>
           <DropdownSelect
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -278,7 +280,7 @@ function Viz({
             components={customDropdownComponents('light', false)}
           />
         </div>
-        <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
+        <div className='flex flex-col gap-1 w-full lg:w-[calc(25%-0.75rem)] grow-1 lg:min-w-[240px]'>
           <Label className='text-primary-white'>Contract value</Label>
           <DropdownSelect
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
