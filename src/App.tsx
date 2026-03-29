@@ -42,6 +42,7 @@ import {
   endTimeline,
 } from './logging/loadTimeLogger';
 import { useIsMobileBreakpoint } from './Utils/useIsMobileBreakpoint';
+import { DebugOverlay } from './Components/DebugOverlay';
 import { MobileHomepage } from './01-Homepage/MobileHomepage';
 import { MobileMainIndicatorPage } from './03-MainIndicator/MobileMainIndicatorPage';
 import { MobileCountryPage } from './02-CountryPage/MobileCountryPage';
@@ -170,6 +171,7 @@ function RootComponent() {
           indicatorsMetaData={indicatorsMetaData.data}
           indicatorsMetaDataLoading={indicatorsMetaData.isLoading}
         />
+        {isMobile && <DebugOverlay />}
       </div>
     </GlobalDataContext.Provider>
   );
@@ -287,8 +289,7 @@ function Country() {
     isoCode,
     countriesList: countriesListData || [],
     indicatorsMetaData,
-    selectedIndicator: (indicatorMetaData ||
-      'country-profile') as IndicatorsMetaDataType | 'country-profile',
+    selectedIndicator: indicatorMetaData || 'country-profile',
   };
 
   return isMobile ? (
