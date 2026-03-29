@@ -20,7 +20,6 @@ import DataTableSimple from '@/Components/DataTable/SecondaryTable';
 import { quantile } from '@/Utils/getQuantile';
 import EnterpriseSurveyMethodology from '@/Components/MethodologyBlocks/EnterpriseSurveyMethodology';
 import PublicProcurementMethodology from '@/Components/MethodologyBlocks/PublicProcurementMethodology';
-import { useIsMobileBreakpoint } from '@/Utils/useIsMobileBreakpoint';
 
 interface Props {
   indicatorMetaData: IndicatorsMetaDataType;
@@ -29,7 +28,6 @@ interface Props {
 }
 
 function Viz({ data, countriesList, indicatorMetaData }: Props) {
-  const isMobile = useIsMobileBreakpoint();
   const yearList = [...new Set(data.map(d => d.year))].sort((a, b) => b - a);
   const latestYear = yearList[0];
   const firstSubIndicator = indicatorMetaData.subIndicators[0];
@@ -48,9 +46,9 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
     });
   }, [firstSubIndicator]);
   return (
-    <div className='container mx-auto px-4 lg:px-0'>
-      <div className='flex flex-col lg:flex-row items-start lg:items-center gap-4 w-full'>
-        <div className='flex flex-col gap-1 w-full lg:w-[calc(25%-0.75rem)] grow-1 lg:min-w-[240px]'>
+    <div className='container mx-auto'>
+      <div className='flex items-center gap-4 w-full'>
+        <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
           <Label className='text-primary-white'>Sub-pillar</Label>
           <DropdownSelect
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,7 +67,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
             components={customDropdownComponents('light', false)}
           />
         </div>
-        <div className='flex flex-col gap-1 w-full lg:w-[calc(25%-0.75rem)] grow-1 lg:min-w-[240px]'>
+        <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
           <Label className='text-primary-white'>Year</Label>
           <DropdownSelect
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -228,7 +226,7 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                 d.numericValue !== null,
             ).length > 0 ? (
               <>
-                <div className={`flex flex-col gap-4 grow ${isMobile ? 'overflow-hidden' : 'radialGradientMask'}`}>
+                <div className='flex flex-col gap-4 grow radialGradientMask'>
                   <ThreeDGlobe
                     showColorScale={false}
                     polygonAltitude={0.005}

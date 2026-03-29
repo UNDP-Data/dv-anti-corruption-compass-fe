@@ -48,8 +48,8 @@ function Viz({ data, indicatorMetaData, suffix }: Props) {
         year={latestYear}
       />
       <Spacer size='8xl' />
-      <div className='flex flex-col lg:flex-row items-start lg:items-center gap-4 w-full'>
-        <div className='flex flex-col gap-1 w-full lg:w-[calc(25%-0.75rem)] grow-1 lg:min-w-[240px]'>
+      <div className='flex items-center gap-4 w-full'>
+        <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
           <Label className='text-primary-white'>Sub-pillar</Label>
           <DropdownSelect
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,7 +68,7 @@ function Viz({ data, indicatorMetaData, suffix }: Props) {
             components={customDropdownComponents('light', false)}
           />
         </div>
-        <div className='flex flex-col gap-1 w-full lg:w-[calc(25%-0.75rem)] grow-1 lg:min-w-[240px]'>
+        <div className='flex flex-col gap-1 w-[calc(25%-0.75rem)] grow-1 min-w-[240px]'>
           <Label className='text-primary-white'>Year</Label>
           <DropdownSelect
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
