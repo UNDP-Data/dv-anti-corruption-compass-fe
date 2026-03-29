@@ -67,13 +67,3 @@ main {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(25px);
 }
-
-.mobileApp .container {
-  max-width: 100%;
-  padding: 0 1.25rem;
-}
-
-.mobileApp main {
-  padding-top: 6rem;
-}
-
