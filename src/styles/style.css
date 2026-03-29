@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@import '@undp/data-viz/style.css';
+@import '@undp/design-system-react/style.css';
+@import 'tailwindcss';
+
+@config '../../tailwind.config.js';
+
+:root {
+  --color-black-bg: #537286;
+  --color-white-bg: #ffffff12;
+  --color-text-black: #2d4858;
+  --color-text-white: #fff;
+}
+
+body {
+  background: linear-gradient(
+    141.12deg,
+    #0f0f0f -2.91%,
+    #2d4351 44.74%,
+    #437390 95.34%,
+    #93dbff 119.46%
+  );
+  background-attachment: fixed;
+  min-height: 100vh;
+  margin: 0;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+.background-inherit,
+#root {
+  background: inherit;
+}
+
+.radialGradientMask {
+  mask-image: radial-gradient(circle, #2d4858 0%, transparent 80%);
+  --webkit-mask-image: radial-gradient(circle, #2d4858 0%, transparent 80%);
+}
+
+.donut-main-text {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 300 !important;
+  color: #fff;
+}
+
+.container-sm {
+  width: 100%;
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.container {
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 0 5rem;
+}
+
+.modal-overlay {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(25px);
+}
+
+.mobileApp .container {
+  max-width: 100%;
+  padding: 0 1.25rem;
+}
+
+.mobileApp main {
+  padding-top: 6rem;
+}
+
