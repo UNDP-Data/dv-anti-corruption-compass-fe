@@ -17,6 +17,25 @@ const isDev =
   typeof import.meta !== 'undefined' &&
   (import.meta as unknown as { env?: { DEV?: boolean } }).env?.DEV === true;
 
+const perfNow =
+  typeof performance !== 'undefined' && typeof performance.now === 'function'
+    ? () => performance.now()
+    : () => Date.now();
+
+/** Log duration for Indicators / Countries metadata fetches in development. */
+export function logGlobalApiTiming(label: string, durationMs: number): void {
+  if (!isDev) return;
+  console.info(`[Global API] ${label}: ${durationMs.toFixed(0)}ms`);
+}
+
+export function logGlobalApiTimingStart(): number {
+  return perfNow();
+}
+
+export function logGlobalApiTimingEnd(label: string, start: number): void {
+  logGlobalApiTiming(label, perfNow() - start);
+}
+
 /** Log Facts API response size in development to diagnose slow loading */
 export function logFactsPayloadSize(label: string, data: unknown): void {
   if (isDev && Array.isArray(data)) {

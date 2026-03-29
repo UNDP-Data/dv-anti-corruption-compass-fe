@@ -48,6 +48,7 @@ import { MobileCountryPage } from './02-CountryPage/MobileCountryPage';
 import { MobileCountriesListing } from './02-CountryPage/MobileCountriesListing';
 import { MobileMethodologyPage } from './04-Methodology/MobileMethodologyPage';
 import { MobileAboutUsPage } from './05-AboutUs/MobileAboutUsPage';
+import { DataSourcesDebugPage } from './Debug/DataSourcesDebugPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -365,6 +366,12 @@ const countriesRoute = createRoute({
   component: CountriesListing,
 });
 
+const dataSourcesDebugRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/debug/data-sources',
+  component: DataSourcesDebugPage,
+});
+
 const countryRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/countries/$isoCode/{-$indicator}',
@@ -378,6 +385,7 @@ const routeTree = rootRoute.addChildren([
   mainIndicatorRoute,
   countryRoute,
   countriesRoute,
+  dataSourcesDebugRoute,
 ]);
 
 const router = createRouter({ routeTree });

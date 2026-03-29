@@ -15,6 +15,8 @@ import GlobeComponent from './Components/GlobeComponent';
 import CountryLevelInsight from './Sections/CountryLevelInsight';
 import Introduction from './Sections/Introduction';
 
+import { getCountryDetailsFromISO3 } from '@undp-data/data-utils';
+
 import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
 import { HeadingText, ParagraphText } from '@/Components/Typography';
 import { ErrorState } from '@/Components/ErrorState';
@@ -32,6 +34,10 @@ import {
 } from '@/Utils/homepageFactsCache';
 import { getHomepageDefaultSubIndicatorId } from './homepagePreferredSubIndicators';
 import { useIsMobileBreakpoint } from '@/Utils/useIsMobileBreakpoint';
+
+const isDev =
+  typeof import.meta !== 'undefined' &&
+  (import.meta as unknown as { env?: { DEV?: boolean } }).env?.DEV === true;
 
 const getGlobeData = (data: DataType[]) => {
   const uniqueCountryCodes = [...new Set(data.map(d => d.countryCode))];
@@ -170,28 +176,39 @@ function HomepageEl({
   const globeData = factsLoaded ? getGlobeData(data) : safeCachedGlobeAvailability;
   logTimelinePhase('Computed globeData for homepage');
 
-  // DIAGNOSTIC LOGS — remove after confirming root cause
-  if (isMobile) {
-    console.group('[HomepageEl mobile] Globe data pipeline');
-    console.log('data.length (raw facts):', data.length);
-    console.log('factsLoaded:', factsLoaded);
-    console.log('safeCachedGlobeAvailability.length:', safeCachedGlobeAvailability.length);
-    console.log('globeData.length (post-compute):', globeData.length);
-    console.log('safeSelectedSubIndicator:', safeSelectedSubIndicator);
-    console.log(
-      'per-indicator filter results:',
-      safeIndicatorsMetaData.map((d, i) => {
-        const subIndicatorId = safeSelectedSubIndicator[i] || d.subIndicators[0]?.id;
-        const matches = globeData.filter(gd => gd.indicatorId === subIndicatorId).length;
-        return { indicator: d.name, subIndicatorId, globeDataMatches: matches };
-      }),
-    );
-    console.groupEnd();
-  }
   const activeSubIndicator =
     safeSelectedSubIndicator[inViewSlide] ||
     safeIndicatorsMetaData[inViewSlide]?.subIndicators?.[0]?.id ||
     safeIndicatorsMetaData[0]?.subIndicators?.[0]?.id;
+
+  useEffect(() => {
+    if (!isDev) return;
+    const filtered = globeData.filter(d => d.indicatorId === activeSubIndicator);
+    // eslint-disable-next-line no-console -- intentional dev-only diagnostics
+    console.info('[ACC dev] HomepageEl slide/subIndicator', {
+      inViewSlide,
+      activeSubIndicator,
+      factsLoaded,
+      factsLoading,
+      factsError,
+      countriesListLoading,
+      countriesListError,
+      countriesListCount: safeCountriesList.length,
+      globeDataTotal: globeData.length,
+      globeDataForActive: filtered.length,
+      sampleForActive: filtered.slice(0, 3),
+    });
+  }, [
+    inViewSlide,
+    activeSubIndicator,
+    factsLoaded,
+    factsLoading,
+    factsError,
+    countriesListLoading,
+    countriesListError,
+    safeCountriesList.length,
+    globeData,
+  ]);
 
   const updateYear = useEffectEvent(
     (inViewSlide: number, selectedId?: string) => {
@@ -427,6 +444,11 @@ function HomepageEl({
               selectedId={selectedId}
               setSelectedId={setSelectedId}
               setSelectedYear={setSelectedYear}
+              globeLoading={
+                (!factsLoaded && !factsError) ||
+                factsLoading ||
+                countriesListLoading
+              }
             />
           ) : null}
         </motion.div>
@@ -484,23 +506,59 @@ function HomepageEl({
               <X color='#2D4858' size={32} strokeWidth={1} />
             </div>
             <div className='w-full flex flex-col items-center'>
-              <img
-                alt='Country flag'
-                className='w-9 mb-3'
-                src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${safeCountriesList.find(d => d['Alpha-3 code'] === selectedId)?.['Alpha-2 code']}.svg`}
-              />
-              <ParagraphText
-                className='text-[var(--color-text-black)]'
-                alignment='center'
-                weight='semibold'
-                size='xl'
-              >
-                {
-                  safeCountriesList.find(el => el['Alpha-3 code'] === selectedId)?.[
-                    'Country or Area (official name)'
-                  ]
+              {(() => {
+                const fromList = safeCountriesList.find(
+                  el => el['Alpha-3 code'] === selectedId,
+                );
+                const fromUtils = getCountryDetailsFromISO3(selectedId);
+                const alpha2 =
+                  fromList?.['Alpha-2 code'] ?? fromUtils?.['Alpha-2 code'];
+                const countryTitle =
+                  fromList?.['Country or Area (official name)'] ??
+                  fromUtils?.['Country or Area (official name)'] ??
+                  selectedId;
+                const flagUrl = alpha2
+                  ? `http://purecatamphetamine.github.io/country-flag-icons/3x2/${alpha2}.svg`
+                  : null;
+
+                if (isDev) {
+                  // eslint-disable-next-line no-console -- intentional dev-only diagnostics
+                  console.info('[ACC dev] Country panel header data', {
+                    selectedId,
+                    countryTitle,
+                    alpha2,
+                    flagUrl,
+                    countriesListCount: safeCountriesList.length,
+                    hasFromUtils: Boolean(fromUtils),
+                    pageProtocol:
+                      typeof window !== 'undefined' ? window.location.protocol : '',
+                  });
                 }
-              </ParagraphText>
+                return (
+                  <>
+                    {alpha2 ? (
+                      <img
+                        alt=''
+                        className='w-9 mb-3'
+                        src={flagUrl as string}
+                      />
+                    ) : (
+                      <div
+                        className='w-9 h-6 mb-3 rounded bg-[#e8ecef] animate-pulse'
+                        aria-hidden
+                      />
+                    )}
+                    <ParagraphText
+                      className='text-[var(--color-text-black)]'
+                      alignment='center'
+                      weight='semibold'
+                      size='xl'
+                    >
+                      {countryTitle}
+                    </ParagraphText>
+                  </>
+                );
+              })()}
               <Spacer size='base' />
               <ParagraphText
                 className='text-[var(--color-text-black)]'
