@@ -34,15 +34,9 @@ import { ErrorState } from './Components/ErrorState';
 import MainIndicatorPageEl from './03-MainIndicator';
 import { getIndicatorsMetaData } from './QueryFn/getIndicatorsMetaData';
 import { getCountriesList } from './QueryFn/getCountriesList';
-import staticIndicatorsMetaData from '@/static/indicatorsMetaData.json';
-import staticCountriesList from '@/static/countriesList.json';
 import { HeadingText, ParagraphText } from './Components/Typography';
 import { Button } from './Components/Button';
-import {
-  startTimeline,
-  logTimelinePhase,
-  endTimeline,
-} from './logging/loadTimeLogger';
+import { startTimeline, logTimelinePhase } from './logging/loadTimeLogger';
 import { useIsMobileBreakpoint } from './Utils/useIsMobileBreakpoint';
 import { MobileHomepage } from './01-Homepage/MobileHomepage';
 import { MobileMainIndicatorPage } from './03-MainIndicator/MobileMainIndicatorPage';
@@ -51,6 +45,9 @@ import { MobileCountriesListing } from './02-CountryPage/MobileCountriesListing'
 import { MobileMethodologyPage } from './04-Methodology/MobileMethodologyPage';
 import { MobileAboutUsPage } from './05-AboutUs/MobileAboutUsPage';
 import { DataSourcesDebugPage } from './Debug/DataSourcesDebugPage';
+
+import staticCountriesList from '@/static/countriesList.json';
+import staticIndicatorsMetaData from '@/static/indicatorsMetaData.json';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -298,8 +295,9 @@ function Country() {
     isoCode,
     countriesList: countriesListData || [],
     indicatorsMetaData,
-    selectedIndicator: (indicatorMetaData ||
-      'country-profile') as IndicatorsMetaDataType | 'country-profile',
+    selectedIndicator: (indicatorMetaData || 'country-profile') as
+      | IndicatorsMetaDataType
+      | 'country-profile',
   };
 
   return isMobile ? (

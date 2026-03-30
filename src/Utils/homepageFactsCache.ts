@@ -45,4 +45,3 @@ export function saveHomepageFactsCache(input: {
     // ignore (private mode, quota exceeded, etc.)
   }
 }
-

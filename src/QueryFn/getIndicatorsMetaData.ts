@@ -1,7 +1,4 @@
-import {
-  logGlobalApiTimingEnd,
-  logGlobalApiTimingStart,
-} from '@/Constants';
+import { logGlobalApiTimingEnd, logGlobalApiTimingStart } from '@/Constants';
 
 export const getIndicatorsMetaData = async () => {
   const start = logGlobalApiTimingStart();

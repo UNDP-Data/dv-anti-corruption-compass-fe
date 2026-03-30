@@ -4,4 +4,3 @@ export function MobileAboutUsPage() {
   // Reuse desktop content; layout is controlled by the `.mobileApp` wrapper.
   return <AboutUsPage />;
 }
-

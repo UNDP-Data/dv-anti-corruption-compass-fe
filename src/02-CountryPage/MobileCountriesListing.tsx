@@ -1,16 +1,19 @@
 import { Spacer } from '@undp/design-system-react/Spacer';
 import { Link } from '@tanstack/react-router';
+import { useState } from 'react';
 
 import { CountriesDataType } from '@/Types';
 import { HeadingText, ParagraphText } from '@/Components/Typography';
-import { useState } from 'react';
 
 type Props = {
   countriesListData: CountriesDataType[];
   alphabets: string[];
 };
 
-export function MobileCountriesListing({ countriesListData, alphabets }: Props) {
+export function MobileCountriesListing({
+  countriesListData,
+  alphabets,
+}: Props) {
   const [search, setSearch] = useState('');
 
   const filtered = countriesListData.filter(country => {
@@ -70,4 +73,3 @@ export function MobileCountriesListing({ countriesListData, alphabets }: Props) 
     </div>
   );
 }
-

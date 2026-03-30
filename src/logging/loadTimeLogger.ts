@@ -20,8 +20,7 @@ export function startTimeline(name: string): void {
   if (!isDev) return;
   const t = now();
   currentTimeline = { name, start: t, last: t };
-  // Use console.log so it isn't filtered out with info/debug
-  console.log(`[Timeline] ${name}: START (t=${t.toFixed(1)}ms)`);
+  console.warn(`[Timeline] ${name}: START (t=${t.toFixed(1)}ms)`);
 }
 
 /** Log a phase within the current UI timeline. */
@@ -32,7 +31,7 @@ export function logTimelinePhase(phase: string): void {
   const fromStart = t - start;
   const fromPrev = t - last;
   currentTimeline.last = t;
-  console.log(
+  console.warn(
     `[Timeline] ${name}: ${phase} (+${fromStart.toFixed(
       1,
     )}ms from start, +${fromPrev.toFixed(1)}ms from prev)`,
@@ -45,7 +44,7 @@ export function endTimeline(finalPhase = 'complete'): void {
   const t = now();
   const { name, start } = currentTimeline;
   const total = t - start;
-  console.log(
+  console.warn(
     `[Timeline] ${name}: END (${finalPhase}) total=${total.toFixed(1)}ms`,
   );
   currentTimeline = null;
@@ -82,13 +81,13 @@ export function logResourceSummary(
     .slice(0, limit);
 
   if (!slowest.length) {
-    console.log(
+    console.warn(
       `[Resources] ${label}: no resources slower than ${minDurationMs}ms`,
     );
     return;
   }
 
-  console.log(
+  console.warn(
     `[Resources] ${label}: top ${slowest.length} resources >= ${minDurationMs}ms`,
   );
   slowest.forEach(e => {
@@ -96,12 +95,10 @@ export function logResourceSummary(
       'transferSize' in e && typeof e.transferSize === 'number'
         ? `${(e.transferSize / 1024).toFixed(1)}KB`
         : 'n/a';
-    console.log(
+    console.warn(
       `[Resources] ${label}: ${e.initiatorType} ${e.name} duration=${e.duration.toFixed(
         1,
       )}ms size=${size}`,
     );
   });
 }
-
-

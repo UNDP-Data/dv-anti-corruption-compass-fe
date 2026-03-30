@@ -5,7 +5,9 @@ const DESKTOP_MIN_WIDTH = 1024;
 
 export function useIsMobileBreakpoint() {
   const [isMobile, setIsMobile] = useState(() =>
-    typeof window === 'undefined' ? false : window.innerWidth < DESKTOP_MIN_WIDTH,
+    typeof window === 'undefined'
+      ? false
+      : window.innerWidth < DESKTOP_MIN_WIDTH,
   );
 
   useEffect(() => {
@@ -22,4 +24,3 @@ export function useIsMobileBreakpoint() {
 
   return isMobile;
 }
-

@@ -25,7 +25,7 @@ const perfNow =
 /** Log duration for Indicators / Countries metadata fetches in development. */
 export function logGlobalApiTiming(label: string, durationMs: number): void {
   if (!isDev) return;
-  console.info(`[Global API] ${label}: ${durationMs.toFixed(0)}ms`);
+  console.warn(`[Global API] ${label}: ${durationMs.toFixed(0)}ms`);
 }
 
 export function logGlobalApiTimingStart(): number {
@@ -41,7 +41,7 @@ export function logFactsPayloadSize(label: string, data: unknown): void {
   if (isDev && Array.isArray(data)) {
     const bytes = new Blob([JSON.stringify(data)]).size;
     const mb = (bytes / 1024 / 1024).toFixed(2);
-    console.info(`[Facts API] ${label}: ${data.length} items, ~${mb} MB`);
+    console.warn(`[Facts API] ${label}: ${data.length} items, ~${mb} MB`);
   }
 }
 
@@ -52,24 +52,19 @@ export function logFactsLoadStart(label: string): number | null {
     typeof performance !== 'undefined' && typeof performance.now === 'function'
       ? performance.now()
       : Date.now();
-  console.info(
-    `[Facts API] START ${label} at ${new Date().toISOString()}`,
-  );
+  console.warn(`[Facts API] START ${label} at ${new Date().toISOString()}`);
   return start;
 }
 
 /** Log end time and duration for a Facts API request in development. */
-export function logFactsLoadEnd(
-  label: string,
-  start: number | null,
-): void {
+export function logFactsLoadEnd(label: string, start: number | null): void {
   if (!isDev || start == null) return;
   const end =
     typeof performance !== 'undefined' && typeof performance.now === 'function'
       ? performance.now()
       : Date.now();
   const durationMs = end - start;
-  console.info(
+  console.warn(
     `[Facts API] END ${label} at ${new Date().toISOString()} (+${durationMs.toFixed(
       0,
     )} ms)`,

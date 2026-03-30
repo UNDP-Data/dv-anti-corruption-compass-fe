@@ -50,4 +50,3 @@ export function getHomepageDefaultSubIndicatorId(
 
   return indicator.subIndicators[0]?.id;
 }
-

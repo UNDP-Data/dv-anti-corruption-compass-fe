@@ -11,7 +11,6 @@ import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
 import { ErrorState } from '@/Components/ErrorState';
 import { getIndicatorData } from '@/QueryFn/getIndicatorData';
 import { ParagraphText } from '@/Components/Typography';
-
 import seededStageAFacts from '@/static/factsStageA.json';
 
 interface Props {
@@ -25,7 +24,10 @@ const seededFactsStageAData = seededStageAFacts as unknown as DataType[];
 
 function useIndicatorData(indicatorId: number) {
   const seeded = useMemo(() => {
-    if (!Array.isArray(seededFactsStageAData) || seededFactsStageAData.length === 0)
+    if (
+      !Array.isArray(seededFactsStageAData) ||
+      seededFactsStageAData.length === 0
+    )
       return [] as DataType[];
     // Seed quickly from bundled facts (subset) so the page can render immediately,
     // then React Query will refetch full `/Facts?mainIndicatorId=...` in background.

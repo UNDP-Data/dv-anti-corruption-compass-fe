@@ -7,19 +7,22 @@ import Viz from './Viz';
 import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
 import { getCountryData } from '@/QueryFn/getCountryData';
 import { ErrorState } from '@/Components/ErrorState';
-
 import seededStageAFacts from '@/static/factsStageA.json';
 
 const seededFactsStageAData = seededStageAFacts as unknown as DataType[];
 
 function useDataForCountry(countryCode: string, mainIndicatorId: number) {
   const seeded = useMemo(() => {
-    if (!Array.isArray(seededFactsStageAData) || seededFactsStageAData.length === 0)
+    if (
+      !Array.isArray(seededFactsStageAData) ||
+      seededFactsStageAData.length === 0
+    )
       return [] as DataType[];
     // Seed quickly from bundled facts (subset) so the page can render immediately,
     // then React Query will refetch the full country payload in background.
     return seededFactsStageAData.filter(
-      d => d.countryCode === countryCode && d.mainIndicatorId === mainIndicatorId,
+      d =>
+        d.countryCode === countryCode && d.mainIndicatorId === mainIndicatorId,
     );
   }, [countryCode, mainIndicatorId]);
 

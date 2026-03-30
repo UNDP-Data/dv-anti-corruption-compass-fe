@@ -24,7 +24,6 @@ import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
 import { customDropdownComponents } from '@/Utils/DropdownComponents';
 import { getFactsPage } from '@/QueryFn/getFactsPage';
 import { useIsMobileBreakpoint } from '@/Utils/useIsMobileBreakpoint';
-
 import seededFactsStageA from '@/static/factsStageA.json';
 
 interface Props {
@@ -44,12 +43,18 @@ function yearsList(): { value: number; label: number }[] {
   return years;
 }
 
-function parseCombinedId(id: string): { mainIndicatorId: number; subIndicatorId: number } {
+function parseCombinedId(id: string): {
+  mainIndicatorId: number;
+  subIndicatorId: number;
+} {
   const [m, s] = id.split('_');
   return { mainIndicatorId: parseInt(m, 10), subIndicatorId: parseInt(s, 10) };
 }
 
-export function PagedDataTableWithFilters({ indicatorsMetaData, countriesList }: Props) {
+export function PagedDataTableWithFilters({
+  indicatorsMetaData,
+  countriesList,
+}: Props) {
   const isMobile = useIsMobileBreakpoint();
   const subIndicators = indicatorsMetaData.map(d => d.subIndicators).flat();
 
@@ -317,9 +322,7 @@ export function PagedDataTableWithFilters({ indicatorsMetaData, countriesList }:
           {rows.map((el, i) => {
             const tagColors =
               subIndicators
-                .find(
-                  d => `${d.mainIndicatorId}_${d.subIndicatorId}` === el.id,
-                )
+                .find(d => `${d.mainIndicatorId}_${d.subIndicatorId}` === el.id)
                 ?.colors?.split(',') || [];
 
             const countryName =
@@ -456,4 +459,3 @@ export function PagedDataTableWithFilters({ indicatorsMetaData, countriesList }:
     </div>
   );
 }
-

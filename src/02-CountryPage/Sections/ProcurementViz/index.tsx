@@ -9,7 +9,6 @@ import { getCountryData } from '@/QueryFn/getCountryData';
 import { ErrorState } from '@/Components/ErrorState';
 import { getMarkets } from '@/QueryFn/getMarkets';
 import { getRegionList } from '@/QueryFn/getRegionList';
-
 import seededStageAFacts from '@/static/factsStageA.json';
 import seededProductMarkets from '@/static/productMarkets.json';
 
@@ -17,10 +16,14 @@ const seededFactsStageAData = seededStageAFacts as unknown as DataType[];
 
 function useDataForCountry(countryCode: string, mainIndicatorId: number) {
   const seededCountryFacts = useMemo(() => {
-    if (!Array.isArray(seededFactsStageAData) || seededFactsStageAData.length === 0)
+    if (
+      !Array.isArray(seededFactsStageAData) ||
+      seededFactsStageAData.length === 0
+    )
       return [] as DataType[];
     return seededFactsStageAData.filter(
-      d => d.countryCode === countryCode && d.mainIndicatorId === mainIndicatorId,
+      d =>
+        d.countryCode === countryCode && d.mainIndicatorId === mainIndicatorId,
     );
   }, [countryCode, mainIndicatorId]);
 
@@ -38,7 +41,12 @@ function useDataForCountry(countryCode: string, mainIndicatorId: number) {
   const marketList = useQuery({
     queryKey: ['marketList'],
     queryFn: getMarkets,
-    initialData: seededProductMarkets as unknown as { productMarketId: number; mainIndicatorId: number; name: string; description: string | null }[],
+    initialData: seededProductMarkets as unknown as {
+      productMarketId: number;
+      mainIndicatorId: number;
+      name: string;
+      description: string | null;
+    }[],
     initialDataUpdatedAt: 0,
   });
   const regionList = useQuery({

@@ -1,4 +1,5 @@
 import MainIndicatorPageEl from './index';
+
 import { CountriesDataType, IndicatorsMetaDataType } from '@/Types';
 
 type Props = {
@@ -13,4 +14,3 @@ export function MobileMainIndicatorPage(props: Props) {
   // Mobile-specific layout refinements can be layered on via the `.mobileApp` scope.
   return <MainIndicatorPageEl {...props} />;
 }
-

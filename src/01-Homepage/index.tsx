@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 
 import HomepageEl from './HomepageEl';
+import { useIncrementalHomepageFacts } from './useIncrementalHomepageFacts';
 
 import { CountriesDataType, IndicatorsMetaDataType } from '@/Types';
-import { useIncrementalHomepageFacts } from './useIncrementalHomepageFacts';
 
 const isDev =
   typeof import.meta !== 'undefined' &&
@@ -46,8 +46,7 @@ function Homepage({
       globeAvailabilityCount: globeAvailability.length,
       globeAvailabilitySample: globeAvailability.slice(0, 5),
     };
-    // eslint-disable-next-line no-console -- intentional dev-only API snapshot
-    console.info(
+    console.warn(
       '[ACC dev] Homepage first-load snapshot (JSON)\n',
       JSON.stringify(snapshot, null, 2),
     );

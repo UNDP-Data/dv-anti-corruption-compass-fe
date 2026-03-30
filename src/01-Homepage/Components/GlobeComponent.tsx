@@ -51,8 +51,7 @@ function GlobeComponent({
   ).length;
 
   if (isDev) {
-    // eslint-disable-next-line no-console -- intentional dev-only diagnostics
-    console.info('[ACC dev] GlobeComponent render', {
+    console.warn('[ACC dev] GlobeComponent render', {
       globeLoading,
       rotate,
       selectedSubIndicator,
@@ -108,8 +107,7 @@ function GlobeComponent({
               selectedId={selectedId}
               onSeriesMouseClick={d => {
                 if (isDev) {
-                  // eslint-disable-next-line no-console -- intentional dev-only diagnostics
-                  console.info('[ACC dev] Globe click', {
+                  console.warn('[ACC dev] Globe click', {
                     clickedId: d?.id,
                     clickedYear: d?.data?.year,
                     selectedSubIndicator,
@@ -159,7 +157,6 @@ function GlobeComponent({
                   fromUtils?.['Country or Area (official name)'];
 
                 if (isDev && !title) {
-                  // eslint-disable-next-line no-console -- intentional dev-only diagnostics
                   console.warn('[ACC dev] Globe tooltip missing title', {
                     hoveredId: d?.id,
                     countriesListCount: countriesList?.length ?? 0,

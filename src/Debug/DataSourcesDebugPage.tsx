@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Spacer } from '@undp/design-system-react/Spacer';
 import { getCountryDetailsFromISO3 } from '@undp-data/data-utils';
@@ -36,7 +36,8 @@ const DATA_FLOW_ROWS: ApiBlock[] = [
       'HTTP GET → getIndicatorsMetaData → useQuery in useGlobalData (App.tsx) → GlobalDataContext → Index route → Homepage → HomepageEl (pillar names, colors, sub-indicators) → GlobeComponent (colors, fog), charts, navigation',
     uiUsage:
       'Defines pillar tabs, sub-indicator chips, globe accent colors, and which indicators exist.',
-    exampleNote: 'Array of pillars; each has subIndicators with id like "3_12", colors, names.',
+    exampleNote:
+      'Array of pillars; each has subIndicators with id like "3_12", colors, names.',
   },
   {
     title: 'Countries list',
@@ -46,7 +47,8 @@ const DATA_FLOW_ROWS: ApiBlock[] = [
       'HTTP GET → getCountriesList → useQuery → enriched via getCountryDetailsFromISO3 → GlobalDataContext → Homepage → HomepageEl → GlobeComponent tooltip names, CountryLevelInsight',
     uiUsage:
       'Country names on globe tooltips, country insights section, header search, country links.',
-    exampleNote: 'Rows with Alpha-3 code, official name, region groups, lat/long, etc.',
+    exampleNote:
+      'Rows with Alpha-3 code, official name, region groups, lat/long, etc.',
   },
   {
     title: 'Facts (paginated)',
@@ -121,10 +123,6 @@ export function DataSourcesDebugPage() {
   const countriesListLoading = countriesQuery.isLoading;
   const countriesListError = countriesQuery.isError;
 
-  const [factsSample, setFactsSample] = useState<unknown>(null);
-  const [factsSampleError, setFactsSampleError] = useState<string | null>(null);
-  const [factsLoading, setFactsLoading] = useState(false);
-
   const [directIndicators, setDirectIndicators] = useState<unknown>(null);
   const [directCountries, setDirectCountries] = useState<unknown>(null);
   const [directLoading, setDirectLoading] = useState(false);
@@ -132,33 +130,32 @@ export function DataSourcesDebugPage() {
 
   const firstSub = indicatorsMetaData[0]?.subIndicators?.[0];
 
-  useEffect(() => {
-    if (!firstSub) return;
-    let cancelled = false;
-    setFactsLoading(true);
-    setFactsSampleError(null);
-    getFactsPage({
-      mainIndicatorId: firstSub.mainIndicatorId,
-      subIndicatorId: firstSub.subIndicatorId,
-      regionId: null,
-      productMarketId: null,
-      page: 1,
-      pageSize: 5,
-    })
-      .then(data => {
-        if (!cancelled) setFactsSample(data);
-      })
-      .catch(e => {
-        if (!cancelled)
-          setFactsSampleError(e instanceof Error ? e.message : 'Request failed');
-      })
-      .finally(() => {
-        if (!cancelled) setFactsLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [firstSub]);
+  const factsSampleQuery = useQuery({
+    queryKey: [
+      'factsSample',
+      firstSub?.mainIndicatorId,
+      firstSub?.subIndicatorId,
+    ],
+    enabled: Boolean(firstSub),
+    retry: false,
+    queryFn: () =>
+      getFactsPage({
+        mainIndicatorId: firstSub!.mainIndicatorId,
+        subIndicatorId: firstSub!.subIndicatorId,
+        regionId: null,
+        productMarketId: null,
+        page: 1,
+        pageSize: 5,
+      }),
+  });
+
+  const factsSample = factsSampleQuery.data ?? null;
+  const factsLoading = factsSampleQuery.isLoading;
+  const factsSampleError = factsSampleQuery.isError
+    ? factsSampleQuery.error instanceof Error
+      ? factsSampleQuery.error.message
+      : 'Request failed'
+    : null;
 
   const loadDirectApis = () => {
     setDirectLoading(true);
@@ -204,8 +201,8 @@ export function DataSourcesDebugPage() {
       <Spacer size='base' />
       <ParagraphText className='opacity-90'>
         Development reference: which HTTP endpoints feed the first screen, which
-        functions wrap them, how data flows into components, and where it appears
-        in the UI. Raw JSON below is for inspection only.
+        functions wrap them, how data flows into components, and where it
+        appears in the UI. Raw JSON below is for inspection only.
       </ParagraphText>
       <Spacer size='xl' />
 
@@ -246,7 +243,9 @@ export function DataSourcesDebugPage() {
       </ParagraphText>
 
       <Spacer size='3xl' />
-      <HeadingText type='h2'>Live context snapshot (homepage global data)</HeadingText>
+      <HeadingText type='h2'>
+        Live context snapshot (homepage global data)
+      </HeadingText>
       <Spacer size='base' />
       <JsonBlock
         label='React Query snapshot (same keys as App: indicatorsMetaData, countriesList)'
@@ -270,17 +269,20 @@ export function DataSourcesDebugPage() {
         {directLoading ? 'Loading…' : 'Fetch Indicators + Countries (direct)'}
       </button>
       {directError ? (
-        <ParagraphText className='text-red-300 mb-4'>{directError}</ParagraphText>
+        <ParagraphText className='text-red-300 mb-4'>
+          {directError}
+        </ParagraphText>
       ) : null}
       {directIndicators !== null ? (
         <JsonBlock
-          label={`getIndicatorsMetaData() — raw (truncated display if huge)`}
+          label='getIndicatorsMetaData() — raw (truncated display if huge)'
           value={
             Array.isArray(directIndicators) && directIndicators.length > 2
               ? {
                   _length: directIndicators.length,
                   firstTwo: directIndicators.slice(0, 2),
-                  _note: 'Full array is large; open Network tab for complete response.',
+                  _note:
+                    'Full array is large; open Network tab for complete response.',
                 }
               : directIndicators
           }
@@ -288,13 +290,14 @@ export function DataSourcesDebugPage() {
       ) : null}
       {directCountries !== null ? (
         <JsonBlock
-          label={`getCountriesList() — raw (truncated display if huge)`}
+          label='getCountriesList() — raw (truncated display if huge)'
           value={
             Array.isArray(directCountries) && directCountries.length > 3
               ? {
                   _length: directCountries.length,
                   firstThree: directCountries.slice(0, 3),
-                  _note: 'Full array is large; open Network tab for complete response.',
+                  _note:
+                    'Full array is large; open Network tab for complete response.',
                 }
               : directCountries
           }
@@ -308,10 +311,14 @@ export function DataSourcesDebugPage() {
           : '(waiting for indicators metadata)'}
       </ParagraphText>
       {factsLoading ? (
-        <ParagraphText className='opacity-70'>Loading facts sample…</ParagraphText>
+        <ParagraphText className='opacity-70'>
+          Loading facts sample…
+        </ParagraphText>
       ) : null}
       {factsSampleError ? (
-        <ParagraphText className='text-red-300'>{factsSampleError}</ParagraphText>
+        <ParagraphText className='text-red-300'>
+          {factsSampleError}
+        </ParagraphText>
       ) : null}
       {factsSample !== null && !factsLoading ? (
         <JsonBlock label='getFactsPage response' value={factsSample} />

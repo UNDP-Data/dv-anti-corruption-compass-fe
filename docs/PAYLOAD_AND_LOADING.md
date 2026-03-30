@@ -6,12 +6,12 @@ Slow initial load is likely caused by **large Facts API payloads**. All Facts re
 
 ## Where the size comes from
 
-| Call | File | Filters | Risk |
-|------|------|---------|------|
-| **getAllCountriesAllData** | `getAllCountriesAllData.ts` | None (`regionId=null`, `productMarketId=null` only) | **Highest** – used on homepage; one request for all facts. |
-| getIndicatorData | `getIndicatorData.ts` | `mainIndicatorId` | High – up to 10k rows per indicator. |
-| getCountryData | `getCountryData.ts` | `countryCode`, `mainIndicatorId` | Medium. |
-| getRegionalDataForCountry | `getRegionalDataForCountry.ts` | country, subIndicator, year, productMarket, mainIndicator | Lower – now uses smaller page size (1000). |
+| Call                       | File                           | Filters                                                   | Risk                                                       |
+| -------------------------- | ------------------------------ | --------------------------------------------------------- | ---------------------------------------------------------- |
+| **getAllCountriesAllData** | `getAllCountriesAllData.ts`    | None (`regionId=null`, `productMarketId=null` only)       | **Highest** – used on homepage; one request for all facts. |
+| getIndicatorData           | `getIndicatorData.ts`          | `mainIndicatorId`                                         | High – up to 10k rows per indicator.                       |
+| getCountryData             | `getCountryData.ts`            | `countryCode`, `mainIndicatorId`                          | Medium.                                                    |
+| getRegionalDataForCountry  | `getRegionalDataForCountry.ts` | country, subIndicator, year, productMarket, mainIndicator | Lower – now uses smaller page size (1000).                 |
 
 ## How to confirm
 

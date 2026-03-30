@@ -51,13 +51,18 @@ function DataTableSimple({ data, colors = [], countriesList, suffix }: Props) {
                 const badgeBg = !el.indicatorValue
                   ? '#DADADA'
                   : ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue) !== -1
-                    ? colors[['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue)]
+                    ? colors[
+                        ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue)
+                      ]
                     : '#DADADA';
                 const badgeColor = !el.indicatorValue
                   ? '#000'
                   : getTextColorBasedOnBgColor(
-                      ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue) !== -1
-                        ? colors[['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue)]
+                      ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue) !==
+                        -1
+                        ? colors[
+                            ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue)
+                          ]
                         : '#DADADA',
                     );
                 const valueStr =
@@ -85,7 +90,10 @@ function DataTableSimple({ data, colors = [], countriesList, suffix }: Props) {
                           <Badge
                             rounded='full'
                             className='poppins-medium py-0 text-[11px]! px-2!'
-                            style={{ backgroundColor: badgeBg, color: badgeColor }}
+                            style={{
+                              backgroundColor: badgeBg,
+                              color: badgeColor,
+                            }}
                           >
                             {el.indicatorValue || 'NA'}
                           </Badge>
@@ -103,7 +111,10 @@ function DataTableSimple({ data, colors = [], countriesList, suffix }: Props) {
                           <Badge
                             rounded='full'
                             className='poppins-medium py-0 text-[12px]! px-3!'
-                            style={{ backgroundColor: badgeBg, color: badgeColor }}
+                            style={{
+                              backgroundColor: badgeBg,
+                              color: badgeColor,
+                            }}
                           >
                             {el.indicatorValue || 'NA'}
                           </Badge>

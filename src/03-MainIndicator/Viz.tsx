@@ -228,7 +228,9 @@ function Viz({ data, countriesList, indicatorMetaData }: Props) {
                 d.numericValue !== null,
             ).length > 0 ? (
               <>
-                <div className={`flex flex-col gap-4 grow ${isMobile ? 'overflow-hidden' : 'radialGradientMask'}`}>
+                <div
+                  className={`flex flex-col gap-4 grow ${isMobile ? 'overflow-hidden' : 'radialGradientMask'}`}
+                >
                   <ThreeDGlobe
                     showColorScale={false}
                     polygonAltitude={0.005}

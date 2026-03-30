@@ -8,14 +8,14 @@ import { Link } from '@tanstack/react-router';
 import * as THREE from 'three';
 import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
+import { getCountryDetailsFromISO3 } from '@undp-data/data-utils';
 
 import GlobeControls from './Components/GlobeControls';
 import Navigation from './Components/Navigation';
 import GlobeComponent from './Components/GlobeComponent';
 import CountryLevelInsight from './Sections/CountryLevelInsight';
 import Introduction from './Sections/Introduction';
-
-import { getCountryDetailsFromISO3 } from '@undp-data/data-utils';
+import { getHomepageDefaultSubIndicatorId } from './homepagePreferredSubIndicators';
 
 import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
 import { HeadingText, ParagraphText } from '@/Components/Typography';
@@ -32,7 +32,6 @@ import {
   HomepageCountriesYes,
   HomepageGlobeAvailability,
 } from '@/Utils/homepageFactsCache';
-import { getHomepageDefaultSubIndicatorId } from './homepagePreferredSubIndicators';
 import { useIsMobileBreakpoint } from '@/Utils/useIsMobileBreakpoint';
 
 const isDev =
@@ -109,7 +108,9 @@ function HomepageEl({
   const [inViewSlide, setInViewSlide] = useState<number>(0);
   const [selectedSubIndicators, setSelectedSubIndicators] = useState<string[]>(
     [...new Set(safeIndicatorsMetaData.map(d => d.mainIndicatorId))].map(d => {
-      const indicator = safeIndicatorsMetaData.find(el => el.mainIndicatorId === d);
+      const indicator = safeIndicatorsMetaData.find(
+        el => el.mainIndicatorId === d,
+      );
       return indicator ? getHomepageDefaultSubIndicatorId(indicator) : '';
     }),
   );
@@ -173,7 +174,9 @@ function HomepageEl({
   }, [pillarVisualizationOpacity]);
 
   const factsLoaded = data.length !== 0;
-  const globeData = factsLoaded ? getGlobeData(data) : safeCachedGlobeAvailability;
+  const globeData = factsLoaded
+    ? getGlobeData(data)
+    : safeCachedGlobeAvailability;
   logTimelinePhase('Computed globeData for homepage');
 
   const activeSubIndicator =
@@ -183,9 +186,10 @@ function HomepageEl({
 
   useEffect(() => {
     if (!isDev) return;
-    const filtered = globeData.filter(d => d.indicatorId === activeSubIndicator);
-    // eslint-disable-next-line no-console -- intentional dev-only diagnostics
-    console.info('[ACC dev] HomepageEl slide/subIndicator', {
+    const filtered = globeData.filter(
+      d => d.indicatorId === activeSubIndicator,
+    );
+    console.warn('[ACC dev] HomepageEl slide/subIndicator', {
       inViewSlide,
       activeSubIndicator,
       factsLoaded,
@@ -234,7 +238,6 @@ function HomepageEl({
     logResourceSummary('Homepage', { minDurationMs: 50, limit: 30 });
     endTimeline('HomepageEl initial render complete');
     // We only want to log once on initial mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -242,7 +245,9 @@ function HomepageEl({
       {showNavigation && (
         <Navigation
           inViewSlide={
-            countryLevelInsightsInView ? safeIndicatorsMetaData.length : inViewSlide
+            countryLevelInsightsInView
+              ? safeIndicatorsMetaData.length
+              : inViewSlide
           }
           globeControlsRef={globeControlsRef}
           countryLevelInsightsRef={countryLevelInsightsRef}
@@ -274,7 +279,9 @@ function HomepageEl({
             }
             pillarVisualizationRef={pillarVisualizationRef}
             countryLevelInsightsRef={countryLevelInsightsRef}
-            indicatorsMetaData={safeIndicatorsMetaData.filter(d => !d.comingSoon)}
+            indicatorsMetaData={safeIndicatorsMetaData.filter(
+              d => !d.comingSoon,
+            )}
             globeControlsRef={globeControlsRef}
           />
         </div>
@@ -299,7 +306,9 @@ function HomepageEl({
             }
             pillarVisualizationRef={pillarVisualizationRef}
             countryLevelInsightsRef={countryLevelInsightsRef}
-            indicatorsMetaData={safeIndicatorsMetaData.filter(d => !d.comingSoon)}
+            indicatorsMetaData={safeIndicatorsMetaData.filter(
+              d => !d.comingSoon,
+            )}
             globeControlsRef={globeControlsRef}
           />
         </motion.div>
@@ -436,7 +445,9 @@ function HomepageEl({
               selectedSubIndicator={activeSubIndicator}
               countriesList={countriesListLoading ? [] : safeCountriesList}
               inViewSlide={inViewSlide}
-              rotate={inViewSlide < safeIndicatorsMetaData.length ? true : false}
+              rotate={
+                inViewSlide < safeIndicatorsMetaData.length ? true : false
+              }
               indicatorsMetaData={safeIndicatorsMetaData}
               selectedIndicator={
                 safeIndicatorsMetaData[inViewSlide] || safeIndicatorsMetaData[0]
@@ -522,8 +533,7 @@ function HomepageEl({
                   : null;
 
                 if (isDev) {
-                  // eslint-disable-next-line no-console -- intentional dev-only diagnostics
-                  console.info('[ACC dev] Country panel header data', {
+                  console.warn('[ACC dev] Country panel header data', {
                     selectedId,
                     countryTitle,
                     alpha2,
@@ -531,7 +541,9 @@ function HomepageEl({
                     countriesListCount: safeCountriesList.length,
                     hasFromUtils: Boolean(fromUtils),
                     pageProtocol:
-                      typeof window !== 'undefined' ? window.location.protocol : '',
+                      typeof window !== 'undefined'
+                        ? window.location.protocol
+                        : '',
                   });
                 }
                 return (
@@ -582,7 +594,9 @@ function HomepageEl({
                           d.year === selectedYear &&
                           d.countryCode === selectedId &&
                           `${d.mainIndicatorId}` ===
-                            safeSelectedSubIndicator[inViewSlide].split('_')[0] &&
+                            safeSelectedSubIndicator[inViewSlide].split(
+                              '_',
+                            )[0] &&
                           d.contractValue === 'ALL',
                       )
                       .map(d => ({ value: d.numericValue, id: d.id }))}

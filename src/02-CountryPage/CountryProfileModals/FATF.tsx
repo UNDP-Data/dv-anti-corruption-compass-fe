@@ -45,13 +45,28 @@ function FATF({ isoCode }: Props) {
         <>
           {!isMobile && (
             <div className='flex border-b-[#000] pb-2 border-b'>
-              <ParagraphText weight='semibold' size='sm' marginBottom='none' className='text-[var(--color-text-black)] w-[60%]'>
+              <ParagraphText
+                weight='semibold'
+                size='sm'
+                marginBottom='none'
+                className='text-[var(--color-text-black)] w-[60%]'
+              >
                 Country
               </ParagraphText>
-              <ParagraphText weight='semibold' size='sm' marginBottom='none' className='text-[var(--color-text-black)] w-[20%] pr-4'>
+              <ParagraphText
+                weight='semibold'
+                size='sm'
+                marginBottom='none'
+                className='text-[var(--color-text-black)] w-[20%] pr-4'
+              >
                 FATF Status
               </ParagraphText>
-              <ParagraphText weight='semibold' size='sm' marginBottom='none' className='text-[var(--color-text-black)] w-[20%]'>
+              <ParagraphText
+                weight='semibold'
+                size='sm'
+                marginBottom='none'
+                className='text-[var(--color-text-black)] w-[20%]'
+              >
                 Updated
               </ParagraphText>
             </div>
@@ -59,24 +74,49 @@ function FATF({ isoCode }: Props) {
           {countryData.map((d: any, i: number) =>
             isMobile ? (
               <div className='py-3 border-b border-b-[#0000004D]' key={i}>
-                <ParagraphText weight='medium' size='sm' marginBottom='none' className='text-[var(--color-text-black)]'>
+                <ParagraphText
+                  weight='medium'
+                  size='sm'
+                  marginBottom='none'
+                  className='text-[var(--color-text-black)]'
+                >
                   {d['Country']}
                 </ParagraphText>
                 <div className='flex items-center gap-2 mt-1'>
-                  <ParagraphText weight='regular' size='xs' marginBottom='none' className='text-[var(--color-text-black)] opacity-60'>
+                  <ParagraphText
+                    weight='regular'
+                    size='xs'
+                    marginBottom='none'
+                    className='text-[var(--color-text-black)] opacity-60'
+                  >
                     {d['Classification (Black list, Grey list)']} · {d.Year}
                   </ParagraphText>
                 </div>
               </div>
             ) : (
               <div className='flex border-b-[#0000004D] py-3 border-b' key={i}>
-                <ParagraphText weight='regular' size='sm' marginBottom='none' className='text-[var(--color-text-black)] w-[60%] pr-4'>
+                <ParagraphText
+                  weight='regular'
+                  size='sm'
+                  marginBottom='none'
+                  className='text-[var(--color-text-black)] w-[60%] pr-4'
+                >
                   {d['Country']}
                 </ParagraphText>
-                <ParagraphText weight='regular' size='sm' marginBottom='none' className='text-[var(--color-text-black)] w-[20%]'>
+                <ParagraphText
+                  weight='regular'
+                  size='sm'
+                  marginBottom='none'
+                  className='text-[var(--color-text-black)] w-[20%]'
+                >
                   {d['Classification (Black list, Grey list)']}
                 </ParagraphText>
-                <ParagraphText weight='regular' size='sm' marginBottom='none' className='text-[var(--color-text-black)] w-[20%]'>
+                <ParagraphText
+                  weight='regular'
+                  size='sm'
+                  marginBottom='none'
+                  className='text-[var(--color-text-black)] w-[20%]'
+                >
                   {d.Year}
                 </ParagraphText>
               </div>

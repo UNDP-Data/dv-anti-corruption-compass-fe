@@ -18,14 +18,9 @@ interface Props {
 const CountryLevelInsight = (props: Props) => {
   const { countriesList, indicatorsMetaData } = props;
   return (
-    <div
-      className="flex items-start pt-20 lg:pt-50 w-full bg-cover bg-center bg-no-repeat bg-[url('/imgs/sphere.webp')] px-4 lg:px-20 min-h-[calc(100vh-120px)]"
-    >
+    <div className="flex items-start pt-20 lg:pt-50 w-full bg-cover bg-center bg-no-repeat bg-[url('/imgs/sphere.webp')] px-4 lg:px-20 min-h-[calc(100vh-120px)]">
       <div className='gap-4.5 flex flex-col w-full text-white mx-auto'>
-        <Tabs
-          color='blue'
-          defaultValue='tab 1'
-        >
+        <Tabs color='blue' defaultValue='tab 1'>
           <TabsList className='mx-0 pl-0 sticky top-[72px] lg:static z-20 bg-transparent py-2 lg:py-0 -mx-4 px-4 lg:mx-0 lg:px-0'>
             <TabsTrigger
               value='tab 1'

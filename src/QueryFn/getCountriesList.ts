@@ -1,7 +1,4 @@
-import {
-  logGlobalApiTimingEnd,
-  logGlobalApiTimingStart,
-} from '@/Constants';
+import { logGlobalApiTimingEnd, logGlobalApiTimingStart } from '@/Constants';
 
 export const getCountriesList = async () => {
   const start = logGlobalApiTimingStart();

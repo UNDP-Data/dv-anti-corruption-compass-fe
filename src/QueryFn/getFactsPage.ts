@@ -19,7 +19,8 @@ export async function getFactsPage(params: GetFactsPageParams) {
     search.set('subIndicatorId', String(params.subIndicatorId));
   if (params.countryCode) search.set('countryCode', params.countryCode);
   if (params.year !== undefined) search.set('year', String(params.year));
-  if (params.regionId !== undefined) search.set('regionId', String(params.regionId));
+  if (params.regionId !== undefined)
+    search.set('regionId', String(params.regionId));
   if (params.productMarketId !== undefined)
     search.set('productMarketId', String(params.productMarketId));
   search.set('page', String(params.page));
@@ -32,4 +33,3 @@ export async function getFactsPage(params: GetFactsPageParams) {
   logFactsLoadEnd(label, start);
   return data;
 }
-

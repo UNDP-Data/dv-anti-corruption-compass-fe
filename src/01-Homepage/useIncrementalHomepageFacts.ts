@@ -6,8 +6,6 @@ import {
   loadHomepageFactsCache,
   saveHomepageFactsCache,
 } from '@/Utils/homepageFactsCache';
-import { getHomepageDefaultSubIndicatorId } from './homepagePreferredSubIndicators';
-
 import seededStageAFacts from '@/static/factsStageA.json';
 
 const seededFactsStageA = seededStageAFacts as unknown as DataType[];
@@ -18,7 +16,10 @@ function indicatorId(mainIndicatorId: number, subIndicatorId: number) {
   return `${mainIndicatorId}_${subIndicatorId}`;
 }
 
-function parseCombinedId(id: string): { mainIndicatorId: number; subIndicatorId: number } {
+function parseCombinedId(id: string): {
+  mainIndicatorId: number;
+  subIndicatorId: number;
+} {
   const [m, s] = id.split('_');
   return { mainIndicatorId: parseInt(m, 10), subIndicatorId: parseInt(s, 10) };
 }
@@ -93,35 +94,42 @@ export function useIncrementalHomepageFacts(options: {
     const chosen =
       priority.length >= firstPillarsCount
         ? priority.slice(0, firstPillarsCount)
-        : [...priority, ...activeIndicators.filter(i => !priority.includes(i))].slice(
-            0,
-            firstPillarsCount,
-          );
+        : [
+            ...priority,
+            ...activeIndicators.filter(i => !priority.includes(i)),
+          ].slice(0, firstPillarsCount);
 
     return Array.from(
-      new Set(chosen.flatMap(ind => ind.subIndicators.map(s => s.id)).filter(Boolean)),
+      new Set(
+        chosen.flatMap(ind => ind.subIndicators.map(s => s.id)).filter(Boolean),
+      ),
     );
   }, [indicatorsMetaData, firstPillarsCount]);
 
   const backgroundTargets = useMemo(() => {
     const activeIndicators = indicatorsMetaData.filter(d => !d.comingSoon);
-    const all = activeIndicators.flatMap(ind => ind.subIndicators.map(s => s.id));
+    const all = activeIndicators.flatMap(ind =>
+      ind.subIndicators.map(s => s.id),
+    );
     const remaining = all.filter(id => id && !firstTargets.includes(id));
     return Array.from(new Set(remaining));
   }, [indicatorsMetaData, firstTargets]);
 
   const recomputeDerived = () => {
-    const availability: { countryCode: string; indicatorId: string; year: number }[] =
-      [];
+    const availability: {
+      countryCode: string;
+      indicatorId: string;
+      year: number;
+    }[] = [];
     availabilityRef.current.forEach((year, key) => {
       const [countryCode, indId] = key.split('|');
       availability.push({ countryCode, indicatorId: indId, year });
     });
     setGlobeAvailability(availability);
 
-    const countriesYes = [
-      ...new Set(availability.map(a => a.countryCode)),
-    ].map(d => ({ id: d, x: 'Yes' as const }));
+    const countriesYes = [...new Set(availability.map(a => a.countryCode))].map(
+      d => ({ id: d, x: 'Yes' as const }),
+    );
     saveHomepageFactsCache({ countriesYes, globeAvailability: availability });
   };
 
@@ -145,7 +153,11 @@ export function useIncrementalHomepageFacts(options: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const mergeFactsPage = (page: unknown[], mainIndicatorId: number, subIndicatorId: number) => {
+  const mergeFactsPage = (
+    page: unknown[],
+    mainIndicatorId: number,
+    subIndicatorId: number,
+  ) => {
     let factsChanged = false;
     let availabilityChanged = false;
     for (const raw of page as DataType[]) {
@@ -194,7 +206,7 @@ export function useIncrementalHomepageFacts(options: {
 
     let page = 1;
     // keep paging until page returns < pageSize
-    // eslint-disable-next-line no-constant-condition
+
     while (true) {
       if (abortRef.current) return;
       const data = await getFactsPage({
@@ -222,7 +234,9 @@ export function useIncrementalHomepageFacts(options: {
     (async () => {
       try {
         // StageA: first N pillars default sub-indicators (parallel)
-        await Promise.all(firstTargets.map(t => fetchAllPagesForSubIndicator(t)));
+        await Promise.all(
+          firstTargets.map(t => fetchAllPagesForSubIndicator(t)),
+        );
         if (abortRef.current) return;
         setFactsLoading(false);
 
@@ -230,7 +244,7 @@ export function useIncrementalHomepageFacts(options: {
         for (const t of backgroundTargets) {
           if (abortRef.current) return;
           if (loadedIndicatorIdsRef.current.has(t)) continue;
-          // eslint-disable-next-line no-await-in-loop
+
           await fetchAllPagesForSubIndicator(t);
         }
       } catch {
@@ -253,4 +267,3 @@ export function useIncrementalHomepageFacts(options: {
     cachedCountriesYes: cached?.countriesYes || [],
   };
 }
-
