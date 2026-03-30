@@ -1,6 +1,7 @@
 import { Spacer } from '@undp/design-system-react/Spacer';
 import { useQuery } from '@tanstack/react-query';
 import { Spinner } from '@undp/design-system-react/Spinner';
+import { useMemo } from 'react';
 
 import Overview from './Overview';
 import { CountrySelectionSection } from './Components/CountrySelectionSection';
@@ -11,6 +12,8 @@ import { ErrorState } from '@/Components/ErrorState';
 import { getIndicatorData } from '@/QueryFn/getIndicatorData';
 import { ParagraphText } from '@/Components/Typography';
 
+import seededStageAFacts from '@/static/factsStageA.json';
+
 interface Props {
   indicatorMetaData: IndicatorsMetaDataType;
   countriesList: CountriesDataType[];
@@ -18,10 +21,23 @@ interface Props {
   countriesListDataLoading: boolean;
 }
 
+const seededFactsStageAData = seededStageAFacts as unknown as DataType[];
+
 function useIndicatorData(indicatorId: number) {
+  const seeded = useMemo(() => {
+    if (!Array.isArray(seededFactsStageAData) || seededFactsStageAData.length === 0)
+      return [] as DataType[];
+    // Seed quickly from bundled facts (subset) so the page can render immediately,
+    // then React Query will refetch full `/Facts?mainIndicatorId=...` in background.
+    return seededFactsStageAData.filter(d => d.mainIndicatorId === indicatorId);
+  }, [indicatorId]);
+
   return useQuery({
     queryKey: ['indicatorData', indicatorId],
     queryFn: () => getIndicatorData(indicatorId),
+    initialData: seeded,
+    // Treat bundled data as stale so it refetches and swaps in the latest API response.
+    initialDataUpdatedAt: 0,
     select: data =>
       data.map((d: DataType) => ({
         ...d,

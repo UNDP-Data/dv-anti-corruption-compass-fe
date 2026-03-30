@@ -34,6 +34,8 @@ import { ErrorState } from './Components/ErrorState';
 import MainIndicatorPageEl from './03-MainIndicator';
 import { getIndicatorsMetaData } from './QueryFn/getIndicatorsMetaData';
 import { getCountriesList } from './QueryFn/getCountriesList';
+import staticIndicatorsMetaData from '@/static/indicatorsMetaData.json';
+import staticCountriesList from '@/static/countriesList.json';
 import { HeadingText, ParagraphText } from './Components/Typography';
 import { Button } from './Components/Button';
 import {
@@ -63,6 +65,10 @@ function useGlobalData() {
   const indicatorsMetaData = useQuery({
     queryKey: ['indicatorsMetaData'],
     queryFn: getIndicatorsMetaData,
+    initialData: staticIndicatorsMetaData,
+    // Force React Query to treat the bundled data as stale so it refetches
+    // and swaps in the latest `/api/Indicators` response immediately.
+    initialDataUpdatedAt: 0,
     select: data =>
       data.map((c: IndicatorsMetaDataType) => ({
         ...c,
@@ -75,6 +81,10 @@ function useGlobalData() {
   const countriesList = useQuery({
     queryKey: ['countriesList'],
     queryFn: getCountriesList,
+    // Seed immediately from bundled JSON to avoid showing a long loading
+    // state on the country insights section (country selector + table).
+    initialData: staticCountriesList as unknown as CountriesFromApiDataType[],
+    initialDataUpdatedAt: 0,
     select: countries =>
       countries
         .map((c: CountriesFromApiDataType) =>

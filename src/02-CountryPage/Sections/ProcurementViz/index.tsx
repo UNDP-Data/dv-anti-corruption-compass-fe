@@ -1,5 +1,6 @@
 import { Spinner } from '@undp/design-system-react';
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 import Viz from './Viz';
 
@@ -9,10 +10,25 @@ import { ErrorState } from '@/Components/ErrorState';
 import { getMarkets } from '@/QueryFn/getMarkets';
 import { getRegionList } from '@/QueryFn/getRegionList';
 
+import seededStageAFacts from '@/static/factsStageA.json';
+import seededProductMarkets from '@/static/productMarkets.json';
+
+const seededFactsStageAData = seededStageAFacts as unknown as DataType[];
+
 function useDataForCountry(countryCode: string, mainIndicatorId: number) {
+  const seededCountryFacts = useMemo(() => {
+    if (!Array.isArray(seededFactsStageAData) || seededFactsStageAData.length === 0)
+      return [] as DataType[];
+    return seededFactsStageAData.filter(
+      d => d.countryCode === countryCode && d.mainIndicatorId === mainIndicatorId,
+    );
+  }, [countryCode, mainIndicatorId]);
+
   const countryData = useQuery({
     queryKey: ['indicator-data', countryCode, mainIndicatorId],
     queryFn: () => getCountryData(countryCode, mainIndicatorId),
+    initialData: seededCountryFacts,
+    initialDataUpdatedAt: 0,
     select: data =>
       data.map((d: DataType) => ({
         ...d,
@@ -22,6 +38,8 @@ function useDataForCountry(countryCode: string, mainIndicatorId: number) {
   const marketList = useQuery({
     queryKey: ['marketList'],
     queryFn: getMarkets,
+    initialData: seededProductMarkets as unknown as { productMarketId: number; mainIndicatorId: number; name: string; description: string | null }[],
+    initialDataUpdatedAt: 0,
   });
   const regionList = useQuery({
     queryKey: ['regionList', countryCode],

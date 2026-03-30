@@ -4,7 +4,7 @@ import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
 import { DonutChart } from '@undp/data-viz/DonutChart';
 import { SimpleLineChart } from '@undp/data-viz/SimpleLineChart';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Spinner } from '@undp/design-system-react';
 import { Badge } from '@undp/design-system-react/Badge';
@@ -46,6 +46,26 @@ interface Props {
 }
 
 const CONTRACT_VALUE = ['All', 'High', 'High + Medium'];
+
+/** API can return duplicate fact rows; Market Breakdown should show one bar per key (first wins). */
+function dedupeMarketBreakdownRows(rows: DataType[]): DataType[] {
+  const seen = new Set<string>();
+  const out: DataType[] = [];
+  for (const d of rows) {
+    if (d.productMarketId === null) continue;
+    const key = [
+      d.year,
+      d.contractValue,
+      d.id,
+      d.productMarketId,
+      d.regionId ?? 'NULL',
+    ].join('|');
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(d);
+  }
+  return out;
+}
 
 function useDataDataAvailability() {
   return useQuery({
@@ -92,6 +112,23 @@ function Viz({
   useEffect(() => {
     setSelectedYear(latestYear);
   }, [latestYear]);
+
+  const marketBreakdownRows = useMemo(() => {
+    const filtered = data.filter(
+      d =>
+        d.year === selectedYear &&
+        d.contractValue === selectedContractValue.value &&
+        d.id === selectedSubIndicator.value &&
+        d.productMarketId !== null,
+    );
+    return dedupeMarketBreakdownRows(filtered);
+  }, [
+    data,
+    selectedContractValue.value,
+    selectedSubIndicator.value,
+    selectedYear,
+  ]);
+
   const latestCountryData = data.filter(
     d =>
       d.year === latestYear &&
@@ -128,7 +165,12 @@ function Viz({
               <div key={i}>
                 {isMobile ? (
                   <div className='py-4 border-b border-b-[0.5px] border-b-primary-white'>
-                    <ParagraphText size='sm' weight='medium' marginBottom='none' className='text-primary-white mb-1'>
+                    <ParagraphText
+                      size='sm'
+                      weight='medium'
+                      marginBottom='none'
+                      className='text-primary-white mb-1'
+                    >
                       {el.name} ({el.description})
                     </ParagraphText>
                     <div className='flex items-center gap-3 flex-wrap mt-2'>
@@ -146,9 +188,15 @@ function Viz({
                     </div>
                     {rowData?.bandData && (
                       <div className='mt-2 text-[12px] poppins-light text-primary-white opacity-70'>
-                        Low: {rowData.bandData.low_Min}{suffix} - {rowData.bandData.low_Max}{suffix}
-                        {' · '}Medium: {rowData.bandData.medium_Min}{suffix} - {rowData.bandData.medium_Max}{suffix}
-                        {' · '}High: {rowData.bandData.high_Min}{suffix} - {rowData.bandData.high_Max}{suffix}
+                        Low: {rowData.bandData.low_Min}
+                        {suffix} - {rowData.bandData.low_Max}
+                        {suffix}
+                        {' · '}Medium: {rowData.bandData.medium_Min}
+                        {suffix} - {rowData.bandData.medium_Max}
+                        {suffix}
+                        {' · '}High: {rowData.bandData.high_Min}
+                        {suffix} - {rowData.bandData.high_Max}
+                        {suffix}
                       </div>
                     )}
                   </div>
@@ -409,28 +457,14 @@ function Viz({
             chips={[selectedSubIndicator.label, selectedYear]}
           >
             <div className='flex flex-col h-full gap-4'>
-              {data.filter(
-                d =>
-                  d.year === selectedYear &&
-                  d.contractValue === selectedContractValue.value &&
-                  d.id === selectedSubIndicator.value &&
-                  d.productMarketId !== null,
-              ).length > 0 ? (
+              {marketBreakdownRows.length > 0 ? (
                 <BarChartList
-                  data={data
-                    .filter(
-                      d =>
-                        d.year === selectedYear &&
-                        d.contractValue === selectedContractValue.value &&
-                        d.id === selectedSubIndicator.value &&
-                        d.productMarketId !== null,
-                    )
-                    .map(d => ({
-                      id: marketList.find(
-                        el => el.productMarketId === d.productMarketId,
-                      )?.name as string,
-                      value: d.numericValue,
-                    }))}
+                  data={marketBreakdownRows.map(d => ({
+                    id: marketList.find(
+                      el => el.productMarketId === d.productMarketId,
+                    )?.name as string,
+                    value: d.numericValue,
+                  }))}
                   color={indicatorMetaData.mainColor}
                   maxValue={indicatorMetaData.maxValue ?? 100}
                   suffix={indicatorMetaData.suffix || ''}

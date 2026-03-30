@@ -25,12 +25,16 @@ import { customDropdownComponents } from '@/Utils/DropdownComponents';
 import { getFactsPage } from '@/QueryFn/getFactsPage';
 import { useIsMobileBreakpoint } from '@/Utils/useIsMobileBreakpoint';
 
+import seededFactsStageA from '@/static/factsStageA.json';
+
 interface Props {
   indicatorsMetaData: IndicatorsMetaDataType[];
   countriesList: CountriesDataType[];
 }
 
 const DEFAULT_PAGE_SIZE = 50;
+
+const seededFactsStageAData = seededFactsStageA as unknown as DataType[];
 
 function yearsList(): { value: number; label: number }[] {
   const start = 2006;
@@ -71,6 +75,80 @@ export function PagedDataTableWithFilters({ indicatorsMetaData, countriesList }:
     () => selectedPillars.map(p => p.value).filter(Boolean),
     [selectedPillars],
   );
+
+  const countryNameByCode = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const c of countriesList) {
+      const code = c['Alpha-3 code'];
+      m.set(code, c['Country or Area (official name)'] || code);
+    }
+    return m;
+  }, [countriesList]);
+
+  const seededInitialData = useMemo(() => {
+    if (seededFactsStageAData.length === 0) {
+      return { rows: [] as DataType[], hasNext: false };
+    }
+
+    if (selectedIds.length === 0) {
+      return { rows: [] as DataType[], hasNext: false };
+    }
+
+    const selectedIdsSet = new Set(selectedIds);
+    const offset = (page - 1) * pageSize;
+
+    const factsForRequest = seededFactsStageAData.filter(d => {
+      if (d.year !== selectedYear) return false;
+      if (!d.indicatorValue) return false;
+      if (d.numericValue === null || d.numericValue === undefined) return false;
+      const combinedId = `${d.mainIndicatorId}_${d.subIndicatorId}`;
+      return selectedIdsSet.has(combinedId);
+    });
+
+    const hasNext = selectedIds.some(combinedId => {
+      const totalForId = factsForRequest.filter(
+        d => `${d.mainIndicatorId}_${d.subIndicatorId}` === combinedId,
+      ).length;
+      return totalForId > offset + pageSize;
+    });
+
+    // Approximate server-side paging by taking `pageSize` from each pillar slice
+    // before the final global alphabetical sort (matches the intended UX).
+    const mergedPerPillar: DataType[] = [];
+    for (const combinedId of selectedIds) {
+      const factsForId = factsForRequest.filter(
+        d => `${d.mainIndicatorId}_${d.subIndicatorId}` === combinedId,
+      );
+
+      factsForId.sort((a, b) => {
+        const an = countryNameByCode.get(a.countryCode) || a.countryCode;
+        const bn = countryNameByCode.get(b.countryCode) || b.countryCode;
+        return an.localeCompare(bn);
+      });
+
+      // The query uses `page` and `pageSize` per pillar.
+      const pageSlice = factsForId.slice(offset, offset + pageSize).map(d => ({
+        ...d,
+        id: combinedId,
+      }));
+      mergedPerPillar.push(...pageSlice);
+    }
+
+    mergedPerPillar.sort((a, b) => {
+      const an = countryNameByCode.get(a.countryCode) || a.countryCode;
+      const bn = countryNameByCode.get(b.countryCode) || b.countryCode;
+      return an.localeCompare(bn);
+    });
+
+    return { rows: mergedPerPillar, hasNext };
+  }, [
+    countriesList,
+    countryNameByCode,
+    page,
+    pageSize,
+    selectedIds,
+    selectedYear,
+  ]);
 
   const query = useQuery({
     queryKey: ['factsTable', selectedYear, selectedIds, page, pageSize],
@@ -128,6 +206,9 @@ export function PagedDataTableWithFilters({ indicatorsMetaData, countriesList }:
 
       return { rows: filtered, hasNext };
     },
+    // Seed instantly from bundled facts so the "See Full List" table doesn't block on the first API page(s).
+    initialData: seededInitialData,
+    initialDataUpdatedAt: 0,
   });
 
   const rows = query.data?.rows || [];
