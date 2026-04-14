@@ -61,11 +61,19 @@ export const Graph = ({
       })()
     : new Map();
 
+  // On mobile the arc faces left; center must sit near the RIGHT edge of the
+  // SVG so labels (which extend leftward by up to radius+68px) are not clipped.
+  const MOBILE_LABEL_SPACE = 88; // px to the left of center reserved for labels
+  const MOBILE_RIGHT_PAD = 12;  // px to the right of center (flat edge)
+  const mobileSvgWidth = radius + MOBILE_LABEL_SPACE + MOBILE_RIGHT_PAD;
+  const mobileCenterX = radius + MOBILE_LABEL_SPACE;
+  const mobileSvgHeight = radius * 2 + marginTop * 2;
+
   return (
     <>
       <svg
-        width={isMobile ? radius * 2 + marginSide * 2 : (radius + marginSide) * 2}
-        height={isMobile ? radius * 2 + marginTop * 2 : radius + marginTop}
+        width={isMobile ? mobileSvgWidth : (radius + marginSide) * 2}
+        height={isMobile ? mobileSvgHeight : radius + marginTop}
         className='overflow-visible'
       >
         <defs>
@@ -90,7 +98,7 @@ export const Graph = ({
           </radialGradient>
         </defs>
         <g
-          transform={`translate(${radius + marginSide},${radius + marginTop})`}
+          transform={`translate(${isMobile ? mobileCenterX : radius + marginSide},${isMobile ? radius + marginTop : radius + marginTop})`}
         >
           <path
             d={
