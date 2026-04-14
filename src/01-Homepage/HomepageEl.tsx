@@ -54,6 +54,8 @@ interface MobileGlobeItemProps {
   globeControlsRef: { current: (HTMLDivElement | null)[] };
   setInViewSlide: (i: number) => void;
   setSelectedSubIndicators: (updater: (prev: string[]) => string[]) => void;
+  selectedId?: string;
+  setSelectedId: (id?: string) => void;
 }
 
 function MobileGlobeItem({
@@ -66,6 +68,8 @@ function MobileGlobeItem({
   globeControlsRef,
   setInViewSlide,
   setSelectedSubIndicators,
+  selectedId,
+  setSelectedId,
 }: MobileGlobeItemProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   // Delay mounting expensive WebGL globes for items 2+ until they scroll into view,
@@ -129,6 +133,10 @@ function MobileGlobeItem({
             globeCurvatureResolution={2}
             resetSelectionOnDoubleClick={false}
             autoRotate={1}
+            selectedId={selectedId}
+            onSeriesMouseClick={d => {
+              setSelectedId(d?.id);
+            }}
             data={transformDataForGraph(filteredData, 'threeDGlobe', [
               { chartConfigId: 'id', columnId: 'countryCode' },
               { chartConfigId: 'x', columnId: 'x' },
@@ -404,6 +412,8 @@ function HomepageEl({
                 globeControlsRef={globeControlsRef}
                 setInViewSlide={setInViewSlide}
                 setSelectedSubIndicators={setSelectedSubIndicators}
+                selectedId={selectedId}
+                setSelectedId={setSelectedId}
               />
             );
           })}
@@ -649,6 +659,37 @@ function HomepageEl({
                   barBgColor='#d6d6d6'
                   isCardBgWhite
                 />
+              )}
+              {isMobile && (
+                <div className='w-full mt-4 border-t border-[#2D4858]/20 pt-4'>
+                  {(countryDashboard?.latestOverview ?? []).map((entry, idx) => {
+                    const valueText =
+                      entry.numericValue === null ||
+                      entry.numericValue === undefined
+                        ? 'NA'
+                        : `${entry.numericValue.toFixed(2)}%`;
+                    return (
+                      <div
+                        key={`${entry.subIndicatorId ?? entry.subIndicatorName ?? 'metric'}-${idx}`}
+                        className='flex items-start justify-between gap-4 py-1'
+                      >
+                        <ParagraphText
+                          size='sm'
+                          className='text-[var(--color-text-black)] max-w-[70%]'
+                        >
+                          {entry.subIndicatorName ?? 'Unknown metric'}
+                        </ParagraphText>
+                        <ParagraphText
+                          size='sm'
+                          weight='semibold'
+                          className='text-[var(--color-text-black)] shrink-0'
+                        >
+                          {valueText}
+                        </ParagraphText>
+                      </div>
+                    );
+                  })}
+                </div>
               )}
               <Spacer size='2xl' />
               <Link

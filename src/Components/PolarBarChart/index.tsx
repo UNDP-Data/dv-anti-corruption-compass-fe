@@ -26,8 +26,8 @@ export const PolarBarChart = ({
 }: Props) => {
   const isMobile = useIsMobileBreakpoint();
   const [radius, setRadius] = useState(0);
-  const marginSide = isMobile ? 36 : 100;
-  const marginTop = isMobile ? 64 : 100;
+  const marginSide = isMobile ? 72 : 100;
+  const marginTop = isMobile ? 56 : 100;
   const graphDiv = useRef<HTMLDivElement>(null);
   const setRadiusEvent = useEffectEvent(() => {
     if (graphDiv.current) {

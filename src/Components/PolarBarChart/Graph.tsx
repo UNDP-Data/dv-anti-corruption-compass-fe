@@ -27,18 +27,45 @@ export const Graph = ({
   isMobile,
 }: Props) => {
   const subIndicatorsMetaData = indicatorMetaData.subIndicators;
+  const startAngle = isMobile ? Math.PI : -Math.PI / 2;
+  const endAngle = isMobile ? 2 * Math.PI : Math.PI / 2;
   const x = scaleBand()
     .domain([...new Set(subIndicatorsMetaData.map(d => d.id))])
-    .range([-Math.PI / 2, Math.PI / 2]);
+    .range([startAngle, endAngle]);
   const r = scaleLinear()
     .domain([0, maxValue])
     .range([0, radius * (1 - innerRadiusRatio)]);
 
+  const mobileLabelPositions = isMobile
+    ? (() => {
+        const labels = subIndicatorsMetaData.map(d => {
+          const angle = (x(d.id)! + (x(d.id)! + (x.bandwidth() as number))) / 2;
+          const anchorX = (radius + 16) * Math.sin(angle);
+          const anchorY = (radius + 16) * Math.cos(angle) * -1;
+          return {
+            id: d.id,
+            angle,
+            anchorX,
+            anchorY,
+            targetY: anchorY,
+          };
+        });
+        const sorted = [...labels].sort((a, b) => a.targetY - b.targetY);
+        const minGap = 22;
+        for (let i = 1; i < sorted.length; i += 1) {
+          if (sorted[i].targetY - sorted[i - 1].targetY < minGap) {
+            sorted[i].targetY = sorted[i - 1].targetY + minGap;
+          }
+        }
+        return new Map(sorted.map(label => [label.id, label]));
+      })()
+    : new Map();
+
   return (
     <>
       <svg
-        width={(radius + marginSide) * 2}
-        height={radius + marginTop}
+        width={isMobile ? radius * 2 + marginSide * 2 : (radius + marginSide) * 2}
+        height={isMobile ? radius * 2 + marginTop * 2 : radius + marginTop}
         className='overflow-visible'
       >
         <defs>
@@ -70,8 +97,8 @@ export const Graph = ({
               arc()({
                 innerRadius: radius * innerRadiusRatio,
                 outerRadius: radius,
-                startAngle: -Math.PI / 2,
-                endAngle: Math.PI / 2,
+                startAngle,
+                endAngle,
               }) as string
             }
             fill='#fff'
@@ -109,6 +136,43 @@ export const Graph = ({
                   fill='none'
                   stroke='#F7F7F7'
                 />
+                {isMobile && mobileLabelPositions.get(d.id) && (
+                  <>
+                    <polyline
+                      points={`${mobileLabelPositions.get(d.id)!.anchorX},${mobileLabelPositions.get(d.id)!.anchorY} ${mobileLabelPositions.get(d.id)!.anchorX - 12},${mobileLabelPositions.get(d.id)!.targetY} ${mobileLabelPositions.get(d.id)!.anchorX - 48},${mobileLabelPositions.get(d.id)!.targetY}`}
+                      fill='none'
+                      stroke='#fff'
+                      strokeWidth={1}
+                      opacity={0.7}
+                    />
+                    <text
+                      x={mobileLabelPositions.get(d.id)!.anchorX - 52}
+                      y={mobileLabelPositions.get(d.id)!.targetY - 2}
+                      textAnchor='end'
+                      fill='#fff'
+                      style={{
+                        fontSize: '10px',
+                        fontFamily: 'Poppins, sans-serif',
+                      }}
+                    >
+                      <title>{d.name}</title>
+                      {shortLabel}
+                    </text>
+                    <text
+                      x={mobileLabelPositions.get(d.id)!.anchorX - 52}
+                      y={mobileLabelPositions.get(d.id)!.targetY + 10}
+                      textAnchor='end'
+                      fill='#fff'
+                      opacity={0.8}
+                      style={{
+                        fontSize: '9px',
+                        fontFamily: 'Poppins, sans-serif',
+                      }}
+                    >
+                      {valueText === 'NA' ? 'NA' : `${Number(valueText).toFixed(2)}%`}
+                    </text>
+                  </>
+                )}
                 {!isMobile && (
                   <foreignObject
                     x={
@@ -147,20 +211,6 @@ export const Graph = ({
                       </ParagraphText>
                     </div>
                   </foreignObject>
-                )}
-                {isMobile && i % 2 === 0 && (
-                  <text
-                    x={(radius + 24) * Math.sin(angle)}
-                    y={(radius + 24) * Math.cos(angle) * -1}
-                    textAnchor='middle'
-                    fill='#fff'
-                    style={{
-                      fontSize: '10px',
-                      fontFamily: 'Poppins, sans-serif',
-                    }}
-                  >
-                    {shortLabel}
-                  </text>
                 )}
                 <path
                   d={
