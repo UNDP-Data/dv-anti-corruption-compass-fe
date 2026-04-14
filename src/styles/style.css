@@ -11,6 +11,8 @@
   --color-white-bg: #ffffff12;
   --color-text-black: #2d4858;
   --color-text-white: #fff;
+  --app-header-offset: 7.5rem;
+  --app-header-sticky-offset: 6.75rem;
 }
 
 body {
@@ -31,6 +33,7 @@ body {
 
 main {
   flex: 1;
+  padding-top: calc(var(--app-header-offset) + env(safe-area-inset-top));
 }
 
 .background-inherit,
@@ -73,8 +76,11 @@ main {
   padding: 0 1.25rem;
 }
 
-.mobileApp main {
-  padding-top: 6rem;
+@media (min-width: 1024px) {
+  :root {
+    --app-header-offset: 8.75rem;
+    --app-header-sticky-offset: 7.5rem;
+  }
 }
 
 /* ── WebGL print placeholder ────────────────────────────────────────────── */

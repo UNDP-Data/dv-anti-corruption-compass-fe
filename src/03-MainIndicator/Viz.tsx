@@ -47,9 +47,11 @@ interface Props {
 }
 
 /** Shape DataTableSimple expects — only fields it actually reads */
-function toTableRow(
-  row: IndicatorSummaryTableRowDto,
-): { countryCode: string; numericValue: number | null; indicatorValue: string | null } {
+function toTableRow(row: IndicatorSummaryTableRowDto): {
+  countryCode: string;
+  numericValue: number | null;
+  indicatorValue: string | null;
+} {
   return {
     countryCode: row.countryCode ?? '',
     numericValue: row.numericValue,
@@ -116,14 +118,10 @@ function Viz({ indicatorMetaData, countriesList }: Props) {
 
   const globeData = useMemo(() => {
     if (!summary?.currentGlobeRows) return [];
-    return transformDataForGraph(
-      summary.currentGlobeRows,
-      'threeDGlobe',
-      [
-        { chartConfigId: 'id', columnId: 'countryCode' },
-        { chartConfigId: 'x', columnId: 'numericValue' },
-      ],
-    );
+    return transformDataForGraph(summary.currentGlobeRows, 'threeDGlobe', [
+      { chartConfigId: 'id', columnId: 'countryCode' },
+      { chartConfigId: 'x', columnId: 'numericValue' },
+    ]);
   }, [summary?.currentGlobeRows]);
 
   const tableData = useMemo(() => {
@@ -136,6 +134,10 @@ function Viz({ indicatorMetaData, countriesList }: Props) {
   const subIndicatorColors = indicatorMetaData.subIndicators
     .find(el => el.id === selectedSubIndicator.value)
     ?.colors.split(',');
+  const globeScale =
+    isMobile && typeof window !== 'undefined'
+      ? Math.max(0.95, Math.min(1.15, window.innerWidth / 360))
+      : 1.65;
 
   return (
     <div className='container mx-auto px-4 lg:px-0'>
@@ -171,9 +173,7 @@ function Viz({ indicatorMetaData, countriesList }: Props) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onChange={(d: any) => setSelectedYear(d.value)}
             defaultValue={
-              latestYear
-                ? { value: latestYear, label: latestYear }
-                : undefined
+              latestYear ? { value: latestYear, label: latestYear } : undefined
             }
             value={
               activeYear ? { value: activeYear, label: activeYear } : undefined
@@ -226,7 +226,8 @@ function Viz({ indicatorMetaData, countriesList }: Props) {
                     leading='none'
                     className='text-[56px]'
                   >
-                    {overviewStats.p25 !== null && overviewStats.p25 !== undefined
+                    {overviewStats.p25 !== null &&
+                    overviewStats.p25 !== undefined
                       ? `${overviewStats.p25.toFixed(2)}${indicatorMetaData.suffix || ''}`
                       : 'NA'}
                   </ParagraphText>
@@ -251,7 +252,8 @@ function Viz({ indicatorMetaData, countriesList }: Props) {
                     leading='none'
                     className='text-[56px]'
                   >
-                    {overviewStats.p75 !== null && overviewStats.p75 !== undefined
+                    {overviewStats.p75 !== null &&
+                    overviewStats.p75 !== undefined
                       ? `${overviewStats.p75.toFixed(2)}${indicatorMetaData.suffix || ''}`
                       : 'NA'}
                   </ParagraphText>
@@ -273,7 +275,9 @@ function Viz({ indicatorMetaData, countriesList }: Props) {
                 <>
                   <WebGLPrintPlaceholder message='View interactive globe on the website'>
                     <div
-                      className={`flex flex-col gap-4 grow ${isMobile ? 'overflow-hidden' : 'radialGradientMask'}`}
+                      className={`flex flex-col gap-4 grow min-h-[260px] ${
+                        isMobile ? 'overflow-hidden' : 'radialGradientMask'
+                      }`}
                     >
                       <ThreeDGlobe
                         showColorScale={false}
@@ -281,7 +285,7 @@ function Viz({ indicatorMetaData, countriesList }: Props) {
                         highlightedAltitude={0.01}
                         colors={subIndicatorColors}
                         colorDomain={['LOW', 'MEDIUM', 'HIGH']}
-                        scale={1.65}
+                        scale={globeScale}
                         footNote=''
                         enableZoom={false}
                         atmosphereColor={
@@ -308,10 +312,7 @@ function Viz({ indicatorMetaData, countriesList }: Props) {
                       />
                     </div>
                   </WebGLPrintPlaceholder>
-                  <ParagraphText
-                    size='xs'
-                    className='opacity-50 poppins-light'
-                  >
+                  <ParagraphText size='xs' className='opacity-50 poppins-light'>
                     The designations employed and the presentation of material
                     on this map do not imply the expression of any opinion
                     whatsoever on the part of the Secretariat of the United

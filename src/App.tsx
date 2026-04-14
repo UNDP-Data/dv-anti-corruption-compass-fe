@@ -150,7 +150,7 @@ function RootComponent() {
           countriesListDataLoading={countriesList.isLoading}
           countriesListDataError={countriesList.isError}
         />
-        <main className='flex-1 pt-30'>
+        <main className='flex-1'>
           <ScrollToTop />
           <Outlet />
         </main>

@@ -13,6 +13,7 @@ interface Props {
   marginTop: number;
   indicatorMetaData: IndicatorsMetaDataType;
   maxValue: number;
+  isMobile: boolean;
 }
 
 export const Graph = ({
@@ -23,6 +24,7 @@ export const Graph = ({
   marginTop,
   indicatorMetaData,
   maxValue,
+  isMobile,
 }: Props) => {
   const subIndicatorsMetaData = indicatorMetaData.subIndicators;
   const x = scaleBand()
@@ -81,6 +83,8 @@ export const Graph = ({
             const val = data.find(el => el.id === d.id)?.numericValue || 0;
             const valueText =
               data.find(el => el.id === d.id)?.numericValue ?? 'NA';
+            const shortLabel =
+              d.name.length > 20 ? `${d.name.slice(0, 20).trim()}...` : d.name;
             return (
               <g key={i}>
                 <path
@@ -105,43 +109,59 @@ export const Graph = ({
                   fill='none'
                   stroke='#F7F7F7'
                 />
-                <foreignObject
-                  x={
-                    (radius +
-                      30 +
-                      50 * Math.abs(Math.sin(angle)) +
-                      20 * (1 - Math.abs(Math.sin(angle)))) *
-                      Math.sin(angle) -
-                    65
-                  }
-                  y={
-                    (radius +
-                      30 +
-                      50 * Math.abs(Math.sin(angle)) +
-                      20 * (1 - Math.abs(Math.sin(angle)))) *
-                      Math.cos(angle) *
-                      -1 -
-                    30
-                  }
-                  width={130}
-                  height={60}
-                  style={{ overflow: 'visible' }}
-                >
-                  <div className='w-full h-full flex items-center flex-col justify-end'>
-                    <ParagraphText
-                      size='sm'
-                      weight='bold'
-                      leading='snug'
-                      alignment='center'
-                      marginBottom='none'
-                    >
-                      {d.name}
-                    </ParagraphText>
-                    <ParagraphText size='xs' weight='light' leading='loose'>
-                      {valueText === 'NA' ? 'NA' : `${valueText}%`}
-                    </ParagraphText>
-                  </div>
-                </foreignObject>
+                {!isMobile && (
+                  <foreignObject
+                    x={
+                      (radius +
+                        30 +
+                        50 * Math.abs(Math.sin(angle)) +
+                        20 * (1 - Math.abs(Math.sin(angle)))) *
+                        Math.sin(angle) -
+                      65
+                    }
+                    y={
+                      (radius +
+                        30 +
+                        50 * Math.abs(Math.sin(angle)) +
+                        20 * (1 - Math.abs(Math.sin(angle)))) *
+                        Math.cos(angle) *
+                        -1 -
+                      30
+                    }
+                    width={130}
+                    height={60}
+                    style={{ overflow: 'visible' }}
+                  >
+                    <div className='w-full h-full flex items-center flex-col justify-end'>
+                      <ParagraphText
+                        size='sm'
+                        weight='bold'
+                        leading='snug'
+                        alignment='center'
+                        marginBottom='none'
+                      >
+                        {d.name}
+                      </ParagraphText>
+                      <ParagraphText size='xs' weight='light' leading='loose'>
+                        {valueText === 'NA' ? 'NA' : `${valueText}%`}
+                      </ParagraphText>
+                    </div>
+                  </foreignObject>
+                )}
+                {isMobile && i % 2 === 0 && (
+                  <text
+                    x={(radius + 24) * Math.sin(angle)}
+                    y={(radius + 24) * Math.cos(angle) * -1}
+                    textAnchor='middle'
+                    fill='#fff'
+                    style={{
+                      fontSize: '10px',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    {shortLabel}
+                  </text>
+                )}
                 <path
                   d={
                     arc()({

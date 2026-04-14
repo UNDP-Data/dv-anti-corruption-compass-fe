@@ -11,13 +11,6 @@ import { transformDataForGraph } from '@undp/data-viz/transformData';
 import { getCountryDetailsFromISO3 } from '@undp-data/data-utils';
 import { useQuery } from '@tanstack/react-query';
 
-import { getCountryIndicatorDashboard } from '@/QueryFn/getCountryIndicatorDashboard';
-import type { CountryIndicatorDashboardResponse } from '@/QueryFn/getCountryIndicatorDashboard';
-import { mapGlobeSubIndicatorCodeToCompositeId } from '@/Utils/mapGlobeSubIndicatorCodeToCompositeId';
-
-import staticDashboard1 from '@/static/cache/countryDashboard_1.json';
-import staticDashboard2 from '@/static/cache/countryDashboard_2.json';
-
 import GlobeControls from './Components/GlobeControls';
 import Navigation from './Components/Navigation';
 import GlobeComponent from './Components/GlobeComponent';
@@ -25,6 +18,11 @@ import CountryLevelInsight from './Sections/CountryLevelInsight';
 import Introduction from './Sections/Introduction';
 import { getHomepageDefaultSubIndicatorId } from './homepagePreferredSubIndicators';
 
+import staticDashboard1 from '@/static/cache/countryDashboard_1.json';
+import staticDashboard2 from '@/static/cache/countryDashboard_2.json';
+import { mapGlobeSubIndicatorCodeToCompositeId } from '@/Utils/mapGlobeSubIndicatorCodeToCompositeId';
+import type { CountryIndicatorDashboardResponse } from '@/QueryFn/getCountryIndicatorDashboard';
+import { getCountryIndicatorDashboard } from '@/QueryFn/getCountryIndicatorDashboard';
 import { CountriesDataType, IndicatorsMetaDataType } from '@/Types';
 import { HeadingText, ParagraphText } from '@/Components/Typography';
 import { ErrorState } from '@/Components/ErrorState';
@@ -74,6 +72,10 @@ function MobileGlobeItem({
   // avoiding mobile browser WebGL context limit failures.
   const isInView = useInView(containerRef, { once: true, amount: 0.1 });
   const shouldMount = index === 0 || isInView;
+  const mobileScale =
+    typeof window === 'undefined'
+      ? 1.08
+      : Math.max(0.95, Math.min(1.15, window.innerWidth / 360));
 
   return (
     <div
@@ -100,7 +102,10 @@ function MobileGlobeItem({
         }}
         index={index}
       />
-      <div ref={containerRef} className='w-full h-[300px] overflow-hidden'>
+      <div
+        ref={containerRef}
+        className='w-full h-[min(72vw,360px)] min-h-[260px] overflow-hidden'
+      >
         {globeAvailabilityLoading ? (
           <div className='flex flex-col items-center justify-center w-full h-full gap-3 opacity-60'>
             <Spinner size='sm' />
@@ -115,25 +120,19 @@ function MobileGlobeItem({
             highlightedAltitude={0.01}
             colors={[subIndicator?.colors?.split(',')[0] || '#4A7591']}
             colorDomain={['Yes']}
-            scale={1.5}
+            scale={mobileScale}
             footNote=''
             enableZoom={false}
             atmosphereColor={subIndicator?.color || '#117df8'}
-            globeMaterial={
-              new THREE.MeshBasicMaterial({ color: 0xfafafa })
-            }
+            globeMaterial={new THREE.MeshBasicMaterial({ color: 0xfafafa })}
             atmosphereAltitude={0.15}
             globeCurvatureResolution={2}
             resetSelectionOnDoubleClick={false}
             autoRotate={1}
-            data={transformDataForGraph(
-              filteredData,
-              'threeDGlobe',
-              [
-                { chartConfigId: 'id', columnId: 'countryCode' },
-                { chartConfigId: 'x', columnId: 'x' },
-              ],
-            )}
+            data={transformDataForGraph(filteredData, 'threeDGlobe', [
+              { chartConfigId: 'id', columnId: 'countryCode' },
+              { chartConfigId: 'x', columnId: 'x' },
+            ])}
           />
         ) : (
           <div className='flex flex-col items-center justify-center w-full h-full gap-3 opacity-40'>
@@ -260,7 +259,10 @@ function HomepageEl({
     activeMainIndicatorId === 1
       ? (staticDashboard1 as Record<string, CountryIndicatorDashboardResponse>)
       : activeMainIndicatorId === 2
-        ? (staticDashboard2 as Record<string, CountryIndicatorDashboardResponse>)
+        ? (staticDashboard2 as Record<
+            string,
+            CountryIndicatorDashboardResponse
+          >)
         : null;
   const staticDashboardEntry =
     selectedId && staticDashboardMap
@@ -302,7 +304,6 @@ function HomepageEl({
     safeCountriesList.length,
     globeData,
   ]);
-
 
   useEffect(() => {
     // Treat this as "homepage visible with main sections rendered"
@@ -592,37 +593,35 @@ function HomepageEl({
               ) : (activeIndicator?.subIndicators?.length || 0) < 6 ? (
                 <div className='w-full flex items-center text-primary-gray-500 justify-center'>
                   <ArcChart
-                    data={
-                      (countryDashboard?.latestOverview ?? [])
-                        .filter(
-                          e => e.subIndicatorId != null && e.numericValue != null,
-                        )
-                        .map(e => {
-                          // API returns sub-indicator codes (e.g. "corr_singleb"),
-                          // but colors use composite ids (e.g. "1_2") from indicatorsMetaData.
-                          // Translate so all three arrays share the same id format.
-                          const compositeId = mapGlobeSubIndicatorCodeToCompositeId(
+                    data={(countryDashboard?.latestOverview ?? [])
+                      .filter(
+                        e => e.subIndicatorId != null && e.numericValue != null,
+                      )
+                      .map(e => {
+                        // API returns sub-indicator codes (e.g. "corr_singleb"),
+                        // but colors use composite ids (e.g. "1_2") from indicatorsMetaData.
+                        // Translate so all three arrays share the same id format.
+                        const compositeId =
+                          mapGlobeSubIndicatorCodeToCompositeId(
                             e.subIndicatorId!,
                             safeIndicatorsMetaData,
                           ) ?? e.subIndicatorId!;
-                          return { id: compositeId, value: e.numericValue! };
-                        })
-                    }
-                    subPillars={
-                      (countryDashboard?.latestOverview ?? [])
-                        .filter(
-                          e =>
-                            e.subIndicatorId != null &&
-                            e.subIndicatorName != null,
-                        )
-                        .map(e => {
-                          const compositeId = mapGlobeSubIndicatorCodeToCompositeId(
+                        return { id: compositeId, value: e.numericValue! };
+                      })}
+                    subPillars={(countryDashboard?.latestOverview ?? [])
+                      .filter(
+                        e =>
+                          e.subIndicatorId != null &&
+                          e.subIndicatorName != null,
+                      )
+                      .map(e => {
+                        const compositeId =
+                          mapGlobeSubIndicatorCodeToCompositeId(
                             e.subIndicatorId!,
                             safeIndicatorsMetaData,
                           ) ?? e.subIndicatorId!;
-                          return { id: compositeId, name: e.subIndicatorName! };
-                        })
-                    }
+                        return { id: compositeId, name: e.subIndicatorName! };
+                      })}
                     colors={
                       activeIndicator?.subIndicators.map(s => ({
                         id: s.id,
@@ -635,17 +634,14 @@ function HomepageEl({
                 </div>
               ) : (
                 <BarChartList
-                  data={
-                    (countryDashboard?.latestOverview ?? [])
-                      .filter(
-                        e =>
-                          e.subIndicatorName != null && e.numericValue != null,
-                      )
-                      .map(e => ({
-                        id: e.subIndicatorName!,
-                        value: e.numericValue!,
-                      }))
-                  }
+                  data={(countryDashboard?.latestOverview ?? [])
+                    .filter(
+                      e => e.subIndicatorName != null && e.numericValue != null,
+                    )
+                    .map(e => ({
+                      id: e.subIndicatorName!,
+                      value: e.numericValue!,
+                    }))}
                   color={activeIndicator?.mainColor ?? '#fff'}
                   suffix={activeIndicator?.suffix ?? ''}
                   maxValue={activeIndicator?.maxValue ?? 100}
@@ -659,7 +655,11 @@ function HomepageEl({
                 to='/countries/$isoCode/{-$indicator}'
                 params={{
                   isoCode: selectedId,
-                  indicator: (activeIndicator?.name ?? safeIndicatorsMetaData[inViewSlide]?.name ?? '')
+                  indicator: (
+                    activeIndicator?.name ??
+                    safeIndicatorsMetaData[inViewSlide]?.name ??
+                    ''
+                  )
                     .replaceAll(' ', '-')
                     .toLowerCase(),
                 }}

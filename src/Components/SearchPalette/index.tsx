@@ -98,6 +98,7 @@ export function SearchPalette({ open, onClose }: Props) {
       open={open}
       overlayClassName='modal-overlay'
       onClose={onClose}
+      showCloseButton={false}
       className='!bg-[#17232B] !border-0 !rounded-[8px] !shadow-[0_5px_60px_0_rgba(0,0,0,0.40)] !p-4 !w-full !max-w-[600px]'
     >
       <div>

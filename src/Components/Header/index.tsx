@@ -44,7 +44,10 @@ export const Header = ({
 
   return (
     <>
-      <header className='fixed flex justify-between top-0 w-full px-4 lg:px-16 py-9 z-50 background-inherit'>
+      <header
+        className='fixed flex justify-between top-0 w-full px-4 lg:px-16 py-6 lg:py-9 z-50 background-inherit'
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1.5rem)' }}
+      >
         <Link to='/'>
           <div className='flex items-center gap-4'>
             <img src='/imgs/Logo.svg' alt='Example' className='w-7.5 h-auto' />
@@ -249,10 +252,7 @@ export const Header = ({
           />
         </Modal>
       )}
-      <SearchPalette
-        open={showSearch}
-        onClose={() => setShowSearch(false)}
-      />
+      <SearchPalette open={showSearch} onClose={() => setShowSearch(false)} />
     </>
   );
 };

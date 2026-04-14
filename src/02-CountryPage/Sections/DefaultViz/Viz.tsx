@@ -14,6 +14,7 @@ import { ParagraphText } from '@/Components/Typography';
 import { customDropdownComponents } from '@/Utils/DropdownComponents';
 import { PolarBarChart } from '@/Components/PolarBarChart';
 import { PrintButton } from '@/Components/PDFExport/PrintButton';
+import { useIsMobileBreakpoint } from '@/Utils/useIsMobileBreakpoint';
 import {
   CountryIndicatorDashboardResponse,
   LatestOverviewEntry,
@@ -67,6 +68,9 @@ function overviewEntryToDataRow(
 }
 
 function Viz({ dashboard, indicatorMetaData, suffix }: Props) {
+  const isMobile = useIsMobileBreakpoint();
+  const mobileChipLabel = (label: string) =>
+    label.length > 24 ? `${label.slice(0, 24)}...` : label;
   const latestYear = dashboard.latestYear ?? 0;
   const availableYears = useMemo(
     () => [...(dashboard.availableYears ?? [])].sort((a, b) => b - a),
@@ -78,7 +82,9 @@ function Viz({ dashboard, indicatorMetaData, suffix }: Props) {
   // Convert latestOverview entries to the row shape expected by PolarBarChart
   const polarBarData = useMemo(() => {
     return (dashboard.latestOverview ?? [])
-      .map(entry => overviewEntryToDataRow(entry, indicatorMetaData, latestYear))
+      .map(entry =>
+        overviewEntryToDataRow(entry, indicatorMetaData, latestYear),
+      )
       .filter((r): r is NonNullable<typeof r> => r !== null);
   }, [dashboard.latestOverview, indicatorMetaData, latestYear]);
 
@@ -91,7 +97,10 @@ function Viz({ dashboard, indicatorMetaData, suffix }: Props) {
         continue;
       map[id] = (avail.series ?? []).map(s => ({
         year: s.year,
-        value: s.indicatorAvailability !== null ? s.indicatorAvailability * 100 : null,
+        value:
+          s.indicatorAvailability !== null
+            ? s.indicatorAvailability * 100
+            : null,
       }));
     }
     return map;
@@ -159,7 +168,9 @@ function Viz({ dashboard, indicatorMetaData, suffix }: Props) {
         <div className='flex gap-6 flex-wrap'>
           {indicatorMetaData.subIndicators.map(sub => {
             const overviewEntry = (dashboard.latestOverview ?? []).find(
-              e => codeToCompositeId(e.subIndicatorId, indicatorMetaData) === sub.id,
+              e =>
+                codeToCompositeId(e.subIndicatorId, indicatorMetaData) ===
+                sub.id,
             );
             const hasValue =
               overviewEntry?.numericValue !== null &&
@@ -169,7 +180,10 @@ function Viz({ dashboard, indicatorMetaData, suffix }: Props) {
               <GraphCard
                 key={sub.id}
                 title='Overview'
-                chips={[sub.name, latestYear]}
+                chips={[
+                  isMobile ? mobileChipLabel(sub.name) : sub.name,
+                  latestYear,
+                ]}
               >
                 {hasValue ? (
                   <>
@@ -178,7 +192,10 @@ function Viz({ dashboard, indicatorMetaData, suffix }: Props) {
                     <div className='flex grow relative'>
                       <DonutChart
                         data={[
-                          { label: 'Value', size: overviewEntry!.numericValue! },
+                          {
+                            label: 'Value',
+                            size: overviewEntry!.numericValue!,
+                          },
                           {
                             label: 'Rest',
                             size:
@@ -208,22 +225,20 @@ function Viz({ dashboard, indicatorMetaData, suffix }: Props) {
               <GraphCard
                 key={`avail-${sub.id}`}
                 title='Data availability over time'
-                chips={[sub.name]}
+                chips={[isMobile ? mobileChipLabel(sub.name) : sub.name]}
               >
-                <div className='flex h-[360px] dark'>
+                <div
+                  className={`flex dark ${isMobile ? 'h-[260px]' : 'h-[360px]'}`}
+                >
                   {hasData ? (
                     <SimpleLineChart
-                      data={transformDataForGraph(
-                        series,
-                        'lineChart',
-                        [
-                          { chartConfigId: 'date', columnId: 'year' },
-                          { chartConfigId: 'y', columnId: 'value' },
-                        ],
-                      )}
+                      data={transformDataForGraph(series, 'lineChart', [
+                        { chartConfigId: 'date', columnId: 'year' },
+                        { chartConfigId: 'y', columnId: 'value' },
+                      ])}
                       lineColor={indicatorMetaData.mainColor || '#fff'}
-                      showDots
-                      animate
+                      showDots={!isMobile}
+                      animate={!isMobile}
                       suffix='%'
                       classNames={{
                         xAxis: { labels: 'poppins-regular' },
@@ -241,7 +256,8 @@ function Viz({ dashboard, indicatorMetaData, suffix }: Props) {
                               Data availability
                             </ParagraphText>
                             <ParagraphText size='sm'>
-                              {d.data.value !== null && d.data.value !== undefined
+                              {d.data.value !== null &&
+                              d.data.value !== undefined
                                 ? `${(d.data.value as number).toFixed(1)}%`
                                 : 'NA'}
                             </ParagraphText>

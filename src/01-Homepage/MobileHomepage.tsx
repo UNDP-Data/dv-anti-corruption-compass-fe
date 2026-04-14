@@ -1,4 +1,5 @@
 import HomepageEl from './HomepageEl';
+import { useGlobeAvailability } from './useGlobeAvailability';
 
 import { CountriesDataType, IndicatorsMetaDataType } from '@/Types';
 
@@ -10,13 +11,21 @@ type Props = {
 };
 
 export function MobileHomepage(props: Props) {
-  // DIAGNOSTIC LOG — remove after confirming root cause
-  console.warn(
-    '[MobileHomepage] Rendering — NO facts data or cachedGlobeAvailability passed in props.',
-    'indicatorsMetaData.length:',
-    props.indicatorsMetaData.length,
-    '→ HomepageEl will receive data=[] and cachedGlobeAvailability=[], globes will never render.',
-  );
+  const {
+    globeAvailability: apiGlobeAvailability,
+    countriesWithData,
+    isLoading: globeAvailabilityLoading,
+  } = useGlobeAvailability(props.indicatorsMetaData);
 
-  return <HomepageEl {...props} />;
+  return (
+    <HomepageEl
+      {...props}
+      cachedCountriesYes={countriesWithData.map(id => ({
+        id,
+        x: 'Yes' as const,
+      }))}
+      cachedGlobeAvailability={apiGlobeAvailability}
+      globeAvailabilityLoading={globeAvailabilityLoading}
+    />
+  );
 }
