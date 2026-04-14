@@ -51,7 +51,10 @@ export const PolarBarChart = ({
         {year}
       </HeadingText>
       <Spacer size='4xl' />
-      <div className='bg-transparent container-sm' ref={graphDiv}>
+      <div
+        className={`bg-transparent ${isMobile ? 'w-full flex justify-end pr-2' : 'container-sm'}`}
+        ref={graphDiv}
+      >
         {radius > 0 && (
           <Graph
             data={data}

@@ -516,7 +516,14 @@ function HomepageEl({
       </div>
       {selectedId &&
         createPortal(
-          <div className='fixed bottom-0 left-0 right-0 lg:bottom-8 lg:right-20 lg:left-auto bg-[#fff] p-6 w-full lg:w-[360px] rounded-t-[16px] lg:rounded-[8px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] z-[999] max-h-[80vh] overflow-y-auto'>
+          <div
+            className='fixed inset-0 z-[998] flex items-center justify-center px-4'
+            style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}
+            onClick={e => {
+              if (e.target === e.currentTarget) setSelectedId(undefined);
+            }}
+          >
+          <div className='relative bg-[#fff] p-6 w-full max-w-[420px] rounded-[16px] shadow-[0_8px_40px_rgba(0,0,0,0.35)] z-[999] max-h-[85vh] overflow-y-auto'>
             <div
               style={{
                 cursor: 'pointer',
@@ -660,37 +667,6 @@ function HomepageEl({
                   isCardBgWhite
                 />
               )}
-              {isMobile && (
-                <div className='w-full mt-4 border-t border-[#2D4858]/20 pt-4'>
-                  {(countryDashboard?.latestOverview ?? []).map((entry, idx) => {
-                    const valueText =
-                      entry.numericValue === null ||
-                      entry.numericValue === undefined
-                        ? 'NA'
-                        : `${entry.numericValue.toFixed(2)}%`;
-                    return (
-                      <div
-                        key={`${entry.subIndicatorId ?? entry.subIndicatorName ?? 'metric'}-${idx}`}
-                        className='flex items-start justify-between gap-4 py-1'
-                      >
-                        <ParagraphText
-                          size='sm'
-                          className='text-[var(--color-text-black)] max-w-[70%]'
-                        >
-                          {entry.subIndicatorName ?? 'Unknown metric'}
-                        </ParagraphText>
-                        <ParagraphText
-                          size='sm'
-                          weight='semibold'
-                          className='text-[var(--color-text-black)] shrink-0'
-                        >
-                          {valueText}
-                        </ParagraphText>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
               <Spacer size='2xl' />
               <Link
                 to='/countries/$isoCode/{-$indicator}'
@@ -708,6 +684,7 @@ function HomepageEl({
                 <Button variant='primary'>View more →</Button>
               </Link>
             </div>
+          </div>
           </div>,
           document.getElementById('root') as HTMLElement,
         )}
