@@ -5,31 +5,24 @@ import { DonutChart } from '@undp/data-viz/DonutChart';
 import { SimpleLineChart } from '@undp/data-viz/SimpleLineChart';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
 import { useEffect, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Spinner } from '@undp/design-system-react';
 import { Badge } from '@undp/design-system-react/Badge';
 
 import SubNationalVIz from './SubNationalVIz';
 
+import { PrintButton } from '@/Components/PDFExport/PrintButton';
+import { WebGLPrintPlaceholder } from '@/Components/PDFExport/WebGLPrintPlaceholder';
 import { DROPDOWN_CLASSNAMES } from '@/Constants';
 import { GraphCard } from '@/Components/GraphCard';
-import {
-  DataAvailabilityDataType,
-  DataType,
-  IndicatorsMetaDataType,
-} from '@/Types';
+import { IndicatorsMetaDataType } from '@/Types';
 import { NoData } from '@/Components/NoData';
 import { HeadingText, ParagraphText } from '@/Components/Typography';
 import { customDropdownComponents } from '@/Utils/DropdownComponents';
 import { BarChartList } from '@/Components/BarChartList';
-import { getDataAvailability } from '@/QueryFn/getDataAvailability';
-import { ErrorState } from '@/Components/ErrorState';
 import { useIsMobileBreakpoint } from '@/Utils/useIsMobileBreakpoint';
-
-interface MarketListDataType {
-  productMarketId: number;
-  name: string;
-}
+import {
+  CountryIndicatorDashboardResponse,
+  ProductMarketRefDto,
+} from '@/QueryFn/getCountryIndicatorDashboard';
 
 interface RegionListDataType {
   regionId: number;
@@ -37,9 +30,8 @@ interface RegionListDataType {
 }
 
 interface Props {
-  data: DataType[];
+  dashboard: CountryIndicatorDashboardResponse;
   indicatorMetaData: IndicatorsMetaDataType;
-  marketList: MarketListDataType[];
   regionList: RegionListDataType[];
   countryCode: string;
   suffix: string;
@@ -47,100 +39,136 @@ interface Props {
 
 const CONTRACT_VALUE = ['All', 'High', 'High + Medium'];
 
-/** API can return duplicate fact rows; Market Breakdown should show one bar per key (first wins). */
-function dedupeMarketBreakdownRows(rows: DataType[]): DataType[] {
-  const seen = new Set<string>();
-  const out: DataType[] = [];
-  for (const d of rows) {
-    if (d.productMarketId === null) continue;
-    const key = [
-      d.year,
-      d.contractValue,
-      d.id,
-      d.productMarketId,
-      d.regionId ?? 'NULL',
-    ].join('|');
-    if (seen.has(key)) continue;
-    seen.add(key);
-    out.push(d);
-  }
-  return out;
-}
-
-function useDataDataAvailability() {
-  return useQuery({
-    queryKey: ['data-availability-data'],
-    queryFn: getDataAvailability,
-    select: data =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (data as any).map((d: any) => ({
-        ...d,
-        Indicator_availability: d.Indicator_availability * 100,
-      })),
-  });
+/** Map a sub-indicator code string (e.g. "corr_singleb") to composite id ("1_3"). */
+function codeToCompositeId(
+  code: string | null,
+  indicatorMetaData: IndicatorsMetaDataType,
+): string | undefined {
+  if (!code) return undefined;
+  return indicatorMetaData.subIndicators.find(s => s.code === code)?.id;
 }
 
 function Viz({
-  data,
+  dashboard,
   indicatorMetaData,
-  marketList,
   regionList,
   countryCode,
   suffix,
 }: Props) {
   const isMobile = useIsMobileBreakpoint();
-  const dataAvailabilityData = useDataDataAvailability();
-  const yearList = [...new Set(data.map(d => d.year))].sort((a, b) => b - a);
-  const latestYear = yearList[0];
-  const marketListForCountry = [...new Set(data.map(d => d.productMarketId))]
-    .filter(d => d !== null)
-    .map(d => marketList.find(m => m.productMarketId === d))
-    .filter(d => d !== undefined)
-    .sort((a, b) => a.name.localeCompare(b.name));
-  const [selectedYear, setSelectedYear] = useState(yearList[0]);
+
+  const availableYears = useMemo(
+    () => [...(dashboard.availableYears ?? [])].sort((a, b) => b - a),
+    [dashboard.availableYears],
+  );
+  const latestYear = dashboard.latestYear ?? availableYears[0] ?? 0;
+
+  const availableMarkets: ProductMarketRefDto[] = dashboard.availableMarkets ?? [];
+
+  const [selectedYear, setSelectedYear] = useState(latestYear);
   const [selectedSubIndicator, setSelectedSubIndicator] = useState({
     value: indicatorMetaData.subIndicators[0].id,
     label: indicatorMetaData.subIndicators[0].name,
   });
   const [selectedMarket, setSelectedMarket] = useState<
-    undefined | MarketListDataType
+    ProductMarketRefDto | undefined
   >(undefined);
   const [selectedContractValue, setSelectedContractValue] = useState({
     value: 'ALL',
     label: 'All',
   });
+
   useEffect(() => {
     setSelectedYear(latestYear);
   }, [latestYear]);
 
+  // Overview table row — map by sub-indicator composite id
+  const latestOverviewById = useMemo(() => {
+    const map: Record<string, NonNullable<typeof dashboard.latestOverview>[0]> = {};
+    for (const row of dashboard.latestOverview ?? []) {
+      const id = codeToCompositeId(row.subIndicatorId, indicatorMetaData);
+      if (id) map[id] = row;
+    }
+    return map;
+  }, [dashboard.latestOverview, indicatorMetaData]);
+
+  // Market breakdown for the selected sub-indicator / year / contractValue
   const marketBreakdownRows = useMemo(() => {
-    const filtered = data.filter(
-      d =>
-        d.year === selectedYear &&
-        d.contractValue === selectedContractValue.value &&
-        d.id === selectedSubIndicator.value &&
-        d.productMarketId !== null,
+    const selectedSubCode = indicatorMetaData.subIndicators.find(
+      s => s.id === selectedSubIndicator.value,
+    )?.code;
+
+    const breakdown = (dashboard.marketBreakdown ?? []).find(
+      mb =>
+        mb.subIndicatorId === selectedSubCode &&
+        mb.year === selectedYear &&
+        mb.contractValue === selectedContractValue.value,
     );
-    return dedupeMarketBreakdownRows(filtered);
+    return breakdown?.markets ?? [];
   }, [
-    data,
-    selectedContractValue.value,
+    dashboard.marketBreakdown,
+    indicatorMetaData,
     selectedSubIndicator.value,
     selectedYear,
+    selectedContractValue.value,
   ]);
 
-  const latestCountryData = data.filter(
-    d =>
-      d.year === latestYear &&
-      d.regionId === null &&
-      d.productMarketId === null,
-  );
+  // Overview donut value — from latestOverview, filtered by market + contractValue
+  const overviewDonutValue = useMemo(() => {
+    if (selectedMarket) {
+      // When a market is selected, look in marketBreakdown
+      const marketRow = marketBreakdownRows.find(
+        m => m.productMarketId === selectedMarket.productMarketId,
+      );
+      return marketRow?.numericValue ?? null;
+    }
+    // No market selected — use latestOverview
+    return latestOverviewById[selectedSubIndicator.value]?.numericValue ?? null;
+  }, [
+    selectedMarket,
+    marketBreakdownRows,
+    latestOverviewById,
+    selectedSubIndicator.value,
+  ]);
+
+  // Data availability series for selected sub-indicator / contractValue / market
+  const availabilitySeries = useMemo(() => {
+    const selectedSubCode = indicatorMetaData.subIndicators.find(
+      s => s.id === selectedSubIndicator.value,
+    )?.code;
+
+    const entry = (dashboard.dataAvailability ?? []).find(
+      a =>
+        a.subIndicatorId === selectedSubCode &&
+        a.contractValue === selectedContractValue.value &&
+        (selectedMarket
+          ? a.productMarket?.productMarketId === selectedMarket.productMarketId
+          : a.productMarket == null),
+    );
+
+    return (entry?.series ?? []).map(s => ({
+      Year: s.year,
+      Indicator_availability:
+        s.indicatorAvailability !== null ? s.indicatorAvailability * 100 : null,
+    }));
+  }, [
+    dashboard.dataAvailability,
+    indicatorMetaData,
+    selectedSubIndicator.value,
+    selectedContractValue.value,
+    selectedMarket,
+  ]);
+
   return (
     <div className='w-full'>
-      <HeadingText type='h3' alignment='center'>
-        {latestYear}
-      </HeadingText>
+      <div className='flex items-center justify-between flex-wrap gap-4'>
+        <HeadingText type='h3' alignment='center'>
+          {latestYear}
+        </HeadingText>
+        <PrintButton />
+      </div>
       <Spacer size='4xl' />
+      {/* Overview table — latest year, all sub-indicators */}
       <div className='dark'>
         {!isMobile && (
           <div className='flex w-full pb-2 border-b border-b-primary-white'>
@@ -160,7 +188,7 @@ function Viz({
         )}
         <div>
           {indicatorMetaData.subIndicators.map((el, i) => {
-            const rowData = latestCountryData.find(d => d.id === el.id);
+            const rowData = latestOverviewById[el.id];
             return (
               <div key={i}>
                 {isMobile ? (
@@ -207,10 +235,7 @@ function Viz({
                     </div>
                     <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
                       {rowData?.numericValue ?? 'NA'}{' '}
-                      {rowData?.numericValue !== null ||
-                      rowData?.numericValue !== undefined
-                        ? suffix
-                        : ''}
+                      {rowData?.numericValue != null ? suffix : ''}
                     </div>
                     <div className='poppins-light text-[16px]! text-primary-white! w-[20%] pr-4!'>
                       <Badge
@@ -228,7 +253,8 @@ function Viz({
                           {suffix || ''} - {rowData.bandData.low_Max}
                           {suffix || ''}
                           <br />
-                          <strong>Medium:</strong> {rowData.bandData.medium_Min}
+                          <strong>Medium:</strong>{' '}
+                          {rowData.bandData.medium_Min}
                           {suffix || ''} - {rowData.bandData.medium_Max}
                           {suffix || ''}
                           <br />
@@ -255,14 +281,13 @@ function Viz({
         </ParagraphText>
       </div>
       <Spacer size='8xl' />
-      <div className='flex flex-col lg:flex-row items-start lg:items-center gap-4 w-full'>
+      {/* Filter controls */}
+      <div className='print-hide flex flex-col lg:flex-row items-start lg:items-center gap-4 w-full'>
         <div className='flex flex-col gap-1 w-full lg:w-[calc(25%-0.75rem)] grow-1 lg:min-w-[240px]'>
           <Label className='text-primary-white'>Sub-pillar</Label>
           <DropdownSelect
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            onChange={(d: any) => {
-              setSelectedSubIndicator(d);
-            }}
+            onChange={(d: any) => setSelectedSubIndicator(d)}
             value={selectedSubIndicator}
             options={indicatorMetaData.subIndicators.map(d => ({
               value: d.id,
@@ -279,14 +304,9 @@ function Viz({
           <Label className='text-primary-white'>Year</Label>
           <DropdownSelect
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            onChange={(d: any) => {
-              setSelectedYear(d.value);
-            }}
+            onChange={(d: any) => setSelectedYear(d.value)}
             value={{ value: selectedYear, label: selectedYear }}
-            options={yearList.map(d => ({
-              value: d,
-              label: d,
-            }))}
+            options={availableYears.map(d => ({ value: d, label: d }))}
             size='base'
             variant='normal'
             className='poppins-regular border-0! rounded-[8px]!'
@@ -299,13 +319,11 @@ function Viz({
           <DropdownSelect
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onChange={(d: any) => {
-              const opt = d
-                ? {
-                    name: d.label,
-                    productMarketId: d.value,
-                  }
-                : undefined;
-              setSelectedMarket(opt);
+              setSelectedMarket(
+                d
+                  ? { productMarketId: d.value, name: d.label }
+                  : undefined,
+              );
             }}
             value={
               selectedMarket
@@ -316,9 +334,9 @@ function Viz({
                 : undefined
             }
             placeholder='Select market'
-            options={marketListForCountry.map(d => ({
-              value: d.productMarketId,
-              label: d.name,
+            options={availableMarkets.map(m => ({
+              value: m.productMarketId,
+              label: m.name,
             }))}
             isClearable
             size='base'
@@ -332,9 +350,7 @@ function Viz({
           <Label className='text-primary-white'>Contract value</Label>
           <DropdownSelect
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            onChange={(d: any) => {
-              setSelectedContractValue(d);
-            }}
+            onChange={(d: any) => setSelectedContractValue(d)}
             placeholder='Select contract value'
             value={selectedContractValue}
             options={CONTRACT_VALUE.map(d => ({
@@ -352,19 +368,12 @@ function Viz({
       <Spacer size='2xl' />
       <div className='flex flex-col gap-6'>
         <div className='flex gap-6 flex-wrap'>
+          {/* Overview donut */}
           <GraphCard
             title='Overview'
             chips={[selectedSubIndicator.label, selectedYear]}
           >
-            {data.filter(
-              d =>
-                d.id === selectedSubIndicator.value &&
-                d.year === selectedYear &&
-                d.productMarketId ===
-                  (selectedMarket ? selectedMarket.productMarketId : null) &&
-                d.contractValue === selectedContractValue.value &&
-                d.numericValue !== null,
-            ).length !== 0 ? (
+            {overviewDonutValue !== null ? (
               <>
                 <ParagraphText size='sm'>
                   {
@@ -377,74 +386,18 @@ function Viz({
                 <div className='flex grow relative'>
                   <DonutChart
                     data={[
-                      {
-                        label: 'Value',
-                        size:
-                          data.find(
-                            d =>
-                              d.id === selectedSubIndicator.value &&
-                              d.year === selectedYear &&
-                              d.productMarketId ===
-                                (selectedMarket
-                                  ? selectedMarket.productMarketId
-                                  : null) &&
-                              d.contractValue === selectedContractValue.value,
-                          )?.numericValue || 0,
-                      },
+                      { label: 'Value', size: overviewDonutValue },
                       {
                         label: 'Rest',
                         size:
                           (indicatorMetaData.maxValue ?? 100) -
-                          (data.find(
-                            d =>
-                              d.id === selectedSubIndicator.value &&
-                              d.year === selectedYear &&
-                              d.productMarketId ===
-                                (selectedMarket
-                                  ? selectedMarket.productMarketId
-                                  : null) &&
-                              d.contractValue === selectedContractValue.value,
-                          )?.numericValue || 0),
+                          overviewDonutValue,
                       },
                     ]}
                     strokeWidth={14}
                     showColorScale={false}
                     colors={[indicatorMetaData.mainColor || '#fff', '#fff']}
-                    mainText={
-                      data.find(
-                        d =>
-                          d.id === selectedSubIndicator.value &&
-                          d.year === selectedYear &&
-                          d.productMarketId ===
-                            (selectedMarket
-                              ? selectedMarket.productMarketId
-                              : null) &&
-                          d.contractValue === selectedContractValue.value,
-                      )?.numericValue !== null &&
-                      data.find(
-                        d =>
-                          d.id === selectedSubIndicator.value &&
-                          d.year === selectedYear &&
-                          d.productMarketId ===
-                            (selectedMarket
-                              ? selectedMarket.productMarketId
-                              : null) &&
-                          d.contractValue === selectedContractValue.value,
-                      )?.numericValue !== undefined
-                        ? `${data
-                            .find(
-                              d =>
-                                d.id === selectedSubIndicator.value &&
-                                d.year === selectedYear &&
-                                d.productMarketId ===
-                                  (selectedMarket
-                                    ? selectedMarket.productMarketId
-                                    : null) &&
-                                d.contractValue === selectedContractValue.value,
-                            )
-                            ?.numericValue?.toFixed(2)}${suffix}`
-                        : 'NA'
-                    }
+                    mainText={`${overviewDonutValue.toFixed(2)}${suffix}`}
                   />
                 </div>
               </>
@@ -452,6 +405,8 @@ function Viz({
               <NoData />
             )}
           </GraphCard>
+
+          {/* Market breakdown bar chart */}
           <GraphCard
             title='Market Breakdown'
             chips={[selectedSubIndicator.label, selectedYear]}
@@ -459,12 +414,12 @@ function Viz({
             <div className='flex flex-col h-full gap-4'>
               {marketBreakdownRows.length > 0 ? (
                 <BarChartList
-                  data={marketBreakdownRows.map(d => ({
-                    id: marketList.find(
-                      el => el.productMarketId === d.productMarketId,
-                    )?.name as string,
-                    value: d.numericValue,
-                  }))}
+                  data={marketBreakdownRows
+                    .filter(m => m.numericValue !== null)
+                    .map(m => ({
+                      id: m.marketName ?? String(m.productMarketId),
+                      value: m.numericValue as number,
+                    }))}
                   color={indicatorMetaData.mainColor}
                   maxValue={indicatorMetaData.maxValue ?? 100}
                   suffix={indicatorMetaData.suffix || ''}
@@ -478,221 +433,87 @@ function Viz({
             </div>
           </GraphCard>
         </div>
+
+        {/* Regional breakdown — keeps old Facts-based SubNationalVIz */}
         <div className='flex gap-6 flex-wrap'>
           <GraphCard
             title='Regional Breakdown'
             chips={[selectedSubIndicator.label, selectedYear]}
             className='basis-full'
           >
-            <SubNationalVIz
-              mainIndicatorId={indicatorMetaData.mainIndicatorId}
-              regionList={regionList}
-              countryCode={countryCode}
-              productMarketId={selectedMarket?.productMarketId || null}
-              year={selectedYear}
-              subIndicatorId={selectedSubIndicator.value}
-              mainColor={indicatorMetaData.mainColor}
-              colors={
-                indicatorMetaData.subIndicators.find(
-                  d => d.id === selectedSubIndicator.value,
-                )?.colors || ''
-              }
-              contractValue={selectedContractValue.value}
-              suffix={suffix}
-              maxValue={indicatorMetaData.maxValue ?? 100}
-            />
+            <WebGLPrintPlaceholder message='View interactive regional map on the website'>
+              <SubNationalVIz
+                mainIndicatorId={indicatorMetaData.mainIndicatorId}
+                regionList={regionList}
+                countryCode={countryCode}
+                productMarketId={selectedMarket?.productMarketId || null}
+                year={selectedYear}
+                subIndicatorId={selectedSubIndicator.value}
+                mainColor={indicatorMetaData.mainColor}
+                colors={
+                  indicatorMetaData.subIndicators.find(
+                    d => d.id === selectedSubIndicator.value,
+                  )?.colors || ''
+                }
+                contractValue={selectedContractValue.value}
+                suffix={suffix}
+                maxValue={indicatorMetaData.maxValue ?? 100}
+              />
+            </WebGLPrintPlaceholder>
           </GraphCard>
         </div>
+
+        {/* Data availability over time — from DTO dataAvailability field */}
         <div className='flex gap-6 flex-wrap'>
           <GraphCard
-            title='Trend over time'
+            title='Data availability over time'
             chips={[selectedSubIndicator.label]}
           >
             <div className='flex h-[360px] dark w-full'>
-              {data.filter(
-                d =>
-                  d.regionId === null &&
-                  d.contractValue === selectedContractValue.value &&
-                  d.id === selectedSubIndicator.value &&
-                  d.productMarketId ===
-                    (selectedMarket ? selectedMarket.productMarketId : null) &&
-                  d.numericValue !== null &&
-                  d.numericValue !== undefined,
-              ).length > 0 ? (
+              {availabilitySeries.filter(s => s.Indicator_availability !== null)
+                .length > 0 ? (
                 <SimpleLineChart
                   data={transformDataForGraph(
-                    data.filter(
-                      d =>
-                        d.regionId === null &&
-                        d.numericValue !== null &&
-                        d.id === selectedSubIndicator.value &&
-                        d.contractValue === selectedContractValue.value &&
-                        d.productMarketId ===
-                          (selectedMarket
-                            ? selectedMarket.productMarketId
-                            : null),
-                    ),
+                    availabilitySeries,
                     'lineChart',
                     [
-                      { chartConfigId: 'date', columnId: 'year' },
+                      { chartConfigId: 'date', columnId: 'Year' },
                       {
                         chartConfigId: 'y',
-                        columnId: 'numericValue',
+                        columnId: 'Indicator_availability',
                       },
                     ],
                   )}
                   lineColor={indicatorMetaData.mainColor || '#fff'}
                   showDots
+                  maxValue={indicatorMetaData.maxValue ?? 100}
                   animate
-                  suffix={suffix}
+                  suffix={indicatorMetaData.suffix || ''}
                   classNames={{
-                    xAxis: {
-                      labels: 'poppins-regular',
-                    },
-                    yAxis: {
-                      labels: 'poppins-regular',
-                    },
+                    xAxis: { labels: 'poppins-regular' },
+                    yAxis: { labels: 'poppins-regular' },
                     tooltip:
                       'poppins-regular bg-[var(--color-text-black)] p-4 border-0',
                   }}
-                  tooltip={d => {
-                    return (
-                      <div className='flex flex-col bg-[var(--color-text-black)]'>
-                        <ParagraphText size='sm' weight='bold'>
-                          {d.data.year}
+                  tooltip={d => (
+                    <div className='flex flex-col bg-[var(--color-text-black)]'>
+                      <ParagraphText size='sm' weight='bold'>
+                        {d.data.Year}
+                      </ParagraphText>
+                      <div className='flex gap-8 justify-between pt-4'>
+                        <ParagraphText size='sm'>Data availability</ParagraphText>
+                        <ParagraphText size='sm'>
+                          {d.data.Indicator_availability ?? 'NA'}
                         </ParagraphText>
-                        <div className='flex gap-8 justify-between py-4 border-b border-b-[#ffffff40]'>
-                          <ParagraphText size='sm'>
-                            {selectedSubIndicator.label}
-                          </ParagraphText>
-                          <ParagraphText size='sm'>
-                            {d.data.numericValue ?? 'NA'}
-                            {d.data.numericValue != null && suffix}
-                          </ParagraphText>
-                        </div>
-                        <div className='flex gap-8 justify-between py-4 border-b border-b-[#ffffff40]'>
-                          <ParagraphText size='sm'>
-                            No. of contracts
-                          </ParagraphText>
-                          <ParagraphText size='sm'>
-                            {d.data.allContracts ?? 'NA'}
-                          </ParagraphText>
-                        </div>
-                        <div className='flex gap-8 justify-between py-4 border-b border-b-[#ffffff40]'>
-                          <ParagraphText size='sm'>
-                            No. of risky contracts
-                          </ParagraphText>
-                          <ParagraphText size='sm'>
-                            {d.data.totalNumberOfRiskyContracts ?? 'NA'}
-                          </ParagraphText>
-                        </div>
-                        <div className='flex gap-8 justify-between pt-4'>
-                          <ParagraphText size='sm'>
-                            Total contract value (USD)
-                          </ParagraphText>
-                          <ParagraphText size='sm'>
-                            {d.data.totalContractValueMillionUsd ?? 'NA'}
-                          </ParagraphText>
-                        </div>
                       </div>
-                    );
-                  }}
+                    </div>
+                  )}
                 />
               ) : (
                 <div className='h-full flex items-center justify-center w-full'>
                   <NoData />
                 </div>
               )}
-            </div>
-          </GraphCard>
-          <GraphCard
-            title='Data availability over time'
-            chips={[selectedSubIndicator.label]}
-          >
-            <div className='flex h-[360px] dark w-full'>
-              {dataAvailabilityData.isLoading ? (
-                <Spinner size='lg' className='my-20 m-auto' />
-              ) : dataAvailabilityData.isError ? (
-                <div className='px-4 container mx-auto'>
-                  <ErrorState />
-                </div>
-              ) : dataAvailabilityData.data ? (
-                (
-                  dataAvailabilityData.data as DataAvailabilityDataType[]
-                ).filter(
-                  d =>
-                    d.Country_code_ISO_3 === countryCode &&
-                    d.Contract_value === selectedContractValue.value &&
-                    d.Indicator ===
-                      indicatorMetaData.subIndicators.find(
-                        el => el.id === selectedSubIndicator.value,
-                      )?.code &&
-                    d.Product_market ===
-                      (selectedMarket ? selectedMarket.name : undefined),
-                ).length > 0 ? (
-                  <SimpleLineChart
-                    data={transformDataForGraph(
-                      (
-                        dataAvailabilityData.data as DataAvailabilityDataType[]
-                      ).filter(
-                        d =>
-                          d.Country_code_ISO_3 === countryCode &&
-                          d.Contract_value === selectedContractValue.value &&
-                          d.Indicator ===
-                            indicatorMetaData.subIndicators.find(
-                              el => el.id === selectedSubIndicator.value,
-                            )?.code &&
-                          d.Product_market ===
-                            (selectedMarket ? selectedMarket.name : undefined),
-                      ),
-                      'lineChart',
-                      [
-                        { chartConfigId: 'date', columnId: 'Year' },
-                        {
-                          chartConfigId: 'y',
-                          columnId: 'Indicator_availability',
-                        },
-                      ],
-                    )}
-                    lineColor={indicatorMetaData.mainColor || '#fff'}
-                    showDots
-                    maxValue={indicatorMetaData.maxValue ?? 100}
-                    animate
-                    suffix={indicatorMetaData.suffix || ''}
-                    classNames={{
-                      xAxis: {
-                        labels: 'poppins-regular',
-                      },
-                      yAxis: {
-                        labels: 'poppins-regular',
-                      },
-                      tooltip:
-                        'poppins-regular bg-[var(--color-text-black)] p-4 border-0',
-                    }}
-                    tooltip={d => {
-                      return (
-                        <div className='flex flex-col bg-[var(--color-text-black)]'>
-                          <ParagraphText size='sm' weight='bold'>
-                            {d.data.Year}
-                          </ParagraphText>
-                          <div className='flex gap-8 justify-between pt-4'>
-                            <ParagraphText size='sm'>
-                              Data availability
-                            </ParagraphText>
-                            <ParagraphText size='sm'>
-                              {d.data.Indicator_availability ?? 'NA'}
-                            </ParagraphText>
-                          </div>
-                        </div>
-                      );
-                    }}
-                  />
-                ) : (
-                  <div className='h-full flex items-center justify-center w-full'>
-                    <NoData />
-                  </div>
-                )
-              ) : null}
             </div>
           </GraphCard>
         </div>

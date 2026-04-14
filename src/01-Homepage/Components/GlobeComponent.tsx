@@ -5,7 +5,7 @@ import { getCountryDetailsFromISO3 } from '@undp-data/data-utils';
 import { ThreeDGlobe } from '@undp/data-viz/ThreeDGlobe';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
 
-import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
+import { CountriesDataType, IndicatorsMetaDataType } from '@/Types';
 import { ParagraphText } from '@/Components/Typography';
 import { logTimelinePhase } from '@/logging/loadTimeLogger';
 
@@ -19,7 +19,6 @@ interface Props {
     indicatorId: string;
     year: number;
   }[];
-  data: DataType[];
   selectedSubIndicator: string;
   countriesList: CountriesDataType[];
   rotate: boolean;
@@ -28,19 +27,16 @@ interface Props {
   inViewSlide: number;
   selectedId?: string;
   setSelectedId: (id: string) => void;
-  setSelectedYear: (year: number) => void;
   globeLoading?: boolean;
 }
 
 function GlobeComponent({
   globeData,
-  data,
   selectedSubIndicator,
   rotate,
   indicatorsMetaData,
   selectedId,
   setSelectedId,
-  setSelectedYear,
   countriesList,
   globeLoading = false,
 }: Props) {
@@ -59,7 +55,6 @@ function GlobeComponent({
       globeDataTotal: globeData.length,
       globeDataFiltered: filteredCount,
       countriesListCount: countriesList?.length ?? 0,
-      factsRowsCount: data?.length ?? 0,
     });
   }
 
@@ -114,7 +109,6 @@ function GlobeComponent({
                   });
                 }
                 setSelectedId(d.id);
-                setSelectedYear(d.data.year);
               }}
               colorDomain={['Yes']}
               scale={

@@ -5,11 +5,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@undp/design-system-react/DropdownMenu';
-import { ChevronDown, Globe, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { ChevronDown, Globe, Menu, Search, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Modal } from '@undp/design-system-react/Modal';
 
 import { HeadingText, ParagraphText } from '../Typography';
+import { SearchPalette } from '../SearchPalette';
 
 import { CountryList } from './CountryList';
 
@@ -28,6 +29,18 @@ export const Header = ({
 }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [showCountrySelection, setShowCountrySelection] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setShowSearch(prev => !prev);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <>
@@ -132,7 +145,20 @@ export const Header = ({
             </ParagraphText>
           </Link>
         </div>
-        <div className='hidden lg:block'>
+        <div className='hidden lg:flex items-center gap-6'>
+          <button
+            type='button'
+            className='flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity'
+            onClick={() => setShowSearch(true)}
+          >
+            <Search size={16} color='#fff' />
+            <span className='poppins-regular !text-[14px] text-[var(--color-text-white)] opacity-60'>
+              Search...
+            </span>
+            <span className='bg-[#FFFFFF1F] rounded-[4px] px-2 py-0.5 poppins-medium !text-[11px] text-[var(--color-text-white)]'>
+              ⌘K
+            </span>
+          </button>
           <button
             type='button'
             className='m-0 p-0 cursor-pointer'
@@ -144,6 +170,13 @@ export const Header = ({
           </button>
         </div>
         <div className='grow justify-end gap-8 flex lg:hidden'>
+          <button
+            type='button'
+            className='m-0 p-0 cursor-pointer'
+            onClick={() => setShowSearch(true)}
+          >
+            <Search className='w-8 h-8 stroke-white' />
+          </button>
           <button
             type='button'
             onClick={() => {
@@ -170,6 +203,7 @@ export const Header = ({
                       params={{
                         indicator: d.name.replaceAll(' ', '-').toLowerCase(),
                       }}
+                      onClick={() => setShowMenu(false)}
                     >
                       <ParagraphText size='sm' weight='medium' leading='none'>
                         {d.name}
@@ -177,17 +211,17 @@ export const Header = ({
                     </Link>
                   ))}
                 </div>
-                <Link to='/methodology'>
+                <Link to='/methodology' onClick={() => setShowMenu(false)}>
                   <ParagraphText size='sm' weight='medium' leading='none'>
                     Methodology
                   </ParagraphText>
                 </Link>
-                <Link to='/countries'>
+                <Link to='/countries' onClick={() => setShowMenu(false)}>
                   <ParagraphText size='sm' weight='medium' leading='none'>
                     Country Profile
                   </ParagraphText>
                 </Link>
-                <Link to='/about'>
+                <Link to='/about' onClick={() => setShowMenu(false)}>
                   <ParagraphText size='sm' weight='medium' leading='none'>
                     About Us
                   </ParagraphText>
@@ -215,6 +249,10 @@ export const Header = ({
           />
         </Modal>
       )}
+      <SearchPalette
+        open={showSearch}
+        onClose={() => setShowSearch(false)}
+      />
     </>
   );
 };

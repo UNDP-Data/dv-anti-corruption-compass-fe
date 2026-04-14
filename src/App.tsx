@@ -154,7 +154,7 @@ function RootComponent() {
           <ScrollToTop />
           <Outlet />
         </main>
-        <div className='relative z-10 px-4 lg:px-20'>
+        <div className='print-hide relative z-10 px-4 lg:px-20'>
           <div
             style={{
               background:
@@ -173,11 +173,15 @@ function RootComponent() {
             </a>
           </div>
         </div>
-        <Spacer size='7xl' />
-        <Footer
-          indicatorsMetaData={indicatorsMetaData.data}
-          indicatorsMetaDataLoading={indicatorsMetaData.isLoading}
-        />
+        <div className='print-hide'>
+          <Spacer size='7xl' />
+        </div>
+        <div className='print-hide'>
+          <Footer
+            indicatorsMetaData={indicatorsMetaData.data}
+            indicatorsMetaDataLoading={indicatorsMetaData.isLoading}
+          />
+        </div>
       </div>
     </GlobalDataContext.Provider>
   );

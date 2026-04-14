@@ -20,11 +20,10 @@ import {
   DROPDOWN_CLASSNAMES,
   DROPDOWN_CLASSNAMES_MULTI_SELECT,
 } from '@/Constants';
-import { CountriesDataType, DataType, IndicatorsMetaDataType } from '@/Types';
+import { CountriesDataType, IndicatorsMetaDataType } from '@/Types';
 import { customDropdownComponents } from '@/Utils/DropdownComponents';
-import { getFactsPage } from '@/QueryFn/getFactsPage';
+import { getFactsTable, FactsTableRow } from '@/QueryFn/getFactsTable';
 import { useIsMobileBreakpoint } from '@/Utils/useIsMobileBreakpoint';
-import seededFactsStageA from '@/static/factsStageA.json';
 
 interface Props {
   indicatorsMetaData: IndicatorsMetaDataType[];
@@ -32,8 +31,6 @@ interface Props {
 }
 
 const DEFAULT_PAGE_SIZE = 50;
-
-const seededFactsStageAData = seededFactsStageA as unknown as DataType[];
 
 function yearsList(): { value: number; label: number }[] {
   const start = 2006;
@@ -43,12 +40,10 @@ function yearsList(): { value: number; label: number }[] {
   return years;
 }
 
-function parseCombinedId(id: string): {
-  mainIndicatorId: number;
-  subIndicatorId: number;
-} {
-  const [m, s] = id.split('_');
-  return { mainIndicatorId: parseInt(m, 10), subIndicatorId: parseInt(s, 10) };
+// Parse indicatorColors CSV into [low, medium, high] color array
+function parseIndicatorColors(indicatorColors: string | null): string[] {
+  if (!indicatorColors) return [];
+  return indicatorColors.split(',').map(s => s.trim());
 }
 
 export function PagedDataTableWithFilters({
@@ -57,6 +52,16 @@ export function PagedDataTableWithFilters({
 }: Props) {
   const isMobile = useIsMobileBreakpoint();
   const subIndicators = indicatorsMetaData.map(d => d.subIndicators).flat();
+
+  // Build a lookup: composite UI id (e.g. "1_2") -> API code (e.g. "corr_singleb")
+  const compositeIdToCode = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const sub of subIndicators) {
+      const key = `${sub.mainIndicatorId}_${sub.subIndicatorId}`;
+      if (sub.code) m.set(key, sub.code);
+    }
+    return m;
+  }, [subIndicators]);
 
   const defaultSub = subIndicators[0];
   const [selectedPillars, setSelectedPillars] = useState<
@@ -76,148 +81,30 @@ export function PagedDataTableWithFilters({
   const [page, setPage] = useState(1);
   const pageSize = DEFAULT_PAGE_SIZE;
 
-  const selectedIds = useMemo(
-    () => selectedPillars.map(p => p.value).filter(Boolean),
-    [selectedPillars],
+  // Translate selected composite UI ids -> API sub-indicator codes
+  const selectedApiCodes = useMemo(
+    () =>
+      selectedPillars
+        .map(p => compositeIdToCode.get(p.value))
+        .filter((c): c is string => Boolean(c)),
+    [selectedPillars, compositeIdToCode],
   );
 
-  const countryNameByCode = useMemo(() => {
-    const m = new Map<string, string>();
-    for (const c of countriesList) {
-      const code = c['Alpha-3 code'];
-      m.set(code, c['Country or Area (official name)'] || code);
-    }
-    return m;
-  }, [countriesList]);
-
-  const seededInitialData = useMemo(() => {
-    if (seededFactsStageAData.length === 0) {
-      return { rows: [] as DataType[], hasNext: false };
-    }
-
-    if (selectedIds.length === 0) {
-      return { rows: [] as DataType[], hasNext: false };
-    }
-
-    const selectedIdsSet = new Set(selectedIds);
-    const offset = (page - 1) * pageSize;
-
-    const factsForRequest = seededFactsStageAData.filter(d => {
-      if (d.year !== selectedYear) return false;
-      if (!d.indicatorValue) return false;
-      if (d.numericValue === null || d.numericValue === undefined) return false;
-      const combinedId = `${d.mainIndicatorId}_${d.subIndicatorId}`;
-      return selectedIdsSet.has(combinedId);
-    });
-
-    const hasNext = selectedIds.some(combinedId => {
-      const totalForId = factsForRequest.filter(
-        d => `${d.mainIndicatorId}_${d.subIndicatorId}` === combinedId,
-      ).length;
-      return totalForId > offset + pageSize;
-    });
-
-    // Approximate server-side paging by taking `pageSize` from each pillar slice
-    // before the final global alphabetical sort (matches the intended UX).
-    const mergedPerPillar: DataType[] = [];
-    for (const combinedId of selectedIds) {
-      const factsForId = factsForRequest.filter(
-        d => `${d.mainIndicatorId}_${d.subIndicatorId}` === combinedId,
-      );
-
-      factsForId.sort((a, b) => {
-        const an = countryNameByCode.get(a.countryCode) || a.countryCode;
-        const bn = countryNameByCode.get(b.countryCode) || b.countryCode;
-        return an.localeCompare(bn);
-      });
-
-      // The query uses `page` and `pageSize` per pillar.
-      const pageSlice = factsForId.slice(offset, offset + pageSize).map(d => ({
-        ...d,
-        id: combinedId,
-      }));
-      mergedPerPillar.push(...pageSlice);
-    }
-
-    mergedPerPillar.sort((a, b) => {
-      const an = countryNameByCode.get(a.countryCode) || a.countryCode;
-      const bn = countryNameByCode.get(b.countryCode) || b.countryCode;
-      return an.localeCompare(bn);
-    });
-
-    return { rows: mergedPerPillar, hasNext };
-  }, [
-    countriesList,
-    countryNameByCode,
-    page,
-    pageSize,
-    selectedIds,
-    selectedYear,
-  ]);
-
   const query = useQuery({
-    queryKey: ['factsTable', selectedYear, selectedIds, page, pageSize],
+    queryKey: ['factsTable', selectedYear, selectedApiCodes, page, pageSize],
     placeholderData: keepPreviousData,
-    queryFn: async () => {
-      const calls = selectedIds.map(async combinedId => {
-        const { mainIndicatorId, subIndicatorId } = parseCombinedId(combinedId);
-        const data = await getFactsPage({
-          mainIndicatorId,
-          subIndicatorId,
-          year: selectedYear,
-          regionId: null,
-          productMarketId: null,
-          page,
-          pageSize,
-        });
-        return { combinedId, data };
-      });
-
-      const results = await Promise.all(calls);
-      const merged: DataType[] = [];
-      let hasNext = false;
-
-      for (const r of results) {
-        if (Array.isArray(r.data)) {
-          if (r.data.length === pageSize) hasNext = true;
-          for (const raw of r.data as DataType[]) {
-            merged.push({
-              ...raw,
-              id: r.combinedId,
-            });
-          }
-        }
-      }
-
-      // Filter down to usable numeric facts and stable sort by country name
-      const filtered = merged.filter(
-        d =>
-          d.year === selectedYear &&
-          d.indicatorValue &&
-          d.numericValue !== undefined &&
-          d.numericValue !== null,
-      );
-      filtered.sort((a, b) => {
-        const an =
-          countriesList.find(c => c['Alpha-3 code'] === a.countryCode)?.[
-            'Country or Area (official name)'
-          ] || a.countryCode;
-        const bn =
-          countriesList.find(c => c['Alpha-3 code'] === b.countryCode)?.[
-            'Country or Area (official name)'
-          ] || b.countryCode;
-        return an.localeCompare(bn);
-      });
-
-      return { rows: filtered, hasNext };
-    },
-    // Seed instantly from bundled facts so the "See Full List" table doesn't block on the first API page(s).
-    initialData: seededInitialData,
-    initialDataUpdatedAt: 0,
+    enabled: selectedApiCodes.length > 0,
+    queryFn: () =>
+      getFactsTable({
+        year: selectedYear,
+        subIndicatorIds: selectedApiCodes,
+        page,
+        pageSize,
+      }),
   });
 
-  const rows = query.data?.rows || [];
-  const hasNext = query.data?.hasNext || false;
+  const rows: FactsTableRow[] = query.data?.rows ?? [];
+  const hasNext = query.data?.hasNext ?? false;
   const isBusy = query.isFetching;
 
   return (
@@ -318,46 +205,36 @@ export function PagedDataTableWithFilters({
 
         {query.isLoading && <Spinner size='lg' className='my-10 m-auto' />}
 
-        <div className='mt-2'>
+        <div className={`mt-2 transition-opacity duration-200 ${isBusy && !query.isLoading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
           {rows.map((el, i) => {
-            const tagColors =
-              subIndicators
-                .find(d => `${d.mainIndicatorId}_${d.subIndicatorId}` === el.id)
-                ?.colors?.split(',') || [];
-
+            // Use server-provided fields with local metadata as fallback
             const countryName =
+              el.countryName ||
               countriesList.find(c => c['Alpha-3 code'] === el.countryCode)?.[
                 'Country or Area (official name)'
-              ] || el.countryCode;
-            const pillarName =
-              subIndicators.find(
-                pd => `${pd.mainIndicatorId}_${pd.subIndicatorId}` === el.id,
-              )?.name || '';
+              ] ||
+              el.countryCode ||
+              '';
+            const pillarName = el.subIndicatorName || '';
+            const suffix = el.suffix || '';
             const valueStr =
               el.numericValue === null || el.numericValue === undefined
                 ? 'NA'
-                : el.numericValue.toFixed(2) +
-                  (indicatorsMetaData.find(
-                    d => d.mainIndicatorId === el.mainIndicatorId,
-                  )?.suffix || '');
+                : el.numericValue.toFixed(2) + suffix;
+
+            // indicatorColors is a CSS-color CSV: "low_color, medium_color, high_color"
+            const tagColors = parseIndicatorColors(el.indicatorColors);
+            const bandIndex = ['LOW', 'MEDIUM', 'HIGH'].indexOf(
+              el.indicatorValue ?? '',
+            );
             const badgeBg =
-              el.indicatorValue === null
-                ? '#DADADA'
-                : ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue) !== -1
-                  ? tagColors[
-                      ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue)
-                    ]
-                  : '#DADADA';
+              el.indicatorValue && bandIndex !== -1 && tagColors[bandIndex]
+                ? tagColors[bandIndex]
+                : '#DADADA';
             const badgeColor =
-              el.indicatorValue === null
-                ? '#000'
-                : getTextColorBasedOnBgColor(
-                    ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue) !== -1
-                      ? tagColors[
-                          ['LOW', 'MEDIUM', 'HIGH'].indexOf(el.indicatorValue)
-                        ]
-                      : '#DADADA',
-                  );
+              el.indicatorValue && bandIndex !== -1 && tagColors[bandIndex]
+                ? getTextColorBasedOnBgColor(tagColors[bandIndex])
+                : '#000';
 
             return (
               <div key={`${el.factId}-${i}`}>
@@ -370,7 +247,7 @@ export function PagedDataTableWithFilters({
                       <Link
                         to='/countries/$isoCode/{-$indicator}'
                         className='poppins-medium text-[13px] text-primary-white opacity-100 hover:opacity-80 underline underline-offset-4 shrink-0 ml-2'
-                        params={{ isoCode: el.countryCode }}
+                        params={{ isoCode: el.countryCode ?? '' }}
                       >
                         View Details
                       </Link>
@@ -420,7 +297,7 @@ export function PagedDataTableWithFilters({
                     <Link
                       to='/countries/$isoCode/{-$indicator}'
                       className='poppins-light text-[16px]! text-primary-white! w-[10%] pr-4! opacity-100 hover:opacity-80 underline underline-offset-4'
-                      params={{ isoCode: el.countryCode }}
+                      params={{ isoCode: el.countryCode ?? '' }}
                     >
                       View Details
                     </Link>
@@ -434,10 +311,12 @@ export function PagedDataTableWithFilters({
         <Spacer size='4xl' />
 
         <div className='flex items-center justify-between'>
-          <ParagraphText className='text-primary-white'>
-            Page {page}
-            {isBusy ? ' (loading…) ' : ''}
-          </ParagraphText>
+          <div className='flex items-center gap-3'>
+            <ParagraphText className='text-primary-white'>
+              Page {page}
+            </ParagraphText>
+            {isBusy && <Spinner size='sm' className='text-[#61D4F8]' />}
+          </div>
           <div className='flex gap-3'>
             <Button
               variant='secondary'
