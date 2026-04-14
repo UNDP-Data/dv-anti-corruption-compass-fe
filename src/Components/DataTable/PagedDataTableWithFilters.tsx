@@ -23,7 +23,10 @@ import {
 import { CountriesDataType, IndicatorsMetaDataType } from '@/Types';
 import { customDropdownComponents } from '@/Utils/DropdownComponents';
 import { getFactsTable, FactsTableRow } from '@/QueryFn/getFactsTable';
+import type { FactsTableResponse } from '@/QueryFn/getFactsTable';
 import { useIsMobileBreakpoint } from '@/Utils/useIsMobileBreakpoint';
+
+import staticFactsTableDefault from '@/static/cache/factsTable_default.json';
 
 interface Props {
   indicatorsMetaData: IndicatorsMetaDataType[];
@@ -90,6 +93,17 @@ export function PagedDataTableWithFilters({
     [selectedPillars, compositeIdToCode],
   );
 
+  // Use the pre-fetched static file as instant initialData for the default view
+  const isDefaultState =
+    selectedYear === 2022 &&
+    selectedApiCodes.length === 1 &&
+    selectedApiCodes[0] === 'corr_nonopenproc' &&
+    page === 1 &&
+    pageSize === DEFAULT_PAGE_SIZE;
+  const staticInitialData = isDefaultState
+    ? (staticFactsTableDefault as FactsTableResponse)
+    : undefined;
+
   const query = useQuery({
     queryKey: ['factsTable', selectedYear, selectedApiCodes, page, pageSize],
     placeholderData: keepPreviousData,
@@ -101,6 +115,8 @@ export function PagedDataTableWithFilters({
         page,
         pageSize,
       }),
+    initialData: staticInitialData,
+    initialDataUpdatedAt: staticInitialData ? 0 : undefined,
   });
 
   const rows: FactsTableRow[] = query.data?.rows ?? [];

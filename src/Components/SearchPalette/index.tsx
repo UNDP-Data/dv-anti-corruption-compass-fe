@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { Modal } from '@undp/design-system-react/Modal';
-import { BarChart2, FileText, Globe2, Hash, Search } from 'lucide-react';
+import { BarChart2, FileText, Globe2, Hash, Search, X } from 'lucide-react';
 
 import { useSearchItems } from './useSearchItems';
 import { searchItems } from './searchUtils';
@@ -101,11 +101,12 @@ export function SearchPalette({ open, onClose }: Props) {
       className='!bg-[#17232B] !border-0 !rounded-[8px] !shadow-[0_5px_60px_0_rgba(0,0,0,0.40)] !p-4 !w-full !max-w-[600px]'
     >
       <div>
-        <div className='relative flex items-center'>
+        <div className='relative w-full'>
           <Search
             size={16}
-            className='absolute left-4 pointer-events-none opacity-40'
+            className='absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40 z-[1]'
             color='#fff'
+            aria-hidden
           />
           <input
             ref={inputRef}
@@ -113,8 +114,23 @@ export function SearchPalette({ open, onClose }: Props) {
             onChange={e => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder='Search pages, countries, indicators…'
-            className='bg-[#ffffff12] rounded-full py-3 pl-10 pr-4 border border-[#ffffff20] text-[var(--color-text-white)] placeholder:text-white placeholder:opacity-40 poppins-regular !text-[14px] w-full outline-none focus:border-[#4B6E91] transition-colors'
+            className={`bg-[#ffffff12] rounded-full py-3 pl-10 border border-[#ffffff20] text-[var(--color-text-white)] placeholder:text-white placeholder:opacity-40 poppins-regular !text-[14px] w-full outline-none focus:border-[#4B6E91] transition-colors ${
+              query ? 'pr-12' : 'pr-4'
+            }`}
           />
+          {query ? (
+            <button
+              type='button'
+              aria-label='Clear search'
+              className='absolute right-3 top-1/2 -translate-y-1/2 z-[1] flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-[#17232B] hover:bg-white/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4B6E91]'
+              onClick={() => {
+                setQuery('');
+                inputRef.current?.focus();
+              }}
+            >
+              <X size={16} strokeWidth={2.5} aria-hidden />
+            </button>
+          ) : null}
         </div>
 
         {query.trim() && (
