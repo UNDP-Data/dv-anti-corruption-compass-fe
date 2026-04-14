@@ -516,6 +516,7 @@ function HomepageEl({
       </div>
       {selectedId &&
         createPortal(
+          isMobile ? (
           <div
             className='fixed inset-0 z-[998] flex items-center justify-center px-4'
             style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}
@@ -524,6 +525,7 @@ function HomepageEl({
             }}
           >
           <div className='relative bg-[#fff] p-6 w-full max-w-[420px] rounded-[16px] shadow-[0_8px_40px_rgba(0,0,0,0.35)] z-[999] max-h-[85vh] overflow-y-auto'>
+          
             <div
               style={{
                 cursor: 'pointer',
@@ -685,7 +687,145 @@ function HomepageEl({
               </Link>
             </div>
           </div>
-          </div>,
+          </div>
+          ) : (
+          <div className='fixed bottom-8 right-20 bg-[#fff] p-6 w-[360px] rounded-[8px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] z-[999] max-h-[80vh] overflow-y-auto'>
+            <div
+              style={{
+                cursor: 'pointer',
+                position: 'absolute',
+                right: '0.5rem',
+                top: '0.5rem',
+              }}
+              onClick={() => {
+                setSelectedId(undefined);
+              }}
+            >
+              <X color='#2D4858' size={32} strokeWidth={1} />
+            </div>
+            <div className='w-full flex flex-col items-center'>
+              {(() => {
+                const fromList = safeCountriesList.find(
+                  el => el['Alpha-3 code'] === selectedId,
+                );
+                const fromUtils = getCountryDetailsFromISO3(selectedId);
+                const alpha2 =
+                  fromList?.['Alpha-2 code'] ?? fromUtils?.['Alpha-2 code'];
+                const countryTitle =
+                  fromList?.['Country or Area (official name)'] ??
+                  fromUtils?.['Country or Area (official name)'] ??
+                  selectedId;
+                const flagUrl = alpha2
+                  ? `http://purecatamphetamine.github.io/country-flag-icons/3x2/${alpha2}.svg`
+                  : null;
+                return (
+                  <>
+                    {alpha2 ? (
+                      <img alt='' className='w-9 mb-3' src={flagUrl as string} />
+                    ) : (
+                      <div className='w-9 h-6 mb-3 rounded bg-[#e8ecef] animate-pulse' aria-hidden />
+                    )}
+                    <ParagraphText
+                      className='text-[var(--color-text-black)]'
+                      alignment='center'
+                      weight='semibold'
+                      size='xl'
+                    >
+                      {countryTitle}
+                    </ParagraphText>
+                  </>
+                );
+              })()}
+              <Spacer size='base' />
+              <ParagraphText
+                className='text-[var(--color-text-black)]'
+                alignment='center'
+                weight='regular'
+                size='sm'
+              >
+                {countryDashboard?.latestYear}
+              </ParagraphText>
+              <Spacer size='2xl' />
+              {dashboardLoading ? (
+                <div className='flex flex-col items-center gap-3 my-4'>
+                  <Spinner size='sm' />
+                </div>
+              ) : (activeIndicator?.subIndicators?.length || 0) < 6 ? (
+                <div className='w-full flex items-center text-primary-gray-500 justify-center'>
+                  <ArcChart
+                    data={(countryDashboard?.latestOverview ?? [])
+                      .filter(
+                        e => e.subIndicatorId != null && e.numericValue != null,
+                      )
+                      .map(e => {
+                        const compositeId =
+                          mapGlobeSubIndicatorCodeToCompositeId(
+                            e.subIndicatorId!,
+                            safeIndicatorsMetaData,
+                          ) ?? e.subIndicatorId!;
+                        return { id: compositeId, value: e.numericValue! };
+                      })}
+                    subPillars={(countryDashboard?.latestOverview ?? [])
+                      .filter(
+                        e =>
+                          e.subIndicatorId != null &&
+                          e.subIndicatorName != null,
+                      )
+                      .map(e => {
+                        const compositeId =
+                          mapGlobeSubIndicatorCodeToCompositeId(
+                            e.subIndicatorId!,
+                            safeIndicatorsMetaData,
+                          ) ?? e.subIndicatorId!;
+                        return { id: compositeId, name: e.subIndicatorName! };
+                      })}
+                    colors={
+                      activeIndicator?.subIndicators.map(s => ({
+                        id: s.id,
+                        color: s.color,
+                      })) ?? []
+                    }
+                    suffix={activeIndicator?.suffix ?? ''}
+                    maxValue={activeIndicator?.maxValue ?? 100}
+                  />
+                </div>
+              ) : (
+                <BarChartList
+                  data={(countryDashboard?.latestOverview ?? [])
+                    .filter(
+                      e => e.subIndicatorName != null && e.numericValue != null,
+                    )
+                    .map(e => ({
+                      id: e.subIndicatorName!,
+                      value: e.numericValue!,
+                    }))}
+                  color={activeIndicator?.mainColor ?? '#fff'}
+                  suffix={activeIndicator?.suffix ?? ''}
+                  maxValue={activeIndicator?.maxValue ?? 100}
+                  textClassName='text-[var(--color-text-black)]'
+                  barBgColor='#d6d6d6'
+                  isCardBgWhite
+                />
+              )}
+              <Spacer size='2xl' />
+              <Link
+                to='/countries/$isoCode/{-$indicator}'
+                params={{
+                  isoCode: selectedId,
+                  indicator: (
+                    activeIndicator?.name ??
+                    safeIndicatorsMetaData[inViewSlide]?.name ??
+                    ''
+                  )
+                    .replaceAll(' ', '-')
+                    .toLowerCase(),
+                }}
+              >
+                <Button variant='primary'>View more →</Button>
+              </Link>
+            </div>
+          </div>
+          ),
           document.getElementById('root') as HTMLElement,
         )}
     </div>
