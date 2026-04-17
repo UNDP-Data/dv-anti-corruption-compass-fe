@@ -42,10 +42,7 @@ export const CountrySelect = ({
           components={customDropdownComponents('light', false)}
         />
       ) : (
-        <div className='flex items-center gap-3'>
-          <Spinner />
-          <ParagraphText size='sm'>Loading countries...</ParagraphText>
-        </div>
+        <Spinner />
       )}
     </div>
   );

@@ -122,7 +122,6 @@ export default defineConfig({
     },
   },
   server: {
-    host: true,
     cors: {
       origin: '*',
       methods: ['GET'],
